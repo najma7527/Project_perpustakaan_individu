@@ -17,9 +17,8 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Create test user if factory has email field (leftover), ignored if not
+        // Create admin account for testing
+        $this->call([AdminUserSeeder::class]);
     }
 }
