@@ -20,7 +20,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Books
 Route::resource('books', BookController::class)->middleware('auth');
 Route::resource('transactions', TransactionController::class)->middleware('auth');
-
+// jjk
 
 // Users (only admin can manage, and only users with role anggota will be listed/managed)
 Route::resource('users', UserController::class)->except(['show'])->middleware('auth');
