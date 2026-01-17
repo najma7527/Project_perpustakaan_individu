@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('username')->unique();
+            $table->string('NIS/NISN')->nullable();
             $table->enum('role', ['admin', 'anggota']);
+            $table->enum('status',['aktif', 'nonaktif']);
             $table->string('password');
             $table->string('kelas')->nullable();    
             $table->rememberToken();
