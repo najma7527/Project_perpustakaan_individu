@@ -4,22 +4,29 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Notifications\Notifiable;
-use App\Models\transaction;
 
-class books extends Model
+class Book extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory;
+
+    protected $table = 'books';
+
     protected $fillable = [
         'judul',
-        'penerbit',    
+        'pengarang',
         'tahun_terbit',
-        'genre',
-        'stok',
+        'kategori_buku',
+        'stok_buku',
+        'id_baris',
     ];
+
+    public function row()
+    {
+        return $this->belongsTo(Row::class, 'id_baris');
+    }
 
     public function transactions()
     {
-        return $this->hasMany(transaction::class, 'buku_id');
+        return $this->hasMany(Transaction::class, 'buku_id');
     }
 }

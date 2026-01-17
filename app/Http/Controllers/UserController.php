@@ -35,6 +35,7 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users',
+            'nis/nisn' => 'nullable|string|max:255',    
             'password' => 'required|string|min:6|confirmed',
             'kelas' => 'nullable|string|max:255',
         ]);
@@ -42,6 +43,7 @@ class UserController extends Controller
         $user = User::create([
             'name' => $data['name'],
             'username' => $data['username'],
+            'nin/nisn' => $data['nis/nisn'] ?? null,
             'password' => Hash::make($data['password']),
             'kelas' => $data['kelas'] ?? null,
             'role' => $data['role'],
@@ -65,6 +67,7 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+            'nis/nisn' => 'nullable|string|max:255',
             'password' => 'nullable|string|min:6|confirmed',
             'kelas' => 'nullable|string|max:255',
         ]);
@@ -73,6 +76,7 @@ class UserController extends Controller
             'name' => $data['name'],
             'username' => $data['username'],
             'kelas' => $data['kelas'] ?? null,
+            'nin/nisn' => $data['nis/nisn'] ?? null,
         ];
 
         if (!empty($data['password'])) $update['password'] = Hash::make($data['password']);
@@ -87,5 +91,19 @@ class UserController extends Controller
         if ($user->role !== 'anggota') abort(403, 'Hanya dapat mengatur user dengan role anggota');
         $user->delete();
         return response()->json(['message' => 'User deleted']);
+    }
+
+    public function search(Request $request)
+    {
+        if (Auth::user()?->role !== 'admin') abort(403);
+        $query = $request->query('q');
+        $users = User::where('role', 'anggota')
+            ->where(function ($q) use ($query) {
+                $q->where('name', 'like', "%$query%")
+                  ->orWhere('username', 'like', "%$query%")
+                  ->orWhere('nis/nisn', 'like', "%$query%");
+            })
+            ->get();
+        return response()->json(['data' => $users]);
     }
 }

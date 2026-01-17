@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Book;
+use App\Models\Row;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\books;
 
 class BookController extends Controller
 {
@@ -15,58 +16,93 @@ class BookController extends Controller
 
     public function index()
     {
-        $books = books::all();
+        if (Auth::user()?->role !== 'admin') abort(403);
+        $books = Book::with('row')->get();
         return response()->json(['data' => $books]);
     }
 
     public function create()
     {
-        // only admin can create
         if (Auth::user()?->role !== 'admin') abort(403);
-        // Return any data needed by the frontend form
-        return response()->json(['ok' => true]);
+        $rows = Row::all();
+        return response()->json(['rows' => $rows]);
     }
 
     public function store(Request $request)
     {
         if (Auth::user()?->role !== 'admin') abort(403);
+
         $data = $request->validate([
             'judul' => 'required|string|max:255',
-            'penerbit' => 'required|string|max:255',
-            'tahun_terbit' => 'required|digits:4|integer',
-            'genre' => 'required|string|max:255',
-            'stok' => 'required|integer|min:0',
+            'pengarang' => 'required|string|max:255',
+            'tahun_terbit' => 'required|integer|min:1900|max:' . date('Y'),
+            'kategori_buku' => 'required|in:fiksi,nonfiksi',
+            'stok_buku' => 'required|integer|min:0',
+            'id_baris' => 'required|exists:row,id',
         ]);
 
-        $book = books::create($data);
-        return response()->json(['message' => 'Book created', 'data' => $book], 201);
+        $book = Book::create($data);
+        return response()->json(['message' => 'Book created', 'data' => $book->load('row')], 201);
     }
 
-    public function edit(books $book)
+    public function show(Book $book)
     {
         if (Auth::user()?->role !== 'admin') abort(403);
-        return response()->json(['data' => $book]);
+        return response()->json(['data' => $book->load('row', 'transactions')]);
     }
 
-    public function update(Request $request, books $book)
+    public function edit(Book $book)
     {
         if (Auth::user()?->role !== 'admin') abort(403);
+        $rows = Row::all();
+        return response()->json(['data' => $book, 'rows' => $rows]);
+    }
+
+    public function update(Request $request, Book $book)
+    {
+        if (Auth::user()?->role !== 'admin') abort(403);
+
         $data = $request->validate([
             'judul' => 'required|string|max:255',
-            'penerbit' => 'required|string|max:255',
-            'tahun_terbit' => 'required|digits:4|integer',
-            'genre' => 'required|string|max:255',
-            'stok' => 'required|integer|min:0',
+            'pengarang' => 'required|string|max:255',
+            'tahun_terbit' => 'required|integer|min:1900|max:' . date('Y'),
+            'kategori_buku' => 'required|in:fiksi,nonfiksi',
+            'stok_buku' => 'required|integer|min:0',
+            'id_baris' => 'required|exists:row,id',
         ]);
 
         $book->update($data);
-        return response()->json(['message' => 'Book updated', 'data' => $book]);
+        return response()->json(['message' => 'Book updated', 'data' => $book->load('row')]);
     }
 
-    public function destroy(books $book)
+    public function destroy(Book $book)
     {
         if (Auth::user()?->role !== 'admin') abort(403);
         $book->delete();
         return response()->json(['message' => 'Book deleted']);
     }
-}
+
+    public function search(Request $request)
+    {
+        $query = $request->query('q');
+        $books = Book::where('judul', 'like', "%$query%")
+            ->orWhere('pengarang', 'like', "%$query%")
+            ->orWhere('tahun_terbit', 'like', "%$query%")
+            ->orWhere('id', 'like', "%$query%")
+            ->with('row')
+            ->get();
+        return response()->json(['data' => $books]);
+    }
+
+        public function filter(Request $request)
+        {
+            $books = Book::query();
+            if ($request->filled('kategori_buku')) {
+                $books->where('kategori_buku', 'like', '%' . $request->kategori_buku . '%');
+            }
+            return response()->json(['data' => $books->with('row')->get()]);
+        }
+
+    }
+
+
