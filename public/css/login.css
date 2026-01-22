@@ -1,0 +1,218 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: #f4f6f8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* WRAPPER */
+.wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* CARD */
+.card {
+  width: 1100px;
+  min-height: 620px;
+  background: #209eeb;
+  border-radius: 28px;
+  display: flex;
+  overflow: hidden;
+}
+
+/* LEFT SECTION */
+.left {
+  width: 50%;
+  padding: 60px 50px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.left h2 {
+  font-size: 36px;
+  font-weight: 600;
+  margin-bottom: 45px;
+}
+
+.left img {
+  width: 100%;
+  max-width: 380px;
+}
+
+/* RIGHT SECTION */
+.right {
+  width: 50%;
+  background: #fff;
+  border-top-left-radius: 60px;
+  border-bottom-left-radius: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* FORM */
+form {
+  width: 70%;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 6px;
+  color: #222;
+}
+
+/* INPUT */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  height: 40px;
+  border: 1.6px solid #2196f3;
+  border-radius: 4px;
+  padding: 0 12px;
+  font-size: 13px;
+  margin-bottom: 10px;
+  outline: none;
+}
+
+/* ROW INPUT (NIS & NISN) */
+.row-input {
+  display: flex;
+  gap: 14px;
+}
+
+.row-input div {
+  width: 100%;
+}
+
+/* PASSWORD ICON */
+.password {
+  position: relative;
+}
+
+.password i {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #555;
+  cursor: pointer;
+}
+.remember {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  margin: 8px 0 20px;
+  white-space: nowrap;   /* ⬅️ kunci utama */
+}
+
+.remember label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.remember a {
+  color: #e53935;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* BUTTON */
+button {
+  width: 100%;
+  height: 44px;
+  background: #2196f3;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* REGISTER TEXT */
+.register {
+  text-align: center;
+  font-size: 13px;
+  margin-top: 16px;
+  color: #555;
+}
+
+.register a {
+  color: #2196f3;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 1024px) {
+  .card {
+    width: 95%;
+  }
+}
+
+@media (max-width: 900px) {
+  .card {
+    flex-direction: column;
+  }
+
+  .left,
+  .right {
+    width: 100%;
+  }
+
+  .left {
+    padding: 40px 30px;
+  }
+
+  .left h2 {
+    font-size: 30px;
+    text-align: center;
+  }
+
+  .left img {
+    max-width: 280px;
+  }
+
+  .right {
+    border-radius: 0;
+    padding: 40px 0;
+  }
+
+  form {
+    width: 85%;
+  }
+}
+
+@media (max-width: 480px) {
+  form {
+    width: 95%;
+  }
+
+  .left h2 {
+    font-size: 24px;
+  }
+
+  button {
+    height: 40px;
+    font-size: 13px;
+  }
+}
