@@ -31,8 +31,7 @@ class TransactionController extends Controller
     {
         if (Auth::user()?->role !== 'admin') abort(403);
         $users = User::where('role', 'anggota')->get();
-        $books = Book::where('stok_buku', '>', 0)->get();
-        return response()->json(['users' => $users, 'books' => $books]);
+        return response()->json(['users' => $users]);
     }
 
     public function store(Request $request)
@@ -55,14 +54,15 @@ class TransactionController extends Controller
         $data['status'] = 'dipinjam';
 
         return DB::transaction(function() use ($data) {
+            $existingTransaction = Transaction::where('buku_id', $data['buku_id'])->where('status', 'dipinjam')->first();
+            if ($existingTransaction) {
+                return response()->json(['error' => 'Buku sedang dipinjam'], 422);
+            }
+
             $book = Book::lockForUpdate()->find($data['buku_id']);
             if (!$book || $book->stok_buku <= 0) {
                 return response()->json(['error' => 'Buku tidak tersedia'], 422);
             }
-
-            $transaction = Transaction::create($data);
-            $book->decrement('stok_buku', 1);
-            return response()->json(['message' => 'Transaction created', 'data' => $transaction->load('user', 'book')], 201);
         });
     }
 

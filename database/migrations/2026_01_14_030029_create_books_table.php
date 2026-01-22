@@ -17,8 +17,9 @@ return new class extends Migration
             $table->string('pengarang');
             $table->year('tahun_terbit');
             $table->enum('kategori_buku', ['fiksi', 'nonfiksi']);
-            $table->integer('stok_buku');
             $table->foreignId('id_baris')->constrained('row')->onDelete('cascade');
+            $table->string('cover');
+            $table->string('deskripsi');
             $table->timestamps();
         });
     }

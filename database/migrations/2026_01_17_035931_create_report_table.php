@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('report', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('transactions_id')->constrained('transactions')->onDelete('cascade');
-            $table->date('tanggal_dikembalikan')->nullable();
-            $table->enum('status', ['sudah_dikembalikan', 'belum_dikembalikan']);
+            $table->date('tanggal_ganti')->nullable();
+            $table->enum('status', ['menunggu','sudah_dikembalikan', 'belum_dikembalikan']);
             $table->string('keterangan');
             $table->timestamps();
         });

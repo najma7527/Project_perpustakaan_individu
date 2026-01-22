@@ -15,32 +15,39 @@ class AuthController extends Controller
     }
 
     public function login(Request $request)
-    {
+{
         $credentials = $request->validate([
             'username' => ['required'],
             'password' => ['required'],
-        ]);
+    ]);
 
-        try {
-            if (Auth::attempt($credentials)) {
-                $request->session()->regenerate();
-                $intended = Auth::user()->role === 'admin' ? route('transactions.index') : route('books.index');
-                return redirect()->intended($intended);
-            }
+    $credentials = [
+        'username' => $request->username,
+        'password' => $request->password,
+        'status'   => 'aktif', // hanya izinkan login jika status aktif
+    ];
 
-            return back()->withErrors([
-                'username' => 'Mohon masukan lagi username anda',
-                'password' => 'Mohon masukan lagi password anda',
-            ]);
-        } catch (\RuntimeException $e) {
-            // Likely an incompatible password hash stored in DB (not bcrypt)
-            // Return friendly error and log exception
-            logger()->error('Login hash error: ' . $e->getMessage());
-            return back()->withErrors([
-                'password' => 'Stored password for this account is invalid. Reset administrator password or re-seed the admin account.',
-            ]);
+    try {
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+
+            $intended = Auth::user()->role === 'admin'
+                ? route('admin.dashboard')
+                : route('anggota.dashboard');
+
+            return redirect()->intended($intended);
         }
+
+    } catch (\RuntimeException $e) {
+        logger()->error('Login hash error: ' . $e->getMessage());
+
+        return back()->withErrors([
+            'username' => 'Username salah, atau akun belum diaktifkan.',
+            'password' => 'Password akun ini tidak valid. Hubungi admin untuk mengetahui password anda.',
+        ]);
     }
+}
+
 
     public function showRegister()
     {
@@ -55,6 +62,7 @@ class AuthController extends Controller
             'nis/nisn' => 'nullable|string|max:255',
             'password' => 'required|string|min:6|confirmed',
             'kelas' => 'nullable|string|max:255',
+            'status' => 'required|in:aktif,nonaktif',
         ]);
 
         $user = User::create([
@@ -64,10 +72,11 @@ class AuthController extends Controller
             'password' => Hash::make($data['password']),
             'kelas' => $data['kelas'] ?? null,
             'role' => 'anggota',
+            'status' => 'nonaktif',
         ]);
 
         Auth::login($user);
-        return redirect('/books');
+        return redirect('/');
     }
 
     public function logout(Request $request)

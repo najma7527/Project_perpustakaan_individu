@@ -92,5 +92,5 @@ class VisitController extends Controller
         $date = $request->query('date');
         $visits = Visit::whereDate('tanggal_datang', $date)->with('user', 'transaction.book')->get();
         return response()->json(['data' => $visits]);
-    }
+    }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
 }

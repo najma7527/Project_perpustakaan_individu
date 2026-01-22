@@ -53,6 +53,9 @@ Route::middleware('auth')->group(function () {
     
     // Hapus anggota
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
+    // Approve anggota (ubah status dari nonaktif ke aktif)
+    Route::put('/admin/users/{id}/approve', [UserController::class, 'approve']);
 });
 
 /*

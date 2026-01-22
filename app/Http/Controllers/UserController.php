@@ -38,6 +38,8 @@ class UserController extends Controller
             'nis/nisn' => 'nullable|string|max:255',    
             'password' => 'required|string|min:6|confirmed',
             'kelas' => 'nullable|string|max:255',
+            'role' => 'required|in:anggota,admin',
+            'status' => 'required|in:aktif,nonaktif',
         ]);
 
         $user = User::create([
@@ -47,6 +49,7 @@ class UserController extends Controller
             'password' => Hash::make($data['password']),
             'kelas' => $data['kelas'] ?? null,
             'role' => $data['role'],
+            'status' => 'aktif',
         ]);
 
         return response()->json(['message' => 'User created', 'data' => $user], 201);
@@ -92,6 +95,23 @@ class UserController extends Controller
         $user->delete();
         return response()->json(['message' => 'User deleted']);
     }
+
+    public function approve($id)
+{
+    if (Auth::user()?->role !== 'admin') abort(403);
+
+    $user = User::findOrFail($id);
+
+    $user->update([
+        'status' => 'aktif'
+    ]);
+
+    return response()->json([
+        'message' => 'Akun berhasil di-approve dan diaktifkan.',
+        'data' => $user
+    ]);
+}
+
 
     public function search(Request $request)
     {
