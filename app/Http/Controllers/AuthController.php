@@ -59,7 +59,7 @@ class AuthController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users',
-            'nis/nisn' => 'nullable|string|max:255',
+            'nis_nisn' => 'nullable|string|max:255',
             'password' => 'required|string|min:6|confirmed',
             'kelas' => 'nullable|string|max:255',
             'status' => 'required|in:aktif,nonaktif',
@@ -68,7 +68,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $data['name'],
             'username' => $data['username'],
-            'nin/nisn' => $data['nis/nisn'] ?? null,
+            'nin_nisn' => $data['nis/nisn'] ?? null,
             'password' => Hash::make($data['password']),
             'kelas' => $data['kelas'] ?? null,
             'role' => 'anggota',
@@ -76,7 +76,7 @@ class AuthController extends Controller
         ]);
 
         Auth::login($user);
-        return redirect('/');
+        return redirect('/auth/success');
     }
 
     public function logout(Request $request)

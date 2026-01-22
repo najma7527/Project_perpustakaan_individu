@@ -19,13 +19,13 @@ class UserController extends Controller
         // only admin can list users
         if (Auth::user()?->role !== 'admin') abort(403);
         $users = User::where('role','anggota')->get();
-        return response()->json(['data' => $users]);
+        return view('admin.kelola-anggota.index',compact('users'));
     }
 
     public function create()
     {
         if (Auth::user()?->role !== 'admin') abort(403);
-        return response()->json(['ok' => true]);
+        return view('admin.kelola-anggota.create');
     }
 
     public function store(Request $request)
@@ -35,31 +35,32 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users',
-            'nis/nisn' => 'nullable|string|max:255',    
+            'telephone' => 'nullable|string|max:255',
+            'nis_nisn' => 'nullable|string|max:255',    
             'password' => 'required|string|min:6|confirmed',
             'kelas' => 'nullable|string|max:255',
             'role' => 'required|in:anggota,admin',
-            'status' => 'required|in:aktif,nonaktif',
         ]);
 
         $user = User::create([
             'name' => $data['name'],
             'username' => $data['username'],
-            'nin/nisn' => $data['nis/nisn'] ?? null,
+            'telephone' => $data['telephone'] ?? null,
+            'nis_nisn' => $data['nis_nisn'] ?? null,
             'password' => Hash::make($data['password']),
             'kelas' => $data['kelas'] ?? null,
             'role' => $data['role'],
             'status' => 'aktif',
         ]);
 
-        return response()->json(['message' => 'User created', 'data' => $user], 201);
+        return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
 
     public function edit(User $user)
     {
         if (Auth::user()?->role !== 'admin') abort(403);
         if ($user->role !== 'anggota') abort(403, 'Hanya dapat mengatur user dengan role anggota');
-        return response()->json(['data' => $user]);
+        return view('admin.kelola-anggota.edit', compact('user'));
     }
 
     public function update(Request $request, User $user)
@@ -70,7 +71,8 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
-            'nis/nisn' => 'nullable|string|max:255',
+            'telephone' => 'nullable|string|max:255',
+            'nis_nisn' => 'nullable|string|max:255',
             'password' => 'nullable|string|min:6|confirmed',
             'kelas' => 'nullable|string|max:255',
         ]);
@@ -85,7 +87,7 @@ class UserController extends Controller
         if (!empty($data['password'])) $update['password'] = Hash::make($data['password']);
 
         $user->update($update);
-        return response()->json(['message' => 'User updated', 'data' => $user]);
+        return redirect()->back()->with('success', 'User berhasil diupdate');
     }
 
     public function destroy(User $user)
@@ -93,7 +95,7 @@ class UserController extends Controller
         if (Auth::user()?->role !== 'admin') abort(403);
         if ($user->role !== 'anggota') abort(403, 'Hanya dapat mengatur user dengan role anggota');
         $user->delete();
-        return response()->json(['message' => 'User deleted']);
+        return redirect()->back()->with('success', 'User berhasil dihapus');
     }
 
     public function approve($id)
@@ -106,24 +108,29 @@ class UserController extends Controller
         'status' => 'aktif'
     ]);
 
-    return response()->json([
-        'message' => 'Akun berhasil di-approve dan diaktifkan.',
-        'data' => $user
-    ]);
+    return redirect()->back()->with('success', 'User berhasil diaktifkan');
 }
 
 
-    public function search(Request $request)
-    {
-        if (Auth::user()?->role !== 'admin') abort(403);
-        $query = $request->query('q');
-        $users = User::where('role', 'anggota')
-            ->where(function ($q) use ($query) {
-                $q->where('name', 'like', "%$query%")
-                  ->orWhere('username', 'like', "%$query%")
-                  ->orWhere('nis/nisn', 'like', "%$query%");
-            })
-            ->get();
-        return response()->json(['data' => $users]);
+   public function search(Request $request)
+{
+    if (Auth::user()->role !== 'admin') abort(403);
+
+    $q = $request->q;
+
+    $query = User::where('role', 'anggota');
+
+    if ($q) {
+        $query->where(function ($q2) use ($q) {
+            $q2->where('name', 'like', "%$q%")
+               ->orWhere('username', 'like', "%$q%")
+               ->orWhere('nis_nisn', 'like', "%$q%");
+        });
     }
+
+    return response()->json([
+        'data' => $query->limit(20)->get()
+    ]);
+}
+
 }

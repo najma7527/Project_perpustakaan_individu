@@ -18,9 +18,10 @@ return new class extends Migration
             $table->string('nis_nisn')->nullable();
             $table->string('telephone')->nullable();
             $table->enum('role', ['admin', 'anggota']);
-            $table->enum('status',['aktif', 'nonaktif']);
+            $table->enum('status',['aktif', 'nonaktif', 'menunggu']);
             $table->string('password');
-            $table->string('kelas')->nullable();    
+            $table->string('kelas')->nullable();  
+            $table->string('profile_photo')->nullable();  
             $table->rememberToken();
             $table->timestamps();
         });
