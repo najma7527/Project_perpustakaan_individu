@@ -109,7 +109,7 @@ class AuthController extends Controller
             'password' => Hash::make($data['password']),
             'kelas' => $data['kelas'],
             'role' => 'anggota',
-            'status' => 'nonaktif',
+            'status' => 'menunggu',
         ]);
 
         $remember = $data['remember'] ?? false;

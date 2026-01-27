@@ -15,63 +15,44 @@ class VisitController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+    public function index(Request $request)
     {
         if (Auth::user()?->role !== 'admin') abort(403);
-        $visits = Visit::with('user', 'transaction.book')->get();
-        return response()->json(['data' => $visits]);
+        $query = Visit::with('user', 'transaction.book')->get();
+        // 🔎 Search nama user
+    if ($request->filled('search')) {
+        $query->whereHas('user', function ($q) use ($request) {
+            $q->where('name', 'like', '%' . $request->search . '%');
+        });
     }
 
-    public function create()
-    {
-        if (Auth::user()?->role !== 'admin') abort(403);
-        $users = User::where('role', 'anggota')->get();
-        $transactions = Transaction::all();
-        return response()->json(['users' => $users, 'transactions' => $transactions]);
+    // 🏫 Filter kelas
+    if ($request->filled('kelas')) {
+        $query->whereHas('user', function ($q) use ($request) {
+            $q->where('kelas', $request->kelas);
+        });
     }
 
-    public function store(Request $request)
-    {
-        if (Auth::user()?->role !== 'admin') abort(403);
-
-        $data = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'transactios_id' => 'required|exists:transactions,id',
-            'tanggal_datang' => 'required|date',
-        ]);
-
-        $visit = Visit::create($data);
-        return response()->json(['message' => 'Visit created', 'data' => $visit->load('user', 'transaction')], 201);
+    // 🔄 Filter status transaksi
+    if ($request->filled('status')) {
+        $query->whereHas('transaction', function ($q) use ($request) {
+            $q->where('status', $request->status);
+        });
     }
 
-    public function show(Visit $visit)
-    {
-        if (Auth::user()?->role !== 'admin') abort(403);
-        return response()->json(['data' => $visit->load('user', 'transaction.book')]);
+    // 📅 Filter tanggal kunjungan
+    if ($request->filled('date')) {
+        $query->whereDate('tanggal_datang', $request->date);
     }
 
-    public function edit(Visit $visit)
-    {
-        if (Auth::user()?->role !== 'admin') abort(403);
-        $users = User::where('role', 'anggota')->get();
-        $transactions = Transaction::all();
-        return response()->json(['data' => $visit, 'users' => $users, 'transactions' => $transactions]);
+    $visits = $query->orderBy('tanggal_datang', 'desc')->get();
+
+    // Data untuk dropdown filter
+    $kelasList = User::select('kelas')->distinct()->pluck('kelas');
+    $users     = User::where('role', 'anggota')->get();
+
+    return view('visits.index', compact('visits', 'kelasList'));
     }
-
-    public function update(Request $request, Visit $visit)
-    {
-        if (Auth::user()?->role !== 'admin') abort(403);
-
-        $data = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'transactios_id' => 'required|exists:transactions,id',
-            'tanggal_datang' => 'required|date',
-        ]);
-
-        $visit->update($data);
-        return response()->json(['message' => 'Visit updated', 'data' => $visit->load('user', 'transaction')]);
-    }
-
     public function destroy(Visit $visit)
     {
         if (Auth::user()?->role !== 'admin') abort(403);
@@ -79,18 +60,65 @@ class VisitController extends Controller
         return response()->json(['message' => 'Visit deleted']);
     }
 
-    public function getByUser(User $user)
+    /**
+     * Check-in kunjungan untuk anggota
+     * Otomatis ambil transaksi aktif (status peminjaman) jika ada
+     */
+    public function checkIn(Request $request)
     {
-        if (Auth::user()?->role !== 'admin' && Auth::id() !== $user->id) abort(403);
-        $visits = Visit::where('user_id', $user->id)->with('transaction.book')->get();
-        return response()->json(['data' => $visits]);
+        $user = Auth::user();
+        
+        // Validasi user adalah anggota
+        if ($user?->role !== 'anggota') {
+            return response()->json(['message' => 'Hanya anggota yang bisa melakukan check-in'], 403);
+        }
+
+        // Cek apakah sudah pernah visit hari ini
+        $existingVisit = Visit::whereDate('tanggal_datang', now()->toDateString())
+            ->where('user_id', $user->id)
+            ->first();
+
+        if ($existingVisit) {
+            return response()->json(['message' => 'Anda sudah melakukan check-in hari ini'], 400);
+        }
+
+        // Cari transaksi aktif (peminjaman) dari user
+        $activeTransaction = Transaction::where('user_id', $user->id)
+            ->where('status', 'peminjaman')
+            ->latest('tanggal_peminjaman')
+            ->first();
+
+        // Buat record visit
+        $visit = Visit::create([
+            'user_id' => $user->id,
+            'transactios_id' => $activeTransaction?->id,
+            'tanggal_datang' => now()->toDateString(),
+        ]);
+
+        return back()->with('success', 'Berhasil check-in kunjungan');
     }
 
-    public function getByDate(Request $request)
+    /**
+     * Get riwayat kunjungan dan transaksi untuk user
+     */
+    public function history()
     {
-        if (Auth::user()?->role !== 'admin') abort(403);
-        $date = $request->query('date');
-        $visits = Visit::whereDate('tanggal_datang', $date)->with('user', 'transaction.book')->get();
-        return response()->json(['data' => $visits]);
-    }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+        $user = Auth::user();
+
+        if ($user?->role !== 'anggota') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $visits = Visit::where('user_id', $user->id)
+            ->with('transaction.book')
+            ->orderBy('tanggal_datang', 'desc')
+            ->get();
+
+        $transactions = Transaction::where('user_id', $user->id)
+            ->with('book')
+            ->orderBy('tanggal_peminjaman', 'desc')
+            ->get();
+
+        return view('anggota.profile', compact('visits', 'transactions'));
+    }
 }

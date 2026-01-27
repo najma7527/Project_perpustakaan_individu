@@ -16,7 +16,6 @@ class Book extends Model
         'pengarang',
         'tahun_terbit',
         'kategori_buku',
-        'stok_buku',
         'id_baris',
     ];
 

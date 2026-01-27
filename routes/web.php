@@ -11,7 +11,7 @@ use App\Http\Controllers\VisitController;
 use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('landing');
 });
 
 Route::get('/succes', function () {
@@ -252,5 +252,11 @@ Route::middleware('auth')->group(function () {
     
     // Filter kunjungan berdasarkan tanggal
     Route::get('/visits/date/search', [VisitController::class, 'getByDate'])->name('visits.by-date');
+
+    // Check-in kunjungan untuk anggota
+    Route::post('/check-in', [VisitController::class, 'checkIn'])->name('visit.check-in');
+
+    // Riwayat kunjungan dan transaksi untuk anggota
+    Route::get('/my-visits-history', [VisitController::class, 'history'])->name('visit.history');
 });
 
