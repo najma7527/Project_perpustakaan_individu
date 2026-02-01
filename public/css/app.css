@@ -1,0 +1,80 @@
+/* RESET DASAR */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* LAYOUT UTAMA - FIXED SIDEBAR */
+.app-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+}
+
+/* TOPBAR - PERBAIKI POSISI */
+.topbar {
+    position: fixed;
+    top: 0;
+    left: 262px; /* Sama dengan lebar sidebar */
+    right: 0;
+    height: 64px;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    z-index: 100;
+}
+
+
+/* SIDEBAR */ 
+.sidebar { 
+    position: fixed;
+     top: 0;
+     left: 0;
+     width: 262px;
+     height: 100vh; 
+     background: #fff; 
+     padding: 20px; 
+     border-right: 1px solid #e5e7eb;
+     } 
+ .logo img {
+     width: 85px;
+      margin-bottom: 30px;
+     }
+ .menu li {
+      list-style: none;
+      margin-bottom: 6px;
+      border-radius: 8px;
+     } 
+ .menu li a {
+      display: flex;
+      gap: 10px; 
+      padding: 12px; 
+      color: #555; 
+      text-decoration: none; 
+      align-items: center; 
+    }
+ .menu li.active,
+ .menu li:hover { 
+    background: #2196f3; 
+} 
+.menu li.active a,
+.menu li:hover a {
+     color: #fff;
+     }
+
+/* KONTEN UTAMA */
+.content {
+    margin-left: 262px;
+    width: calc(100% - 262px);
+    padding: 24px;
+    padding-top: 64px; /* 64px topbar + 24px */
+    background: #f5f7fa;
+    min-height: 100vh;
+    position: relative;
+}
