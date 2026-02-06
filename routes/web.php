@@ -47,6 +47,15 @@ Route::get('/crud_kelola_buku', function () {
     return view('admin.CRUD_kelola_buku');
 });
 
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/admin/laporan-kunjungan', function () {
+        return view('admin.laporan-kunjungan');
+    })->name('admin.laporan.kunjungan');
+
+});
+
+
 
 
 // VERIFIKASI ANGGOTA

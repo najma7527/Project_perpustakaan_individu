@@ -86,4 +86,5 @@ class ReportController extends Controller
         $reports = Report::where('status', $status)->with('transaction.user', 'transaction.book')->get();
         return response()->json(['data' => $reports]);
     }
+    
 }
