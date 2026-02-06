@@ -287,3 +287,6 @@ Route::middleware(['auth'])->group(function () {
         ->name('profile.photo.delete');
 
 });
+    Route::get('/Dashboard_Admin', function () {
+    return view('Admin.Dashboard_Admin');
+});
