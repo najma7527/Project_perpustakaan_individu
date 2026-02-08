@@ -409,3 +409,7 @@ Route::get('/edit-foto-profil', function () {
 Route::get('/cetak-transaksi', function () {
     return view('cetak.cetak-transaksi');
 });
+Route::get('/dashboard-admin', function () {
+    return view('admin.dashboard_admin');
+});
+

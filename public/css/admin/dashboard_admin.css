@@ -1,0 +1,764 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#f4f6fb;
+}
+
+/* LAYOUT */
+.wrapper{
+    display:flex;
+}
+
+/* SIDEBAR */
+.sidebar{
+    position:fixed;
+    width:240px;
+    height:100vh;
+    background:#fff;
+    padding:20px;
+    border-right:1px solid #e5e7eb;
+}
+
+.logo{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.menu li{
+    list-style:none;
+    margin-bottom:6px;
+}
+
+.menu a{
+    display:flex;
+    gap:10px;
+    padding:12px 14px;
+    border-radius:10px;
+    color:#555;
+    text-decoration:none;
+}
+
+.menu li.active a,
+.menu a:hover{
+    background:#2563eb;
+    color:#fff;
+}
+
+/* MAIN */
+.main-content{
+    margin-left:240px;
+    padding:90px 25px 25px;
+    width:100%;
+}
+
+/* TOPBAR */
+.topbar{
+    position:fixed;
+    top:0;
+    left:240px;
+    right:0;
+    height:64px;
+    background:#fff;
+    padding:0 25px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:1px solid #eee;
+    z-index:10;
+}
+
+.user{
+    display:flex;
+    gap:10px;
+    align-items:center;
+}
+
+.user img{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+}
+
+/* HEADER CARD */
+.header-card {
+    background: linear-gradient(90deg, #0d47a1, #1e88e5);
+    border-radius: 12px;
+    padding: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.header-left {
+    display: flex;
+    gap: 15px;
+}
+
+.header-icon {
+    width: 45px;
+    height: 45px;
+    background: rgba(255,255,255,.3);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* STATS */
+.stats-modern{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:16px;
+    margin:20px 0;
+}
+
+.stat-box{
+    background:#fff;
+    border-radius:14px;
+    padding:18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-left:6px solid;
+    box-shadow:0 8px 18px rgba(0,0,0,.05);
+    transition:.25s ease;
+}
+
+.stat-box:hover{
+    transform:translateY(-4px);
+}
+
+/* LEFT TEXT */
+.stat-left .title{
+    font-size:14px;
+    color:#6b7280;
+}
+
+.stat-left h2{
+    font-size:26px;
+    margin:6px 0;
+    color:#111827;
+}
+
+.stat-left span{
+    font-size:12px;
+}
+
+/* ICON */
+.stat-icon{
+    width:46px;
+    height:46px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+}
+
+/* STATUS */
+.up{
+    color:#16a34a;
+}
+
+.down{
+    color:#dc2626;
+}
+
+/* COLOR THEMES */
+.blue{
+    border-color:#2563eb;
+}
+.blue .stat-icon{
+    background:#e0e7ff;
+    color:#2563eb;
+}
+
+.green{
+    border-color:#22c55e;
+}
+.green .stat-icon{
+    background:#dcfce7;
+    color:#16a34a;
+}
+
+.purple{
+    border-color:#a855f7;
+}
+.purple .stat-icon{
+    background:#f3e8ff;
+    color:#9333ea;
+}
+
+.orange{
+    border-color:#f59e0b;
+}
+.orange .stat-icon{
+    background:#fef3c7;
+    color:#d97706;
+}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+    .stats-modern{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:640px){
+    .stats-modern{
+        grid-template-columns:1fr;
+    }
+}
+
+/* CONTENT */
+
+
+/* ICON */
+.icon{
+    width:38px;
+    height:38px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:16px;
+}
+
+/* ICON COLORS */
+.primary{
+    background:#e0e7ff;
+    color:#2563eb;
+}
+
+.warning{
+    background:#fef3c7;
+    color:#d97706;
+}
+
+.danger{
+    background:#fee2e2;
+    color:#dc2626;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+    .visitor-item{
+        padding:12px;
+    }
+}
+
+/* ===============================
+   CARD TABLE
+=============================== */
+.modern-card{
+    background:#fff;
+    border-radius:16px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+    overflow:hidden;
+    margin-top:20px;
+}
+
+/* HEADER */
+.card-header{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:16px 20px;
+    font-weight:600;
+    color:#374151;
+    border-bottom:1px solid #e5e7eb;
+}
+
+/* CENTER HEADER */
+.card-header.center{
+    justify-content:center;
+}
+
+/* HEADER ICON */
+.card-header i{
+    color:#4f46e5;
+    font-size:18px;
+}
+
+/* ===============================
+   TABLE
+=============================== */
+.table-responsive{
+    padding:10px 16px 16px;
+    overflow-x:auto;
+}
+
+.modern-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:14px;
+}
+
+/* THEAD */
+.modern-table thead{
+    background:#4f46e5;
+}
+
+.modern-table thead th{
+    color:#fff;
+    padding:14px;
+    font-weight:500;
+    text-align:left;
+}
+
+/* TBODY */
+.modern-table tbody td{
+    padding:14px;
+    border-bottom:1px solid #e5e7eb;
+    color:#374151;
+}
+
+/* HOVER */
+.modern-table tbody tr:hover{
+    background:#f9fafb;
+}
+
+/* ===============================
+   BADGE STATUS
+=============================== */
+.badge{
+    padding:6px 14px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:500;
+    display:inline-block;
+}
+
+.badge.success{
+    background:#dcfce7;
+    color:#16a34a;
+}
+
+.badge.danger{
+    background:#fee2e2;
+    color:#dc2626;
+}
+
+.badge.warning{
+    background:#fef3c7;
+    color:#d97706;
+}
+
+/* ===============================
+   RESPONSIVE
+=============================== */
+
+.table-responsive{
+    overflow-x:auto;
+}
+
+@media(max-width:768px){
+    .modern-table thead th,
+    .modern-table tbody td{
+        padding:10px;
+        font-size:13px;
+    }
+}
+
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+    .content{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:768px){
+    .sidebar{
+        display:none;
+    }
+    .topbar{
+        left:0;
+    }
+    .main-content{
+        margin-left:0;
+        padding-top:80px;
+    }
+}
+
+
+/* ===== BOTTOM SECTION ===== */
+.bottom-grid{
+    margin-top:25px;
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:20px;
+}
+
+/* PINJAM BUKU */
+.pinjam-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+}
+
+.pinjam-book{
+    display:flex;
+    gap:14px;
+    background:#f9fafb;
+    padding:14px;
+    border-radius:12px;
+}
+
+.pinjam-book img{
+    width:90px;
+    border-radius:8px;
+}
+
+.pinjam-info h5{
+    font-size:15px;
+    margin-bottom:4px;
+}
+
+.pinjam-info small{
+    font-size:12px;
+    color:#6b7280;
+}
+
+.pinjam-info p{
+    font-size:12px;
+    color:#4b5563;
+    margin:6px 0;
+}
+
+.pinjam-info button{
+    background:#2563eb;
+    color:#fff;
+    border:none;
+    padding:6px 14px;
+    border-radius:8px;
+    font-size:12px;
+    cursor:pointer;
+}
+
+
+/* BOTTOM SECTION */
+.bottom-section{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:18px;
+    margin-top:18px;
+}
+.section-title{
+    font-size:16px;
+    font-weight:600;
+    margin-bottom:14px;
+    color:#111827;
+    text-align:center;   /* INI KUNCINYA */
+}
+
+
+/* PINJAM BUKU */
+.pinjam-card .book-item{
+    display:flex;
+    gap:14px;
+    background:#f4f6fb;
+    padding:14px;
+    border-radius:12px;
+    margin-bottom:12px;
+}
+
+.book-item img{
+    width:60px;
+    height:auto;
+}
+
+.book-item h5{
+    font-size:14px;
+    margin-bottom:4px;
+}
+
+.book-item p{
+    font-size:12px;
+    color:#6b7280;
+    margin-bottom:6px;
+}
+
+.book-item button{
+    background:#2563eb;
+    color:#fff;
+    border:none;
+    padding:6px 14px;
+    font-size:12px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+/* ===============================
+   PINJAM BUKU CARD (DETAIL)
+=============================== */
+
+.pinjam-card-item{
+    display:flex;
+    gap:18px;
+    background:#fff;
+    border-radius:14px;
+    padding:18px;
+    box-shadow:0 8px 18px rgba(0,0,0,.08);
+}
+
+/* COVER */
+.book-cover img{
+    width:110px;
+    border-radius:10px;
+    object-fit:cover;
+}
+
+/* CONTENT */
+.book-content{
+    display:flex;
+    flex-direction:column;
+}
+
+.book-content h5{
+    font-size:16px;
+    font-weight:600;
+    margin-bottom:4px;
+}
+
+.book-content small{
+    font-size:12px;
+    color:#6b7280;
+    margin-bottom:6px;
+}
+
+/* META */
+.book-meta{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    margin-bottom:8px;
+}
+
+.badge-genre{
+    background:#e0e7ff;
+    color:#2563eb;
+    font-size:11px;
+    padding:4px 10px;
+    border-radius:999px;
+    font-weight:500;
+}
+
+.meta-item{
+    font-size:12px;
+    color:#374151;
+    display:flex;
+    align-items:center;
+    gap:4px;
+}
+
+/* DESC */
+.book-content p{
+    font-size:12px;
+    color:#4b5563;
+    line-height:1.5;
+    margin-bottom:12px;
+}
+
+/* BUTTON */
+.btn-pinjam{
+    align-self:flex-start;
+    background:#2563eb;
+    color:#fff;
+    border:none;
+    padding:7px 18px;
+    border-radius:999px;
+    font-size:12px;
+    cursor:pointer;
+}
+
+.btn-pinjam:hover{
+    background:#1e40af;
+}
+
+@media(max-width:768px){
+    .pinjam-card-item{
+        flex-direction:column;
+        align-items:center;
+        text-align:center;
+    }
+
+    .btn-pinjam{
+        align-self:center;
+    }
+}
+
+/* ===============================
+   TOTAL BUKU HILANG
+=============================== */
+
+/* ===============================
+   TOTAL BUKU HILANG - IMPROVED
+=============================== */
+
+.lost-card{
+    background:linear-gradient(180deg, #ffffff, #f8fafc);
+    border-radius:16px;
+    padding:0;
+    overflow:hidden;
+    box-shadow:0 12px 28px rgba(0,0,0,.1);
+    border:1px solid #e5e7eb;
+}
+
+/* HEADER */
+.lost-header{
+    background:linear-gradient(135deg, #360bf5, #fbbf24);
+    text-align:center;
+    padding:20px 12px;
+    color:#fff;
+}
+
+.lost-header h4{
+    font-size:15px;
+    font-weight:600;
+    margin-bottom:10px;
+}
+
+/* ICON */
+.lost-icon{
+    font-size:44px;
+}
+
+.lost-icon i{
+    color:#fff;
+    filter:drop-shadow(0 6px 10px rgba(0,0,0,.25));
+}
+
+/* BODY */
+.lost-body{
+    padding:16px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+/* ITEM */
+.lost-item{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    background:#fff;
+    padding:12px;
+    border-radius:12px;
+    font-size:14px;
+    font-weight:500;
+    box-shadow:0 6px 14px rgba(0,0,0,.08);
+}
+
+/* STATUS */
+.lost-item.danger{
+    color:#dc2626;
+}
+
+.lost-item.warning{
+    color:#d97706;
+}
+
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+    .bottom-section{
+        grid-template-columns:1fr;
+    }
+}
+
+/* ===============================
+   PINJAM BUKU - CARD STYLE
+=============================== */
+
+.pinjam-card{
+    background:#fff;
+    border-radius:14px;
+    padding:18px;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+
+.section-title{
+    font-size:16px;
+    font-weight:600;
+    margin-bottom:14px;
+    color:#111827;
+}
+
+/* GRID */
+.pinjam-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+}
+
+/* CARD ITEM */
+.pinjam-card-item{
+    display:flex;
+    gap:14px;
+    background:#f9fafb;
+    border-radius:12px;
+    padding:14px;
+    align-items:flex-start;
+}
+
+/* COVER */
+.pinjam-card-item img{
+    width:85px;
+    height:auto;
+    border-radius:8px;
+    object-fit:cover;
+}
+
+/* CONTENT */
+.pinjam-content h5{
+    font-size:15px;
+    font-weight:600;
+    margin-bottom:4px;
+}
+
+.pinjam-content small{
+    font-size:12px;
+    color:#6b7280;
+}
+
+.pinjam-content p{
+    font-size:12px;
+    color:#4b5563;
+    margin:8px 0 10px;
+    line-height:1.4;
+}
+
+/* BUTTON */
+.btn-pinjam{
+    background:#2563eb;
+    color:#fff;
+    border:none;
+    padding:6px 14px;
+    border-radius:8px;
+    font-size:12px;
+    cursor:pointer;
+}
+
+.btn-pinjam:hover{
+    background:#1e40af;
+}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+    .pinjam-grid{
+        grid-template-columns:1fr;
+    }
+}
