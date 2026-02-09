@@ -404,3 +404,12 @@ Route::get('/edit-foto-profil', function () {
 Route::get('/cetak-transaksi', function () {
     return view('cetak.cetak-transaksi');
 });
+
+Route::get('/cetak-daftar-pengunjung', function () {
+    return view('cetak.cetak-daftar-pengunjung');
+});
+
+Route::get('/dashboard-admin', function () {
+    return view('admin.dashboard_admin');
+});
+
