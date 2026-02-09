@@ -32,7 +32,7 @@
             </a>
         </li>
 
-        <li class="{{ request()->is('transaksi*') ? '' : '' }}">
+        <li class="{{ request()->is('transactions*') ? '' : '' }}">
             <a href="/transactions">
                 <i class="fa fa-right-left"></i> Transaksi
             </a>
@@ -48,7 +48,7 @@
             <a href="/laporan_kehilangan">
                 <i class="fa fa-file"></i> Laporan Kehilangan
             </a>
-        </li>*
+        </li>
     </ul>
 </aside>
 

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BookshelfController;
@@ -48,6 +49,9 @@ Route::get('/kelola_anggota-ditolak', function () {
 Route::get('/laporan_data_kehilangan', function () {
     return view('admin.laporan_data_kehilangan');
 });
+
+Route::get('/profile_admin', [ProfileController::class, 'show'])
+        ->name('profile.show');
 
 /*
 |--------------------------------------------------------------------------
