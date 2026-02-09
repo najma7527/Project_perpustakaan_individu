@@ -6,7 +6,7 @@
     <title>Registrasi Berhasil</title>
     
     <!-- Menyesuaikan path CSS dengan asset helper Laravel -->
-    <link rel="stylesheet" href="{{ asset('css/login/auth.css') }}" />
+    <link rel="stylesheet" href="{{ asset('css/auth.css') }}" />
     
     <!-- CSRF Token untuk keamanan -->
     <meta name="csrf-token" content="{{ csrf_token() }}">

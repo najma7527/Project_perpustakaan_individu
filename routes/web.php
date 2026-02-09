@@ -14,14 +14,16 @@ use App\Http\Controllers\LaporanKehilanganController;
 use App\Http\Controllers\SiswaDashboardController;
 use Illuminate\Support\Facades\Auth;
 
-Route::get('/', fn () => redirect()->route('login.show'));
+Route::get('/', function () {
+    return view('landing');
+})->name('home');
 
 
 // ADMIN
 Route::get('/dashboard', action: function () {
     if (Auth::user()?->role !== 'admin') {
     abort(403);
-    }
+    }   
 
     return view('admin.dashboard');
 })->name('dashboard.admin')->middleware('auth');
@@ -373,6 +375,9 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile/photo', [ProfileController::class, 'deletePhoto'])
         ->name('profile.photo.delete');
 
+});
+    Route::get('/Dashboard_Admin', function () {
+    return view('Admin.Dashboard_Admin');
 });
 
 
