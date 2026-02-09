@@ -8,11 +8,13 @@ use App\Models\User;
 use App\Models\Report;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AdminDashboardController extends Controller
 {
     public function index()
     {
+         if (Auth::user()?->role !== 'admin') abort(403);
         // =====================
         // STATISTIK DASHBOARD
         // =====================
@@ -48,7 +50,7 @@ class AdminDashboardController extends Controller
         // KIRIM KE VIEW
         // =====================
 
-        return view('admin.dashboard', compact(
+        return view('admin.dashboard_admin', compact(
             'totalBook',
             'totalBorrow',
             'totalReturn',

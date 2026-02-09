@@ -25,7 +25,7 @@ Route::get('/dashboard', action: function () {
     abort(403);
     }   
 
-    return view('admin.dashboard');
+    return view('admin.dashboard_admin');
 })->name('dashboard.admin')->middleware('auth');
 
 
@@ -84,18 +84,7 @@ Route::get('/transaksi', function () {
 Route::get('/dashboard-anggota', [SiswaDashboardController::class, 'index'])
     ->name('dashboard.anggota')
     ->middleware('auth');
-Route::get('/kehilangan-buku', function () {
-    if (Auth::user()?->role !== 'anggota') {
-        abort(403);
-    }
 
-    return 'Halaman Kehilangan Buku (anggota)';
-})->middleware('auth');
-
-
-Route::get('/laporan_kehilangan', function () {
-    return view('siswa.laporan_kehilangan');
-});
 
 
 
@@ -251,6 +240,8 @@ Route::middleware('auth')->group(function () {
     
     // Cari buku
     Route::get('/books/search/results', [BookController::class, 'search'])->name('books.search');
+
+    Route::get('/pinjam-buku', [BookController::class, 'browse'])->name('books.browse');
 });
 
 /*
