@@ -25,7 +25,10 @@ class BookController extends Controller
     {
         if (Auth::user()?->role !== 'admin') abort(403);
         $rows = Row::all();
-        return view('books.create', compact('rows'));
+        return view('admin.CRUD_kelola_buku', [
+         'book' => null,
+         'rows' => $rows
+]);
     }
 
 
@@ -67,7 +70,10 @@ if ($request->hasFile('cover')) {
     {
         if (Auth::user()?->role !== 'admin') abort(403);
         $rows = Row::all();
-        return view('books.edit', compact('book','rows'));
+        return view('admin.CRUD_kelola_buku', [
+            'book' => $book,
+            'rows' => $rows
+        ]);
     }
 
     public function update(Request $request, Book $book)
