@@ -52,10 +52,12 @@
                         <i class="fa fa-search"></i>
                         <input type="text" name="search" value="{{ $search }}" placeholder="Cari sesuatu...">
                     </div>
+                    @if($tab == 'verifikasi')
                     <div class="date">
                         <i class="fa fa-calendar"></i>
                         <input type="date" name="date" value="{{ $date }}">
                     </div>
+                    @endif
                     <button type="submit" class="btn-filter">
                         <i class="fa fa-sliders"></i>
                     </button>
@@ -148,9 +150,6 @@
                                             <input type="hidden" name="status" value="aktif">
                                             <button type="submit" class="btn-accept"><i class="fa fa-check"></i></button>
                                         </form>
-                                        <button type="button" class="delete" title="Hapus" onclick="confirmDelete('{{ $user->id }}', '{{ addslashes($user->name) }}')">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
                                     @endif
                                 </td>
                             </tr>

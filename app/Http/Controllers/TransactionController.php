@@ -176,20 +176,10 @@ class TransactionController extends Controller
     {
         $user = Auth::user();
         $transactions = Transaction::where('user_id', $user->id)->with('book')->get();
-        return response()->json(['data' => $transactions]);
+        return view('siswa.pengembalian-buku', compact('transactions'));
     }
 
-    public function search()
-    {
-        $user = Auth::user();
-        $transactions = Transaction::where('user_id', $user->id)
-            ->where('tanggal_peminjaman', 'like', '%' . request('q') . '%')
-            ->where('tanggal_pengembalian', 'like', '%' . request('q') . '%')
-            ->where('tanggal_jatuh_tempo', 'like', '%' . request('q') . '%')
-            ->with('book')
-            ->get();
-        return response()->json(['data' => $transactions]);
-    }
+
 
     public function perpanjang($id)
 {

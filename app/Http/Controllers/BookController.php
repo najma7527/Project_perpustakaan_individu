@@ -25,7 +25,10 @@ class BookController extends Controller
     {
         if (Auth::user()?->role !== 'admin') abort(403);
         $rows = Row::all();
-        return view('books.create', compact('rows'));
+        return view('admin.CRUD_kelola_buku', [
+         'book' => null,
+         'rows' => $rows
+]);
     }
 
 
@@ -67,7 +70,10 @@ if ($request->hasFile('cover')) {
     {
         if (Auth::user()?->role !== 'admin') abort(403);
         $rows = Row::all();
-        return view('books.edit', compact('book','rows'));
+        return view('admin.CRUD_kelola_buku', [
+            'book' => $book,
+            'rows' => $rows
+        ]);
     }
 
     public function update(Request $request, Book $book)
@@ -104,31 +110,11 @@ if ($request->hasFile('cover')) {
                          ->with('success', 'Buku berhasil dihapus');
     }
 
-    public function search(Request $request)
+    public function browse()
     {
-        if (Auth::user()?->role !== 'admin') abort(403);
+        if (Auth::user()?->role !== 'anggota') abort(403);
+        $books = Book::where('status', 'tersedia')->with('row')->get();
+        return view('siswa.pinjam-buku', compact('books'));
         
-        $query = $request->query('q');
-        $books = Book::with('row')
-          ->where(function($q) use ($query) {
-        $q->where('judul','like',"%$query%")
-          ->orWhere('pengarang','like',"%$query%")
-          ->orWhere('kode_buku','like',"%$query%");
-    })->get();
-
-        return view('books.index', compact('books'));
     }
-
-        public function filter(Request $request)
-        {
-            if (Auth::user()?->role !== 'admin') abort(403);
-            $books = Book::query();
-            if ($request->filled('kategori_buku')) {
-                $books->where('kategori_buku', 'like', '%' . $request->kategori_buku . '%');
-            }
-            return view('books.index', [
-                'books' => $books->with('row')->get()
-            ]);
-        }
-
-    }
+}

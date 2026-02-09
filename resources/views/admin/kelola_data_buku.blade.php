@@ -27,10 +27,10 @@
                     <input type="text" placeholder="Cari sesuatu...">
                 </div>
                 @auth
-                <button class="btn-add">
+                <a href="{{ route('books.create') }}" class="btn-add">
                     <i class="fa-solid fa-plus"></i>
                     Tambah Data Buku
-                </button>
+                </a>
                 @endauth
             </div>
             
@@ -61,9 +61,9 @@
                         <td>{{ rand(1,8) }}</td>
                         <td class="aksi">
                             @auth
-                            <button class="btn edit">
+                            <a href="{{ route('books.edit', $i) }}" class="btn edit">
                                 <i class="fa-solid fa-pen"></i>
-                            </button>
+                            </a>
       <button class="btn delete" onclick="openModal(this)" data-id="{{ $i }}">
     <i class="fa-solid fa-trash"></i>
 </button>

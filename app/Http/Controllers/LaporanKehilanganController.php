@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Report;
+use Illuminate\Support\Facades\Auth;
 
 class LaporanKehilanganController extends Controller
 {
@@ -19,7 +21,7 @@ class LaporanKehilanganController extends Controller
         ]);
 
     Report::create([
-            'user_id' => auth()->id(),
+            'user_id' => Auth:: id(),
             'book_id' => $request->book_id,
             'keterangan' => $request->keterangan,
             'status' => 'pending'
@@ -32,17 +34,17 @@ class LaporanKehilanganController extends Controller
 
         public function index()
     {
-        $laporan = Report::where('user_id', auth()->id())
+        $laporan = Report::where('user_id', Auth::id())
             ->latest()
             ->get();
 
-        return view('siswa.laporan-kehilangan.index', compact('laporan'));
+        return view('siswa.laporan_kehilangan', compact('laporan'));
     }
 
         public function edit($id)
     {
         $laporan = Report::where('id', $id)
-            ->where('user_id', auth()->id())
+            ->where('user_id', Auth::id())
             ->firstOrFail();
 
         return view('siswa.laporan-kehilangan.edit', compact('laporan'));
@@ -55,7 +57,7 @@ class LaporanKehilanganController extends Controller
         ]);
 
         $laporan = Report::where('id', $id)
-            ->where('user_id', auth()->id())
+            ->where('user_id', Auth::id())
             ->firstOrFail();
 
         if ($laporan->status !== 'pending') {

@@ -2,37 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Transaksi;
-use App\Models\Kunjungan;
-use App\Models\LaporanKehilangan;
+use App\Models\Transaction;
+use App\Models\Visit;
+use App\Models\Report;
 use Carbon\Carbon;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SiswaDashboardController extends Controller
 {
-     public function index()
+    public function index()
     {
-        $userId = auth()->id();
+        if (Auth::user()?->role !== 'anggota') abort(403);
+
+        $userId = Auth::id();
 
         /* =======================
          * RINGKASAN DATA
          * ======================= */
 
         // Total buku yang sedang dipinjam siswa
-        $totalDipinjam = Transaksi::where('user_id', $userId)
+        $totalDipinjam = Transaction::where('user_id', $userId)
             ->where('status', 'dipinjam')
             ->count();
 
         // Total buku terlambat
-        $totalTerlambat = Transaksi::where('user_id', $userId)
+        $totalTerlambat = Transaction::where('user_id', $userId)
             ->where('status', 'dipinjam')
-            ->whereDate('tanggal_kembali', '<', Carbon::today())
+            ->whereDate('tanggal_pengembalian', '<', Carbon::today())
             ->count();
 
         // Status kunjungan hari ini
-        $kunjunganHariIni = Kunjungan::where('user_id', $userId)
-            ->whereDate('tanggal_kunjungan', Carbon::today())
+        $kunjunganHariIni = Visit::where('user_id', $userId)
+            ->whereDate('tanggal_datang', Carbon::today())
             ->exists();
 
         /* =======================
@@ -40,13 +43,13 @@ class SiswaDashboardController extends Controller
          * ======================= */
 
         // Riwayat peminjaman terakhir
-        $riwayatPeminjaman = Transaksi::where('user_id', $userId)
+        $riwayatPeminjaman = Transaction::where('user_id', $userId)
             ->latest()
             ->take(5)
             ->get();
 
         // Laporan kehilangan terbaru
-        $laporanKehilanganTerbaru = LaporanKehilangan::where('user_id', $userId)
+        $laporanKehilanganTerbaru = Report::where('user_id', $userId)
             ->latest()
             ->take(5)
             ->get();
@@ -55,7 +58,7 @@ class SiswaDashboardController extends Controller
          * KIRIM KE VIEW
          * ======================= */
 
-        return view('siswa.dashboard', compact(
+        return view('siswa.dashboard-siswa', compact(
             'totalDipinjam',
             'totalTerlambat',
             'kunjunganHariIni',
