@@ -11,12 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('report', function (Blueprint $table) {
+        Schema::create('reports', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('transactions_id')->constrained('transactions')->onDelete('cascade');
             $table->date('tanggal_ganti')->nullable();
-            $table->enum('status', ['menunggu','sudah_dikembalikan', 'belum_dikembalikan']);
+            $table->enum('jenis_transaksi', ['dipinjam', 'dikembalikan']);
+            $table->enum('status', [
+                'buku_hilang',
+                'sudah_dikembalikan',
+                'belum_dikembalikan'
+                ])->default('belum_dikembalikan');
             $table->string('keterangan');
             $table->timestamps();
         });

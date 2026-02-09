@@ -38,20 +38,6 @@ class Transaction extends Model
         return $this->belongsTo(Book::class, 'buku_id');
     }
 
-    public function ajukanPengembalian($id)
-    {
-        $transaction = Transaction::where('id', $id)
-            ->where('user_id', Auth::id())
-            ->where('status', 'belum_dikembalikan')
-            ->firstOnFail();
-
-        $transaction->update([
-            'status' => 'menunggu',
-        ]);
-
-        return back()->with('success', 'Menunggu persetujuan admin');
-    }
-
     public function reports()
     {
         return $this->hasOne(Report::class, 'transactions_id');

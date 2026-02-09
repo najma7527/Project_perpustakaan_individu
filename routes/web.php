@@ -258,7 +258,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/transactions/create', [TransactionController::class, 'create'])->name('transactions.create');
     
     // Simpan peminjaman baru
-    Route::post('/transactions', [TransactionController::class, 'store'])->name('transactions.store');
+    Route::post('/books/{book}/pinjam', [TransactionController::class, 'pinjam'])->name('books.pinjam');
     
     // Detail peminjaman
     Route::get('/transactions/{transaction}', [TransactionController::class, 'show'])->name('transactions.show');
