@@ -12,20 +12,45 @@
 
 <div class="wrapper">
 
-    <!-- SIDEBAR -->
+     <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="logo">
-            <img src="{{ asset('img/logo.png') }}">
+            <img src="{{ asset('img/logo.png') }}" alt="Logo">
         </div>
 
         <ul class="menu">
-            <li><a href="/dashboard-siswa"><i class="fa fa-home"></i> Dashboard</a></li>
-            <li><a href="/pinjam-buku"><i class="fa fa-book"></i> Pinjam Buku</a></li>
-            <li><a href="/pengembalian-buku"><i class="fa fa-rotate-left"></i> Kembalikan Buku</a></li>
-            <li><a href="/laporan_kehilangan"><i class="fa fa-file"></i> Laporan Kehilangan</a></li>
+            <li class="{{ request()->is('kelola_data_buku*') ? '' : '' }}">
+                <a href="/kelola_data_buku">
+                    <i class="fa fa-book"></i> Kelola Data Buku
+                </a>
+            </li>
+
+            <li class="{{ request()->is('kelola_anggota*') ? '' : '' }}">
+                <a href="/kelola_anggota">
+                    <i class="fa fa-users"></i> Kelola Anggota
+                </a>
+            </li>
+
+            <li class="{{ request()->is('transaksi*') ? '' : '' }}">
+                <a href="/transaksi">
+                    <i class="fa fa-right-left"></i> Transaksi
+                </a>
+            </li>
+
+        <li class="{{ request()->is('daftar_pengunjung') ? '' : '' }}">
+        <a href="/daftar_pengunjung">
+            <i class="fa fa-list"></i> Daftar Pengunjung
+        </a>
+    </li>
+
+
+            <li class="{{ request()->is('laporan_kehilangan*') ? '' : '' }}">
+                <a href="/laporan_kehilangan">
+                    <i class="fa fa-file"></i> Laporan Kehilangan
+                </a>
+            </li>
         </ul>
     </aside>
-
     <!-- MAIN -->
     <main class="main-content">
 
@@ -63,7 +88,7 @@
             <span class="up">↑ 12% dari bulan lalu</span>
         </div>
         <div class="stat-icon">
-            <i class="fa fa-book"></i>
+             <i class="fa fa-users"></i>
         </div>
     </div>
 
@@ -74,7 +99,7 @@
             <span class="up">↑ 8% dari bulan lalu</span>
         </div>
         <div class="stat-icon">
-            <i class="fa fa-users"></i>
+               <i class="fa fa-book"></i>
         </div>
     </div>
 
