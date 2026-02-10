@@ -1,43 +1,16 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboard Perpustakaan</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+@extends('layouts.app')
+@section('title', 'Dashboard Siswa')
+@push('styles')
+<link rel="stylesheet" href="{{ asset('css/siswa/dashboard-siswa.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+@endpush    
+@section('content')
+<!-- 
+<div class="wrapper"> -->
 
-    <link rel="stylesheet" href="{{ asset('css/siswa/dashboard-siswa.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
-
-<div class="wrapper">
-
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-        <div class="logo">
-            <img src="{{ asset('img/logo.png') }}">
-        </div>
-
-        <ul class="menu">
-            <li><a href="/dashboard-siswa"><i class="fa fa-home"></i> Dashboard</a></li>
-            <li><a href="/pinjam-buku"><i class="fa fa-book"></i> Pinjam Buku</a></li>
-            <li><a href="/pengembalian-buku"><i class="fa fa-rotate-left"></i> Kembalikan Buku</a></li>
-            <li><a href="/laporan_kehilangan"><i class="fa fa-file"></i> Laporan Kehilangan</a></li>
-        </ul>
-    </aside>
 
     <!-- MAIN -->
     <main class="main-content">
-
-      <!-- TOPBAR -->
-    <header class="topbar">
-        <i class="fa fa-bars"></i>
-        <div class="user">
-            <span>Seulgi</span>
-            <small>Admin</small>
-            <img src="{{ asset('img/user.png') }}">
-        </div>
-    </header>
 
           <!-- HEADER CARD -->
     <div class="header-card">
@@ -104,7 +77,7 @@
 
 
         <!-- CONTENT -->
-        <section class="content">
+        <section class="dashboard-content">
             <div class="card visitor-card">
         <h4 class="card-title">
             <i class="fa fa-users"></i>list Pengunjung
@@ -196,5 +169,4 @@
     </main>
 </div>
 
-</body>
-</html>
+@endsection

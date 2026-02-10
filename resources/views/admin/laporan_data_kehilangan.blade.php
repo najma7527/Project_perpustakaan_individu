@@ -62,14 +62,32 @@
                         <td>X TP 2</td>
                         <td>20/01/2026</td>
                         <td>20/01/2026</td>
+                        @php
+                            if ($i % 3 == 0) {
+                                $status = 'Menunggu konfirmasi';
+                                $statusClass = 'status-yellow';
+                            } elseif ($i % 2) {
+                                $status = 'Belum dikembalikan';
+                                $statusClass = 'status-red';
+                            } else {
+                                $status = 'Sudah dikembalikan';
+                                $statusClass = 'status-green';
+                            }
+                        @endphp
                         <td>
-                            <span class="{{ $i % 2 ? 'status-red' : 'status-green' }}">
-                                {{ $i % 2 ? 'Belum dikembalikan' : 'Sudah dikembalikan' }}
+                            <span class="{{ $statusClass }}">
+                                {{ $status }}
                             </span>
                         </td>
                         <td class="aksi">
-                            <button class="btn ok"><i class="fa fa-check"></i></button>
-                            <button class="btn del"><i class="fa fa-xmark"></i></button>
+                            <td class="aksi">
+    @if($status === 'Menunggu konfirmasi')
+        <button class="btn ok"><i class="fa fa-check"></i></button>
+        <button class="btn del"><i class="fa fa-xmark"></i></button>
+    @else
+        <span class="no-action">-</span>
+    @endif
+</td>
                         </td>
                     </tr>
                     @endfor

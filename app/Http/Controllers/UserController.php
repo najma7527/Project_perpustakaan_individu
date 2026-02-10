@@ -141,9 +141,14 @@ if ($tab == 'verifikasi') {
     public function destroy($id)
     {
         if (Auth::user()?->role !== 'admin') abort(403);
-        $user = User::findOrFail($id);
-        $user->delete();
+        
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();
 
-        return redirect()->back()->with('success', 'Anggota berhasil dihapus.');
+            return redirect()->back()->with('success', 'Anggota berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menghapus anggota: ' . $e->getMessage());
+        }
     }
 }

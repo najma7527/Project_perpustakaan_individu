@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Auth;
 
 class Transaction extends Model
 {
@@ -35,20 +36,6 @@ class Transaction extends Model
     public function book()
     {
         return $this->belongsTo(Book::class, 'buku_id');
-    }
-
-    public function ajukanPengembalian($id)
-    {
-        $transaction = Transaction::where('id', $id)
-            ->where('user_id', Auth::id())
-            ->where('status', 'belum_dikembalikan')
-            ->firstOnFail();
-
-        $transaction->update([
-            'status' => 'menunggu',
-        ]);
-
-        return back()->with('success', 'Menunggu persetujuan admin');
     }
 
     public function reports()

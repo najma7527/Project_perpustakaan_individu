@@ -1,44 +1,14 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Laporan Kehilangan Buku</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+@extends('layouts.app')
 
-    <link rel="stylesheet" href="{{ asset('css/siswa/laporan_kehilangan.css') }}">
+
+@section('title', 'Daftar Pengunjung')
+
+@push('styles')
+<link rel="stylesheet" href="{{ asset('css/siswa/laporan_kehilangan.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
+@endpush
 
-<div class="layout">
-
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-        <div class="logo">
-            <img src="{{ asset('img/logo.png') }}">
-        </div>
-
-        <ul class="menu">
-            <li><a href="#"><i class="fa fa-book"></i> Pinjam Buku</a></li>
-            <li><a href="#"><i class="fa fa-rotate-left"></i> Kembalikan Buku</a></li>
-            <li class="active"><a href="#"><i class="fa fa-file"></i> Laporan Kehilangan</a></li>
-        </ul>
-    </aside>
-
-    <!-- MAIN -->
-    <main class="main-content">
-
-        <!-- TOPBAR -->
-        <header class="topbar">
-            <i class="fa fa-bars"></i>
-            <div class="user">
-                <span>Seulgi</span>
-                <img src="{{ asset('images/avatar.png') }}">
-            </div>
-        </header>
-
-        <!-- CONTENT -->
-        <section class="content">
+@section('content')
 
             <!-- HEADER -->
             <div class="header-card">
@@ -95,15 +65,29 @@
                             <td>maaf buku hilang pada saat ekstra musik</td>
                             <td>20/01/2026</td>
                             <td>20/01/2026</td>
+                            @php
+                                if ($i % 3 == 0) {
+                                    $status = 'Menunggu konfirmasi';
+                                    $statusClass = 'status-yellow';
+                                } elseif ($i % 2) {
+                                    $status = 'Belum dikembalikan';
+                                    $statusClass = 'status-red';
+                                } else {
+                                    $status = 'Sudah dikembalikan';
+                                    $statusClass = 'status-green';
+                                }
+                            @endphp
                             <td>
-                                <span class="{{ $i % 2 ? 'status-red' : 'status-green' }}">
-                                    {{ $i % 2 ? 'Belum dikembalikan' : 'Sudah dikembalikan' }}
-                                </span>
+                                <span class="{{ $statusClass }}">{{ $status }}</span>
                             </td>
                             <td>
-                                <button class="btn-pengembalian">
-                                    <i class="fa fa-rotate-left"></i>
-                                </button>
+                                @if($status === 'Belum dikembalikan')
+                                    <button class="btn-pengembalian">
+                                        <i class="fa fa-rotate-left"></i>
+                                    </button>
+                                @else
+                                    <span class="no-action">-</span>
+                                @endif
                             </td>
                         </tr>
                         @endfor
@@ -141,6 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.querySelectorAll('.btn-pengembalian').forEach(btn => {
         btn.addEventListener('click', function () {
+            // status span is in the 6th cell
             currentStatus = this.closest('tr').querySelector('td:nth-child(6) span');
             document.getElementById('modalPengembalian').style.display = 'flex';
         });
@@ -161,6 +146,4 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-
-</body>
-</html>
+@endsection

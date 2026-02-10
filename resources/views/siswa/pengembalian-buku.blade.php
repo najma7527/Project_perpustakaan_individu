@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pengembalian Buku</title>
-
+@extends('layouts.app')
+@section('title', 'Pengembalian Buku')
+@push('styles')
     {{-- Bootstrap --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
@@ -12,35 +8,8 @@
     {{-- CSS --}}
     <link rel="stylesheet" href="{{ asset('css/siswa/pengembalian-buku.css') }}">
        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
-
-<div class="app">
-
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-        <div class="logo">
-            <img src="{{ asset('img/logo.png') }}">
-        </div>
-
-        <ul class="menu">
-            <li><a href="/pinjam-buku"><i class="fa fa-book"></i> Pinjam Buku</a></li>
-            <li><a href="/pengembalian-buku"><i class="fa fa-rotate-left"></i> Kembalikan Buku</a></li>
-            <li><a href="/laporan_kehilangan"><i class="fa fa-file"></i> Laporan Kehilangan</a></li>
-        </ul>
-    </aside>
-
-    {{-- MAIN --}}
-    <main class="main">
-
-        {{-- TOPBAR --}}
-        <div class="topbar">
-            <i class="bi bi-list fs-4"></i>
-            <div class="user">
-                <span>Seulgi</span>
-                <img src="https://i.pravatar.cc/40">
-            </div>
-        </div>
+@endpush  
+@section('content')
 
         {{-- HEADER --}}
         <div class="header-card">
@@ -257,5 +226,4 @@
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+@endsection
