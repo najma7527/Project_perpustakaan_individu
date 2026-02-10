@@ -19,7 +19,7 @@
         </div>
 
         <ul class="menu">
-            <li><a href="/dashboard-siswa"><i class="fa fa-home"></i> Dashboard</a></li>
+            <li><a href="/dashboard-admin"><i class="fa fa-home"></i> Dashboard</a></li>
             <li><a href="/pinjam-buku"><i class="fa fa-book"></i> Pinjam Buku</a></li>
             <li><a href="/pengembalian-buku"><i class="fa fa-rotate-left"></i> Kembalikan Buku</a></li>
             <li><a href="/laporan_kehilangan"><i class="fa fa-file"></i> Laporan Kehilangan</a></li>
