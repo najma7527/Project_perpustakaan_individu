@@ -19,14 +19,21 @@ class TransactionController extends Controller
 
    public function index(Request $request)
 {
-    $mode = $request->get('mode', 'peminjaman');
-
-    if (Auth::user()->role !== 'admin') {
+    if (Auth::user()?->role !== 'admin') {
         abort(403);
     }
 
-    $transactions = Transaction::with(['user', 'book'])->get();
+    $mode = $request->get('mode', 'peminjaman');
 
+    $transactions = Transaction::with(['user','book'])
+        ->when($mode === 'peminjaman', function($q){
+            $q->where('jenis_transaksi','dipinjam');
+        })
+        ->when($mode === 'pengembalian', function($q){
+            $q->where('jenis_transaksi','dikembalikan'); 
+        })
+        ->latest()
+        ->get();
 
     return view('admin.transaksi', compact('transactions','mode'));
 }

@@ -18,31 +18,35 @@ class ReportController extends Controller
      * Tampilkan daftar laporan data hilang (Admin)
      */
     public function index(Request $request)
-    {
-        if (Auth::user()?->role !== 'admin') abort(403);
+{
+    if (Auth::user()?->role !== 'admin') abort(403);
 
-        $query = Report::with(['transaction.user', 'transaction.book', 'user']);
+    $query = Report::with(['transaction.user', 'transaction.book', 'user']);
 
-        // Filter berdasarkan status
-        if ($request->has('status') && $request->status !== '') {
-            $query->where('status', $request->status);
-        }
-
-        // Search berdasarkan nama user atau judul buku
-        if ($request->has('search') && $request->search !== '') {
-            $search = $request->search;
-            $query->whereHas('transaction.user', function ($q) use ($search) {
-                $q->where('nama', 'like', "%$search%");
-            })->orWhereHas('transaction.book', function ($q) use ($search) {
-                $q->where('judul', 'like', "%$search%");
-            });
-        }
-
-        $reports = $query->latest()->paginate(10);
-        $statuses = ['buku_hilang', 'sudah_dikembalikan', 'belum_dikembalikan'];
-
-        return view('admin.laporan_data_kehilangan', compact('reports', 'statuses'));
+    // Filter status
+    if ($request->status !== null && $request->status !== '') {
+        $query->where('status', $request->status);
     }
+
+    // Search
+    if ($request->search) {
+        $search = $request->search;
+
+        $query->where(function($q) use ($search) {
+            $q->whereHas('transaction.user', function ($qq) use ($search) {
+                $qq->where('nama', 'like', "%$search%");
+            })
+            ->orWhereHas('transaction.book', function ($qq) use ($search) {
+                $qq->where('judul', 'like', "%$search%");
+            });
+        });
+    }
+
+    $reports = $query->latest()->paginate(10);
+    $statuses = ['buku_hilang', 'sudah_dikembalikan', 'belum_dikembalikan'];
+
+    return view('admin.laporan_data_kehilangan', compact('reports', 'statuses'));
+}
 
     /**
      * Tampilkan form buat laporan (API)

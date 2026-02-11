@@ -10,6 +10,8 @@ use App\Models\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use function Symfony\Component\Clock\now;
+
 class AdminDashboardController extends Controller
 {
     public function index()
@@ -31,19 +33,23 @@ class AdminDashboardController extends Controller
         // Total pengunjung
         $totalVisit = Visit::count();
 
+        //Total Buku Hilang
+        $totalLostBooks = Report::where('status', 'buku_hilang')->count();
+
 
         // =====================
         // LIST DATA DASHBOARD
         // =====================
 
         // Pengunjung hari ini
-        $todayVisit = Visit::whereDate('created_at', now())->get();
+        $todayVisit = Visit::whereDate('tanggal_datang', now())->take(5)->get();
 
-        // User menunggu approve (misal role siswa)
-        $pendingUser = User::where('status', 'pending')->get();
 
         // Laporan kehilangan terbaru
-        $latestReport = Report::latest()->take(5)->get();
+         $latestReport = Report::with(['transaction.user', 'transaction.book', 'user'])
+        ->latest()
+        ->take(5)
+        ->get();
 
 
         // =====================
@@ -51,13 +57,13 @@ class AdminDashboardController extends Controller
         // =====================
 
         return view('admin.dashboard_admin', compact(
-            'totalBook',
-            'totalBorrow',
-            'totalReturn',
-            'totalVisit',
-            'todayVisit',
-            'pendingUser',
-            'latestReport'
-        ));
+        'totalBook',
+        'totalBorrow',
+        'totalReturn',
+        'totalVisit',
+        'totalLostBooks',
+        'todayVisit',
+        'latestReport'
+    ));
     }     
 }
