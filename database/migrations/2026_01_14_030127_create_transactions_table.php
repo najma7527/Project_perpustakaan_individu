@@ -19,7 +19,7 @@ return new class extends Migration
             $table->date('tanggal_jatuh_tempo');
             $table->date('tanggal_pengembalian')->nullable();
             $table->enum('jenis_transaksi', ['dipinjam', 'dikembalikan']);
-            $table->enum('status', ['buku_hilang', 'sudah_dikembalikan', 'belum_dikembalikan']);
+            $table->enum('status', ['buku_hilang', 'sudah_dikembalikan', 'belum_dikembalikan', 'menunggu_konfirmasi']);
             $table->timestamps();
         });
     }

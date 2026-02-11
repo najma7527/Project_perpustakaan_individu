@@ -83,18 +83,22 @@
 @forelse($transactions as $trx)
 <tr>
     <td>{{ $loop->iteration }}</td>
-    <td>{{ $trx->user->nama ?? '-' }}</td>
+    <td>{{ $trx->user->name ?? '-' }}</td>
     <td>{{ $trx->book->judul ?? '-' }}</td>
     <td>{{ $trx->user->kelas ?? '-' }}</td>
-    <td>{{ optional($trx->tanggal_pinjam)->format('d/m/Y') }}</td>
-    <td>{{ optional($trx->jatuh_tempo)->format('d/m/Y') }}</td>
+    <td>{{ optional($trx->tanggal_peminjaman)->format('d/m/Y') }}</td>
+    <td>{{ optional($trx->tanggal_jatuh_tempo)->format('d/m/Y') }}</td>
     <td>
-        @if($trx->status == 'dikembalikan')
-            <span class="status danger">Belum dikembalikan</span>
-        @else
-            <span class="status warning">buku hilang</span>
-        @endif
-    </td>
+@if($trx->status == 'belum_dikembalikan')
+    <span class="status danger">Belum Dikembalikan</span>
+
+@elseif($trx->status == 'buku_hilang')
+    <span class="status warning">Buku Hilang</span>
+
+@elseif($trx->status == 'sudah_dikembalikan')
+    <span class="status success">Sudah Dikembalikan</span>
+@endif
+</td>
 </tr>
 @empty
 <tr>
@@ -133,9 +137,14 @@
     <td>{{ optional($trx->tanggal_pinjam)->format('d/m/Y') }}</td>
     <td>{{ optional($trx->jatuh_tempo)->format('d/m/Y') }}</td>
     <td class="aksi">
-        <span class="btn-green btn-approve" data-nama="{{ $trx->user->nama }}">✔</span>
-        <span class="btn-red btn-reject" data-nama="{{ $trx->user->nama }}">✖</span>
-    </td>
+@if($trx->status == 'menunggu_konfirmasi')
+    <span class="btn-green btn-approve" data-nama="{{ $trx->user->nama }}">✔</span>
+    <span class="btn-red btn-reject" data-nama="{{ $trx->user->nama }}">✖</span>
+
+@elseif($trx->status == 'sudah_dikembalikan')
+    <span class="status success">Selesai</span>
+@endif
+</td>
 </tr>
 @empty
 <tr>
