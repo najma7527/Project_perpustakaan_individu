@@ -14,14 +14,16 @@ use App\Http\Controllers\LaporanKehilanganController;
 use App\Http\Controllers\SiswaDashboardController;
 use Illuminate\Support\Facades\Auth;
 
-Route::get('/', fn () => redirect()->route('login.show'));
+Route::get('/', function () {
+    return view('landing');
+})->name('home');
 
 
 // ADMIN
 Route::get('/dashboard', action: function () {
     if (Auth::user()?->role !== 'admin') {
     abort(403);
-    }
+    }   
 
     return view('admin.dashboard');
 })->name('dashboard.admin')->middleware('auth');
@@ -374,6 +376,9 @@ Route::middleware(['auth'])->group(function () {
         ->name('profile.photo.delete');
 
 });
+    Route::get('/Dashboard_Admin', function () {
+    return view('Admin.Dashboard_Admin');
+});
 
 
 Route::get('/cetak-peminjaman', function () {
@@ -404,3 +409,7 @@ Route::get('/edit-foto-profil', function () {
 Route::get('/cetak-transaksi', function () {
     return view('cetak.cetak-transaksi');
 });
+Route::get('/dashboard-admin', function () {
+    return view('admin.dashboard_admin');
+});
+

@@ -150,32 +150,9 @@ window.addEventListener('click', function(event) {
 
 // Confirm Delete dengan custom popup
 function confirmDelete(userId, userName) {
-    const msg = 'Apakah Anda yakin ingin menghapus anggota "' + userName + '"?';
-    if (confirm(msg)) {
-        // Buat form tersembunyi dan submit
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '/admin/anggota/' + userId;
-        
-        // Tambah CSRF token
-        const csrfToken = document.querySelector('meta[name="csrf-token"]');
-        if (csrfToken) {
-            const tokenInput = document.createElement('input');
-            tokenInput.type = 'hidden';
-            tokenInput.name = '_token';
-            tokenInput.value = csrfToken.getAttribute('content');
-            form.appendChild(tokenInput);
-        }
-        
-        // Tambah method DELETE
-        const methodInput = document.createElement('input');
-        methodInput.type = 'hidden';
-        methodInput.name = '_method';
-        methodInput.value = 'DELETE';
-        form.appendChild(methodInput);
-        
-        // Submit form
-        document.body.appendChild(form);
+    if (confirm(`Apakah Anda yakin ingin menghapus anggota "${userName}"?`)) {
+        const form = document.getElementById('deleteForm');
+        form.action = `/admin/anggota/${userId}`;
         form.submit();
     }
 }

@@ -335,5 +335,9 @@
     </div>
 </div>
 @endif
+<form id="deleteForm" method="POST" style="display:none;">
+    @csrf
+    @method('DELETE')
+</form>
 <script src="{{ asset('js/kelola_anggota.js') }}"></script>
 @endsection
