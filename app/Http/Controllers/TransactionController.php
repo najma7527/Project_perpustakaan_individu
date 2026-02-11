@@ -16,15 +16,26 @@ class TransactionController extends Controller
         $this->middleware('auth');
     }
 
-    public function index(Request $request)
+
+   public function index(Request $request)
 {
-    if (Auth::user()->role !== 'admin') {
+    if (Auth::user()?->role !== 'admin') {
         abort(403);
     }
 
-    $transactions = Transaction::with(['user', 'book'])->get();
+    $mode = $request->get('mode', 'peminjaman');
 
-    return view('admin.transaksi', compact('transactions'));
+    $transactions = Transaction::with(['user','book'])
+        ->when($mode === 'peminjaman', function($q){
+            $q->whereIn('status', ['buku_hilang','belum_dikembalikan']);
+        })
+        ->when($mode === 'pengembalian', function($q){
+            $q->whereIn('status', ['menunggu_konfirmasi','sudah_dikembalikan']); 
+        })
+        ->latest()
+        ->get();
+
+    return view('admin.transaksi', compact('transactions','mode'));
 }
 
 public function pinjam(Request $request, $bukuId)
@@ -178,16 +189,20 @@ public function pinjam(Request $request, $bukuId)
         // admin or owner can delete
         if (Auth::user()?->role !== 'admin') abort(403);
 
-        if (in_array($transaction->status, ['belum_dikembalikan', 'menunggu'])) {
-        $transaction->book->increment('stok');
-    }
+        try {
+            if (in_array($transaction->status, ['belum_dikembalikan', 'menunggu'])) {
+                $transaction->book->increment('stok');
+            }
 
-
-        // If deleting a dipinjam transaction, restore stock
-        $transaction->delete();
-        
-        return redirect()->route('transactions.index')
-            ->with('success', 'Transaction berhasil dihapus');
+            // If deleting a dipinjam transaction, restore stock
+            $transaction->delete();
+            
+            return redirect()->route('transactions.index')
+                ->with('success', 'Transaction berhasil dihapus');
+        } catch (\Exception $e) {
+            return redirect()->route('transactions.index')
+                ->with('error', 'Gagal menghapus transaksi: ' . $e->getMessage());
+        }
     }
 
     public function myTransactions()

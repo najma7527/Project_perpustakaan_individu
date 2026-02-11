@@ -74,6 +74,29 @@
     </div>
 
 </section>
+<section class="hadir-section">
+
+    <div class="hadir-card">
+        <div class="hadir-left">
+            <div class="hadir-icon">
+                <i class="fa fa-user-check"></i>
+            </div>
+            <div class="hadir-text">
+                <h3>Absensi Kehadiran</h3>
+                <p>Klik tombol hadir untuk menambah anggota aktif hari ini</p>
+            </div>
+        </div>
+
+        <button class="btn-hadir-action" id="btnHadir">
+            <i class="fa fa-check-circle"></i>
+            Hadir Sekarang
+        </button>
+    </div>
+
+</section>
+
+
+
 
 
         <!-- CONTENT -->
@@ -169,4 +192,20 @@
     </main>
 </div>
 
+</body>
+<script>
+    const btnHadir = document.getElementById('btnHadir');
+    const anggotaAktif = document.getElementById('anggotaAktif');
+
+    btnHadir.addEventListener('click', () => {
+        let jumlah = parseInt(anggotaAktif.innerText);
+        anggotaAktif.innerText = jumlah + 1;
+
+        btnHadir.innerHTML = '<i class="fa fa-check"></i> Sudah Hadir';
+        btnHadir.disabled = true;
+    });
+</script>
+
+
+</html>
 @endsection

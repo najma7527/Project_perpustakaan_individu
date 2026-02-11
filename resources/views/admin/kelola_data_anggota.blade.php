@@ -58,9 +58,6 @@
                         <input type="date" name="date" value="{{ $date }}">
                     </div>
                     @endif
-                    <button type="submit" class="btn-filter">
-                        <i class="fa fa-sliders"></i>
-                    </button>
                 </div>
             </form>
 
@@ -214,7 +211,7 @@
                     </div>
 
                     <div class="form-row">
-                        <div class="form-group">
+                        <div clasts="form-group">
                             <label class="form-label">Kelas</label>
                             <input type="text" id="edit_kelas" class="form-control" disabled>
                         </div>

@@ -46,11 +46,13 @@
 <!-- Kategori Buku -->
 <div class="form-group col-2">
     <label>Kategori Buku</label>
-    <input type="text" name="kategori"
-    value="{{ old('kategori', $book->kategori ?? '') }}"
-    placeholder="Pilih Kategori Buku">
+    <select name="kategori_buku">
+        <option value="">Pilih Kategori Buku</option>
+        <option value="fiksi" {{ old('kategori_buku', $book->kategori_buku ?? '') == 'fiksi' ? 'selected' : '' }}>Fiksi</option>
+        <option value="nonfiksi" {{ old('kategori_buku', $book->kategori_buku ?? '') == 'nonfiksi' ? 'selected' : '' }}>Non Fiksi</option>
+    </select>
 
-    @error('kategori')
+    @error('kategori_buku')
     <small class="error">Kategori wajib diisi</small>
     @enderror
 </div>
@@ -67,36 +69,43 @@
     @enderror
 </div>
 
-<!-- Nomor Rak -->
+
+<!-- Baris ke (Dropdown) -->
 <div class="form-group col-1">
-    <label>Nomor Rak</label>
-    <input type="text" name="nomor_rak"
-    value="{{ old('nomor_rak', $book->nomor_rak ?? '') }}"
-    placeholder="Masukkan Nomor Rak">
+    <label>Baris ke
+    @if(!$book)
+    <button type="button" class="btn-baris" onclick="openCreateRackModal()" title="Buat Rak/Baris Baru" style="font-size:12px; padding:2px 6px; margin-left:5px;">+</button>
+    @endif
+    </label>
+    <select name="id_baris">
+        <option value="">Pilih Baris Rak</option>
+        @foreach($rows as $row)
+        <option value="{{ $row->id }}" {{ (string)old('id_baris', $book->id_baris ?? '') === (string)$row->id ? 'selected' : '' }}>
+            Rak {{ $row->bookshelf?->no_rak ?? 'N/A' }} - Baris {{ $row->baris_ke }}
+        </option>
+        @endforeach
+    </select>
 
-    @error('nomor_rak')
-    <small class="error">Nomor rak wajib diisi</small>
-    @enderror
-</div>
-
-<!-- Baris ke -->
-<div class="form-group col-1">
-    <label>Baris ke</label>
-    <input type="text" name="baris"
-    value="{{ old('baris', $book->baris ?? '') }}"
-    placeholder="Masukkan Baris Rak ke-">
-
-    @error('baris')
+    @error('id_baris')
     <small class="error">Baris rak wajib diisi</small>
     @enderror
 </div>
 
+<!-- Hidden inputs untuk create rak/baris via modal -->
+<input type="hidden" name="new_bookshelf_no" id="newBookshelfNo" value="">
+<input type="hidden" name="new_bookshelf_keterangan" id="newBookshelfKeterangan" value="">
+<input type="hidden" name="new_row_baris" id="newRowBaris" value="">
+<input type="hidden" name="new_row_keterangan" id="newRowKeterangan" value="">
+
 <!-- Tahun Terbit -->
 <div class="form-group col-1">
     <label>Tahun Terbit</label>
-    <input type="number" name="tahun_terbit"
-    value="{{ old('tahun_terbit', $book->tahun_terbit ?? '') }}"
-    placeholder="Masukkan Tahun Terbit">
+    <select name="tahun_terbit">
+        @php $currentYear = date('Y'); @endphp
+        @for($y = $currentYear; $y >= 1900; $y--)
+            <option value="{{ $y }}" {{ (string)old('tahun_terbit', $book->tahun_terbit ?? '') === (string)$y ? 'selected' : '' }}>{{ $y }}</option>
+        @endfor
+    </select>
 
     @error('tahun_terbit')
     <small class="error">Tahun terbit wajib diisi</small>
@@ -121,14 +130,12 @@
 <div class="form-group" style="margin-top:20px">
 <label>Cover Buku</label>
 
-@if($book && $book->cover)
 <div style="margin-bottom:10px">
-<img src="{{ asset('storage/'.$book->cover) }}" width="120">
+    <img id="coverPreview" src="{{ $book && $book->cover ? asset('storage/'.$book->cover) : '' }}" width="120" style="display: {{ $book && $book->cover ? 'inline-block' : 'none' }};" />
 </div>
-@endif
 
 <div class="upload-box">
-    <input type="file" name="cover" style="border:none">
+    <input type="file" name="cover" id="coverInput" style="border:none">
 </div>
 
 @error('cover')
@@ -140,11 +147,11 @@
 <div class="form-group" style="margin-top:20px">
 <label>Sinopsis Buku</label>
 
-<textarea name="sinopsis" class="editor">
-{{ old('sinopsis', $book->sinopsis ?? '') }}
+<textarea name="deskripsi" class="editor">
+{{ old('deskripsi', $book->deskripsi ?? $book->sinopsis ?? '') }}
 </textarea>
 
-@error('sinopsis')
+@error('deskripsi')
 <span class="error">Sinopsis wajib diisi</span>
 @enderror
 </div>
@@ -156,5 +163,85 @@
 </form>
 
 </div>
+
+<!-- Modal untuk create rak/baris -->
+<div id="modalCreateRack" class="modal-overlay" style="display:none;">
+    <div class="modal-box" style="max-width:500px;">
+        <div class="modal-header">
+            <h3>Buat Rak dan Baris Baru</h3>
+        </div>
+        <div class="modal-body">
+            <div style="margin-bottom:15px;">
+                <label><strong>Nomor Rak</strong></label>
+                <input type="text" id="modalRackNo" placeholder="Mis. R1" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px;">
+            </div>
+            <div style="margin-bottom:15px;">
+                <label><strong>Keterangan Rak</strong></label>
+                <input type="text" id="modalRackDesc" placeholder="Keterangan (opsional)" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px;">
+            </div>
+            <div style="margin-bottom:15px;">
+                <label><strong>Baris ke</strong></label>
+                <input type="number" id="modalRowNum" placeholder="Nomor baris" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px;">
+            </div>
+            <div style="margin-bottom:15px;">
+                <label><strong>Keterangan Baris</strong></label>
+                <input type="text" id="modalRowDesc" placeholder="Keterangan (opsional)" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px;">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-modal batal" onclick="closeCreateRackModal()">Batal</button>
+            <button type="button" class="btn-modal yakin" onclick="saveRackData()">Simpan</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Cover preview handler - maintain existing image if no new file selected
+    document.addEventListener('DOMContentLoaded', function() {
+        const input = document.getElementById('coverInput');
+        const preview = document.getElementById('coverPreview');
+        if (!input || !preview) return;
+
+        input.addEventListener('change', function () {
+            const file = this.files && this.files[0];
+            if (file) {
+                preview.src = URL.createObjectURL(file);
+                preview.style.display = 'inline-block';
+            }
+        });
+    });
+
+    // Modal create rack handlers
+    function openCreateRackModal() {
+        document.getElementById('modalCreateRack').style.display = 'flex';
+    }
+
+    function closeCreateRackModal() {
+        document.getElementById('modalCreateRack').style.display = 'none';
+    }
+
+    function saveRackData() {
+        const rackNo = document.getElementById('modalRackNo').value.trim();
+        const rackDesc = document.getElementById('modalRackDesc').value.trim();
+        const rowNum = document.getElementById('modalRowNum').value.trim();
+        const rowDesc = document.getElementById('modalRowDesc').value.trim();
+
+        if (!rackNo || !rowNum) {
+            alert('Nomor Rak dan Baris ke harus diisi');
+            return;
+        }
+
+        document.getElementById('newBookshelfNo').value = rackNo;
+        document.getElementById('newBookshelfKeterangan').value = rackDesc;
+        document.getElementById('newRowBaris').value = rowNum;
+        document.getElementById('newRowKeterangan').value = rowDesc;
+
+        closeCreateRackModal();
+    }
+
+    document.getElementById('modalCreateRack').addEventListener('click', function(e) {
+        if (e.target === this) closeCreateRackModal();
+    });
+</script>
 
 @endsection

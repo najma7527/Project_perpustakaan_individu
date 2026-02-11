@@ -67,8 +67,16 @@ class BookshelfController extends Controller
     public function destroy(Bookshelf $bookshelf)
     {
         if (Auth::user()?->role !== 'admin') abort(403);
-        $bookshelf->delete();
-        return response()->json(['message' => 'Bookshelf deleted']);
+        
+        try {
+            $bookshelf->delete();
+            return response()->json(['success' => true, 'message' => 'Bookshelf deleted'], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false, 
+                'message' => 'Gagal menghapus rak: ' . $e->getMessage()
+            ], 400);
+        }
     }
 
     public function search(Request $request)

@@ -41,8 +41,16 @@ class VisitController extends Controller
     public function destroy(Visit $visit)
     {
         if (Auth::user()?->role !== 'admin') abort(403);
-        $visit->delete();
-        return response()->json(['message' => 'Visit deleted']);
+        
+        try {
+            $visit->delete();
+            return response()->json(['success' => true, 'message' => 'Visit deleted'], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false, 
+                'message' => 'Gagal menghapus kunjungan: ' . $e->getMessage()
+            ], 400);
+        }
     }
 
     /**
