@@ -414,6 +414,9 @@ Route::get('/dashboard-admin', function () {
     return view('admin.dashboard_admin');
 });
 
+Route::get('/cetak-kehilangan', function () {
+    return view('cetak.cetak-kehilangan');
+});
 Route::get('/edit-foto-profile-admin', function () {
     return view('admin.edit-foto-profile-admin');
 });
