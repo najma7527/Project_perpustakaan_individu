@@ -6,70 +6,6 @@
 <link rel="stylesheet" href="{{ asset('css/admin/transaksi.css') }}">
 <link rel="stylesheet" href="{{ asset('css/admin/card.css') }}">
 @endpush
-
-<<<<<<< HEAD
-    <!-- ========== SIDEBAR ========== -->
-   <aside class="sidebar">
-    <div class="logo">
-        <img src="{{ asset('img/logo.png') }}" alt="Logo">
-    </div>
-
-    <ul class="menu">
-        <li class="{{ request()->is('kelola_data_buku*') ? '' : '' }}">
-            <a href="/kelola_data_buku">
-                <i class="fa fa-book"></i> Kelola Data Buku
-            </a>
-        </li>
-
-        <li class="{{ request()->is('kelola_anggota*') ? '' : '' }}">
-            <a href="/kelola_anggota">    
-                <i class="fa fa-users"></i> Kelola Anggota
-            </a>
-        </li>
-
-        <li class="{{ request()->is('transactions*') ? '' : '' }}">
-            <a href="/transactions">
-                <i class="fa fa-right-left"></i> Transaksi
-            </a>
-        </li>
-
-        <li class="{{ request()->is('daftar_pengunjung*') ? '' : '' }}">
-            <a href="/daftar_pengunjung">
-                <i class="fa fa-list"></i> Daftar Pengunjung
-            </a>
-        </li>
-
-        <li class="{{ request()->is('laporan_kehilangan*') ? '' : '' }}">
-            <a href="/laporan_kehilangan">
-                <i class="fa fa-file"></i> Laporan Kehilangan
-            </a>
-        </li>
-    </ul>
-</aside>
-
-        <!-- ========== TOPBAR ========== -->
-
-<header class="topbar">
-    <i class="fa fa-bars"></i>
-    <div class="user">
-        <span>Seulgi</span>
-        <small>Admin</small>
-        <img src="{{ asset('img/user.png') }}">
-    </div>
-</header>
-
-    
-   <!-- HEADER CARD -->
-    <div class="header-card">
-        <div class="header-left">
-            <div class="header-icon">
-                <i class="fa fa-user"></i>
-            </div>
-            <div>
-                <h3>Transaksi</h3>
-                <p>Pengembalian dan Peminjaman Buku</p>
-            </div>
-=======
 @section('content')
 
 <!-- HEADER -->
@@ -81,7 +17,6 @@
         <div>
             <h3>Transaksi</h3>
             <p>Pengembalian dan Peminjaman Buku</p>
->>>>>>> 601054ce57ff2da34cf9ad5dce5558ed0e5b2919
         </div>
     </div>
     <img src="{{ asset('img/book.png') }}" class="header-img">
