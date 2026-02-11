@@ -50,7 +50,13 @@
             <button type="submit" class="btn-filter">
                 <i class="fa fa-sliders"></i>
             </button>
-            <button class="btn-print">Cetak Laporan</button>
+            @auth
+                <a href="" class="btn-print">
+                    <i class="fa-solid fa-print"></i>
+                    Cetak Laporan
+                </a>
+                @endauth
+        </div>
         </div>
     </form>
 </div>

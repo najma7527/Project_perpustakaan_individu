@@ -1,36 +1,36 @@
 @extends('layouts.app')
 
-@section('title', 'Daftar Pengunjung')
+@section('title', 'Dashboard Admin')
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/admin/dashboard_admin.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 @endpush
 
 @section('content')
 
-          <!-- HEADER CARD -->
-    <div class="header-card">
-        <div class="header-left">
-            <div class="header-icon">
-                <i class="fa fa-user"></i>
-            </div>
-            <div>
-                <h3>Hello Aldistira 👋</h3>
-                <p>Selamat datang diperpustakaan </p>
-            </div>
+<!-- HEADER CARD -->
+<div class="header-card">
+    <div class="header-left">
+        <div class="header-icon">
+            <i class="fa fa-user"></i>
         </div>
-        <img src="{{ asset('img/book.png') }}" class="header-img">
+        <div>
+            <h3>Hello {{ Auth::user()->name ?? 'Admin' }} 👋</h3>
+            <p>Selamat datang diperpustakaan</p>
+        </div>
     </div>
+    <img src="{{ asset('img/book.png') }}" class="header-img">
+</div>
 
-        <!-- stats -->
+<!-- STATS -->
 <section class="stats-modern">
 
     <div class="stat-box blue">
         <div class="stat-left">
-            <p class="title">Pengunjung</p>
-            <h2>2,543</h2>
-            <span class="up">↑ 12% dari bulan lalu</span>
+            <p class="title">buku</p>
+            <h2>{{ number_format($totalBook) }}</h2>
+            <span class="up">Data buku</span>
         </div>
         <div class="stat-icon">
             <i class="fa fa-book"></i>
@@ -40,19 +40,19 @@
     <div class="stat-box green">
         <div class="stat-left">
             <p class="title">Buku Dipinjam</p>
-            <h2>1,245</h2>
-            <span class="up">↑ 8% dari bulan lalu</span>
+            <h2>{{ number_format($totalBorrow) }}</h2>
+            <span class="up">Total dipinjam</span>
         </div>
         <div class="stat-icon">
-            <i class="fa fa-users"></i>
+            <i class="fa fa-right-left"></i>
         </div>
     </div>
 
     <div class="stat-box purple">
         <div class="stat-left">
             <p class="title">Buku di Kembalikan</p>
-            <h2>92</h2>
-            <span class="down">↓ 5% dari kemarin</span>
+            <h2>{{ number_format($totalReturn) }}</h2>
+            <span class="down">Total dikembalikan</span>
         </div>
         <div class="stat-icon">
             <i class="fa fa-right-left"></i>
@@ -61,164 +61,113 @@
 
     <div class="stat-box orange">
         <div class="stat-left">
-            <p class="title">Total</p>
-            <h2>23</h2>
-            <span class="down">↓ 7% dari kemarin</span>
+            <p class="title">pengunjung</p>
+            <h2>{{ number_format($totalVisit) }}</h2>
+            <span class="down">Total pengunjung</span>
         </div>
         <div class="stat-icon">
-            <i class="fa fa-circle-exclamation"></i>
+            <i class="fa fa-users"></i>
         </div>
     </div>
 
 </section>
 
- <!-- CARD TABLE -->
+<!-- TABLE PENGUNJUNG -->
 <div class="card modern-card">
 
     <div class="card-header center">
-        <i class="fa fa-rotate-left"></i>
-        <h4>Data Pengembalian Buku</h4>
+        <i class="fa fa-person"></i>
+        <h4>Data Pengunjung hari ini</h4>
     </div>
 
     <div class="table-responsive">
         <table class="modern-table">
             <thead>
                 <tr>
-                    <th>Judul Buku</th>
-                    <th>Kategori</th>
-                    <th>Kode Buku</th>
-                    <th>Tanggal Pinjam</th>
-                    <th>Jatuh Tempo</th>
-                    <th>Status</th>
+                    <th>Nama Pengunjung</th>
+                    <th>Transaksi</th>
+                    <th>Kelas</th>
+                    <th>Tanggal Datang</th>
                 </tr>
             </thead>
 
             <tbody>
-                <tr>
-                    <td>Laut Bercerita</td>
-                    <td>Fiksi</td>
-                    <td>0087</td>
-                    <td>24/01/2026</td>
-                    <td>24/01/2026</td>
-                    <td><span class="badge success">Dikembalikan</span></td>
-                </tr>
-
-                <tr>
-                    <td>Si Anak Pintar</td>
-                    <td>Non Fiksi</td>
-                    <td>0087</td>
-                    <td>26/01/2026</td>
-                    <td>26/01/2026</td>
-                    <td><span class="badge danger">Belum</span></td>
-                </tr>
-
-                <tr>
-                    <td>Kayangan Api</td>
-                    <td>Fiksi</td>
-                    <td>0087</td>
-                    <td>26/01/2026</td>
-                    <td>26/01/2026</td>
-                    <td><span class="badge warning">Menunggu</span></td>
-                </tr>
+            @forelse($todayVisit as $visit)
+            <tr>
+                <td>{{ $visit->nama_pengunjung ?? '-' }}</td>
+                <td>{{ $visit->transaksi ?? '-' }}</td>
+                <td>{{ $visit->kelas ?? '-' }}</td>
+                <td>{{ optional($visit->tanggal_datang)->format('d/m/Y') }}</td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="4" style="text-align:center">Tidak ada data</td>
+            </tr>
+            @endforelse
             </tbody>
         </table>
     </div>
 </div>
 
-
-<!-- BOTTOM SECTION (PINDAHKAN KE SINI) -->
+<!-- BOTTOM SECTION -->
 <section class="bottom-section">
 
-   <!-- PINJAM BUKU -->
-<div class="card pinjam-card">
-    <h4 class="section-title">Pinjam Buku</h4>
+<div class="card modern-card">
 
-    <div class="pinjam-grid">
-
-        <!-- CARD BUKU 1 -->
-       <div class="pinjam-card-item">
-
-    <!-- COVER -->
-    <div class="book-cover">
-        <img src="{{ asset('img/buku.png') }}" alt="Filosofi Teras">
+    <div class="card-header center">
+        <i class="fa fa-book"></i>
+        <h4>data kehilangan buku</h4>
     </div>
 
-    <!-- CONTENT -->
-    <div class="book-content">
+    <div class="table-responsive">
+        <table class="modern-table">
+            <thead>
+                <tr>
+                    <th>Nama Anggota</th>
+                    <th>Judul Buku</th>
+                    <th>Kelas</th>
+                    <th>Tanggal Pinjam</th>
+                    <th>Tanggal Mengganti</th>
+                </tr>
+            </thead>
 
-        <h5>Filosofi Teras</h5>
-        <small>By Henry Manampiring</small>
-
-        <div class="book-meta">
-            <span class="badge-genre">Fiksi</span>
-            <span class="meta-item">
-                <i class="fa fa-book"></i> 12 Stok Buku
-            </span>
-        </div>
-
-        <p>
-            Filosofi Teras karya Henry Manampiring.
-        </p>
-
-        <button class="btn-pinjam">Pinjam Buku</button>
-    </div>
-</div>
-
-        <!-- CARD BUKU 2 -->
-        <div class="pinjam-card-item">
-            <img src="{{ asset('img/buku.png') }}" alt="Laut Bercerita">
-
-            <div class="pinjam-content">
-                <h5>Laut Bercerita</h5>
-                <small>By Leila S. Chudori</small>
-                
-                <div class="book-meta">
-                <span class="badge-genre">Non Fiksi</span>
-                <span class="meta-item">
-                    <i class="fa fa-book"></i> 12 Stok Buku
-                </span>
-          </div>
-                <p>
-                    Novel tentang aktivisme, kehilangan.
-                </p>
-
-                <button class="btn-pinjam">Pinjam Buku</button>
-            </div>
-        </div>
-
+            <tbody>
+            @forelse($latestReport as $report)
+            <tr>
+                <td>{{ $report->transaction->user->nama ?? '-' }}</td>
+                <td>{{ $report->transaction->book->judul ?? '-' }}</td>
+                <td>{{ $report->transaction->user->kelas ?? '-' }}</td>
+                <td>{{ optional($report->transaction->tanggal_pinjam)->format('d/m/Y') }}</td>
+                <td>{{ optional($report->tanggal_penggantian)->format('d/m/Y') }}</td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="5" style="text-align:center">Tidak ada data</td>
+            </tr>
+            @endforelse
+            </tbody>
+        </table>
     </div>
 </div>
 
-
-    <!-- TOTAL BUKU HILANG -->
 <!-- TOTAL BUKU HILANG -->
 <div class="card lost-card">
 
     <div class="lost-header">
         <h4>Total Buku Hilang Bulan Ini</h4>
         <div class="lost-icon">
-<i class="fa-solid fa-book-open"></i>
-
+            <i class="fa-solid fa-book-open"></i>
         </div>
     </div>
 
     <div class="lost-body">
-
         <div class="lost-item danger">
             <i class="fa fa-triangle-exclamation"></i>
-            <span>5 Buku Hilang</span>
+            <span>{{ $totalLostBooks }} Buku Hilang</span>
         </div>
-
-        <div class="lost-item warning">
-            <i class="fa fa-triangle-exclamation"></i>
-            <span>2 Buku Rusak</span>
-        </div>
-
     </div>
 </div>
 
-        </section>
+</section>
 
-    </main>
-</div>
 @endsection

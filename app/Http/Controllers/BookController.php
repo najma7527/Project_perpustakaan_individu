@@ -15,12 +15,48 @@ class BookController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
-    {
-        if (Auth::user()?->role !== 'admin') abort(403);
-        $books = Book::with('row')->get();
-        return view('admin.kelola_data_buku', compact('books'));
+    public function index(Request $request)
+{
+    if (Auth::user()?->role !== 'admin') abort(403);
+
+    // Ambil filter dari request + default
+    $search = $request->input('search', '');
+    $date = $request->input('date', '');
+    $filter = $request->input('filter', '');
+
+    // Query Builder (BELUM get)
+    $query = Book::with('row.bookshelf');
+
+    // Search
+    if ($search) {
+        $query->where(function($q) use ($search) {
+            $q->where('judul', 'like', "%{$search}%")
+              ->orWhere('pengarang', 'like', "%{$search}%")
+              ->orWhere('kode_buku', 'like', "%{$search}%");
+        });
     }
+
+    // Filter Tahun Terbit
+    if ($date) {
+        $query->whereYear('tahun_terbit', $date);
+    }
+
+    // Filter Kategori
+    if ($filter) {
+        $query->where('kategori_buku', $filter);
+    }
+
+    // Baru get
+    $books = $query->get();
+    $books = $query->paginate(10);
+
+    return view('admin.kelola_data_buku', compact(
+        'books',
+        'search',
+        'date',
+        'filter'
+    ));
+}
 
     public function create()
     {

@@ -45,19 +45,16 @@ if ($tab == 'verifikasi') {
             $query->where(function($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('username', 'like', "%{$search}%")
-                  ->orWhere('nis_nisn', 'like', "%{$search}%");
+                  ->orWhere('nis_nisn', 'like', "%{$search}%")
+                  ->orWhere('kelas', 'like', "%{$search}%");
             });
         }
 
         // Filter Tanggal (berdasarkan created_at)
         if ($date) {
-            $query->whereDate('created_at', $date);
+            $query->whereDate('tanggal_pengajuan', $date);
         }
 
-        // Filter Kelas
-        if ($kelas) {
-            $query->where('kelas', $kelas);
-        }
 
         $users = $query->latest()->paginate(10);
 

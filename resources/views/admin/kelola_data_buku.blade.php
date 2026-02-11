@@ -22,10 +22,48 @@
         <div class="table-card">
 
             <div class="table-header">
-                <div class="search">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="Cari sesuatu...">
-                </div>
+                <form method="GET" action="{{ route('books.index') }}">
+    <form method="GET" action="{{ route('books.index') }}">
+
+<div class="filter">
+
+    <!-- SEARCH -->
+    <div class="search">
+        <i class="fa fa-search"></i>
+        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari sesuatu...">
+    </div>
+
+    <!-- FILTER TAHUN -->
+    <div class="date">
+        <i class="fa fa-calendar"></i>
+        <select name="date" class="date" onchange="this.form.submit()">
+        <option value="">Semua Tahun</option>
+        @for($year = date('Y'); $year >= 2000; $year--)
+            <option value="{{ $year }}" {{ request('date') == $year ? 'selected' : '' }}>
+                {{ $year }}
+            </option>
+        @endfor
+    </select>
+    </div>
+
+    <!-- BUTTON FILTER -->
+    <button type="button" class="btn-filter" onclick="toggleFilterKategori()">
+        <i class="fa fa-sliders"></i>
+    </button>
+
+    <!-- DROPDOWN KATEGORI -->
+    <div id="filterKategori" style="display:none;" class="search">
+        <select name="filter" onchange="this.form.submit()">
+            <option value="">Semua Kategori</option>
+            <option value="fiksi">Fiksi</option>
+            <option value="nonfiksi">Non Fiksi</option>
+        </select>
+    </div>
+
+</div>
+
+</form>
+
                 @auth
                 <a href="{{ route('books.create') }}" class="btn-add">
                     <i class="fa-solid fa-plus"></i>
@@ -58,7 +96,9 @@
                         <td>{{ $book->pengarang }}</td>
                         <td>{{ $book->tahun_terbit }}</td>
                         <td>{{ $book->kategori_buku == 'fiksi' ? 'Fiksi' : 'Non Fiksi' }}</td>
-                        <td>{{ $book->row?->baris_ke ?? $book->id_baris }}</td>
+                        <td>
+                            {{ $book->row?->bookshelf?->no_rak }} - {{ $book->row?->baris_ke ?? $book->id_baris }}
+                        </td>
                         <td class="aksi">
                             @auth
                             <a href="{{ route('books.edit', $book->id) }}" class="btn edit">
@@ -120,7 +160,7 @@
             </div>
 
             <div class="modal-detail-body">
-                <img id="detailGambar" src="{{ asset('storage/covers/'.$book->covers) }}" alt="Buku">
+                <img id="detailGambar" src="" alt="Buku">
 
                 <div class="detail-text">
                     <h2 id="detailJudul"></h2>
@@ -137,6 +177,12 @@
     </div>
 
 <script>
+
+function toggleFilterKategori(){
+    let el = document.getElementById("filterKategori");
+    el.style.display = el.style.display === "none" ? "block" : "none";
+}
+
     let selectedRow = null;
     let selectedId = null;
 

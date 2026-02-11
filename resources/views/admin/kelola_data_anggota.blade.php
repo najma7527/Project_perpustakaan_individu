@@ -58,9 +58,6 @@
                         <input type="date" name="date" value="{{ $date }}">
                     </div>
                     @endif
-                    <button type="submit" class="btn-filter">
-                        <i class="fa fa-sliders"></i>
-                    </button>
                 </div>
             </form>
 

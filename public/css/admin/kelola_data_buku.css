@@ -48,7 +48,7 @@
 }
 
 /* PEMBUNGKUS SEARCH DAN DATE */
-.search{
+.search, .date {
     display: flex;
     align-items: center;
     background: #fff; /* Latar belakang putih */
@@ -60,7 +60,7 @@
 }
 
 /* KOTAK IKON BIRU (Kiri) */
-.search i{
+.search i, .date i {
     background-color: #2196f3; /* Warna biru sesuai app.css */
     color: #fff;
     height: 100%;
@@ -72,7 +72,7 @@
 }
 
 /* AREA INPUT TEKS */
-.search input{
+.search input, .date input {
     border: none;
     background: transparent;
     outline: none;
@@ -80,6 +80,22 @@
     width: 100%;
     font-size: 14px;
     color: #333;
+}
+
+/* TOMBOL FILTER (IKON SETTING) */
+.btn-filter {
+    background-color: #2196f3;
+    color: #fff;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: background 0.3s;
 }
 
 .btn-add {
