@@ -16,50 +16,61 @@ class TransactionController extends Controller
         $this->middleware('auth');
     }
 
-    public function index(Request $request)
+
+   public function index(Request $request)
 {
-    if (Auth::user()->role !== 'admin') {
+    if (Auth::user()?->role !== 'admin') {
         abort(403);
     }
 
-    $transactions = Transaction::with(['user', 'book'])->get();
+    $mode = $request->get('mode', 'peminjaman');
 
-    return view('admin.transaksi', compact('transactions'));
+    $transactions = Transaction::with(['user','book'])
+        ->when($mode === 'peminjaman', function($q){
+            $q->whereIn('status', ['buku_hilang','belum_dikembalikan']);
+        })
+        ->when($mode === 'pengembalian', function($q){
+            $q->whereIn('status', ['menunggu_konfirmasi','sudah_dikembalikan']); 
+        })
+        ->latest()
+        ->get();
+
+    return view('admin.transaksi', compact('transactions','mode'));
 }
 
-    public function pinjam($bukuId)
+public function pinjam(Request $request, $bukuId)
 {
     $buku = Book::findOrFail($bukuId);
 
-    $totalBuku = Book::where('judul', $buku->judul)->count();
+    $request->validate([
+        'tanggal_peminjaman' => 'required|date',
+        'tanggal_jatuh_tempo' => 'required|date|after_or_equal:tanggal_peminjaman',
+    ]);
 
-    $dipinjam = Transaction::whereHas('book', function ($q) use ($buku) {
-        $q->where('judul', $buku->judul);
-    })->whereIn('status', ['dipinjam', 'menunggu'])
-        ->count();
-
-
-    if ($dipinjam >= $totalBuku) {
+    if ($buku->stok <= 0) {
         return back()->with('error', 'Buku tidak tersedia');
     }
 
     Transaction::create([
         'user_id' => Auth::id(),
         'buku_id' => $bukuId,
-        'tanggal_peminjaman' => now(),
-        'status' => 'dipinjam',
+        'tanggal_peminjaman' => $request->tanggal_peminjaman,
+        'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
+        'jenis_transaksi' => 'dipinjam',
+        'status' => 'belum_dikembalikan',
     ]);
+
+    $buku->decrement('stok');
 
     return back()->with('success', 'Buku berhasil dipinjam');
 }
-
 
     public function ajukanPengembalian($Id)
     {
 
     $transaction = Transaction::where('id', $Id)
         ->where('user_id', Auth::id())
-        ->where('status', 'dipinjam')
+        ->where('status', 'belum_dikembalikan')
         ->firstOrFail();
     
        $transaction->update([
@@ -71,7 +82,9 @@ class TransactionController extends Controller
     public function terimaPengembalian($id)
     {
         $transaction = Transaction::findOrFail($id);
+
             if (Auth::user()->role !== 'admin') abort(403);
+
             if ($transaction->status !== 'menunggu') {
             return back()->with('error', 'status tidak valid');
             }
@@ -80,6 +93,8 @@ class TransactionController extends Controller
             'status' => 'dikembalikan',
             'tanggal_pengembalian' => now(),
         ]);
+
+        $transaction->book->increment('stok');
 
         return back()->with('success', 'Pengembalian diterima');
     }
@@ -118,9 +133,11 @@ class TransactionController extends Controller
 }
     public function tandaiHilang($id)
 {
+    if (Auth::user()->role !== 'admin') abort(403);
+    
     $transaksi = Transaction::findOrFail($id);
 
-    if (!in_array($transaksi->status, ['dipinjam', 'menunggu'])) {
+    if (!in_array($transaksi->status, ['belum_dikembalikan', 'menunggu'])) {
         return back()->with('error', 'Tidak bisa ditandai hilang');
     }
 
@@ -134,16 +151,20 @@ class TransactionController extends Controller
 
     public function show(Transaction $transaction)
     {
-            if (Auth::user()?->role !== 'admin' && $transaction->user_id !== Auth::id()) abort(403);
-            return response()->json(['data' => $transaction->load('book', 'user', 'reports', 'visits')]);
+            if (Auth::user()?->role !== 'admin' && $transaction->user_id !== Auth::id()) {
+                abort(403);
     }
+          $transaction->load('user', 'book', 'reports', 'visits');
 
+          return view('transactions.show', compact('transaction'));
+}
     public function edit(Transaction $transaction)
     {
             if (Auth::user()?->role !== 'admin') abort(403);
             $users = User::where('role', 'anggota')->get();
-            $books = Book::get();
-            return response()->json(['data' => $transaction, 'users' => $users, 'books' => $books]);
+            $books = Book::all();
+
+            return view('admin.transaksi.edit', compact('transaction', 'users', 'books'));
     }
 
     public function update(Request $request, Transaction $transaction)
@@ -158,44 +179,45 @@ class TransactionController extends Controller
         ]);
 
         $transaction->update($data);
-        return response()->json(['message' => 'Transaction updated', 'data' => $transaction->load('user', 'book')]);
+        
+        return redirect()->route('transactions.index')
+            ->with('success', 'Transaction berhasil diupdate');
     }
-
 
     public function destroy(Transaction $transaction)
     {
         // admin or owner can delete
         if (Auth::user()?->role !== 'admin') abort(403);
 
-        // If deleting a dipinjam transaction, restore stock
-        $transaction->delete();
-        return response()->json(['message' => 'Transaction deleted']);
+        try {
+            if (in_array($transaction->status, ['belum_dikembalikan', 'menunggu'])) {
+                $transaction->book->increment('stok');
+            }
+
+            // If deleting a dipinjam transaction, restore stock
+            $transaction->delete();
+            
+            return redirect()->route('transactions.index')
+                ->with('success', 'Transaction berhasil dihapus');
+        } catch (\Exception $e) {
+            return redirect()->route('transactions.index')
+                ->with('error', 'Gagal menghapus transaksi: ' . $e->getMessage());
+        }
     }
 
     public function myTransactions()
     {
+
         $user = Auth::user();
         $transactions = Transaction::where('user_id', $user->id)->with('book')->get();
-        return response()->json(['data' => $transactions]);
-    }
-
-    public function search()
-    {
-        $user = Auth::user();
-        $transactions = Transaction::where('user_id', $user->id)
-            ->where('tanggal_peminjaman', 'like', '%' . request('q') . '%')
-            ->where('tanggal_pengembalian', 'like', '%' . request('q') . '%')
-            ->where('tanggal_jatuh_tempo', 'like', '%' . request('q') . '%')
-            ->with('book')
-            ->get();
-        return response()->json(['data' => $transactions]);
+        return view('siswa.pengembalian-buku', compact('transactions'));
     }
 
     public function perpanjang($id)
 {
     $transaksi = Transaction::where('id', $id)
         ->where('user_id', Auth::id())
-        ->where('status', 'dipinjam')
+        ->where('status', 'belum_dikembalikan')
         ->firstOrFail();
 
     // Cek kalau sudah lewat jatuh tempo
@@ -203,14 +225,31 @@ class TransactionController extends Controller
         return back()->with('error', 'Tidak bisa perpanjang, sudah melewati jatuh tempo');
     }
 
-    // Tambah 3 hari
-    $transaksi->update([
-        'tanggal_jatuh_tempo' => \Carbon\Carbon::parse($transaksi->tanggal_jatuh_tempo)->addDays(3)
-    ]);
+    //Tambah 3 hari
+        $transaksi->tanggal_jatuh_tempo = now()->addDays(3);
+        $transaksi->save();
 
-    return back()->with('success', 'Perpanjangan berhasil 3 hari');
+        return back()->with('success', 'Perpanjangan berhasil 3 hari');
+    }
+
+    public function search(Request $request)
+    {
+        $q = $request->q;
+
+        $transactions = Transaction::where('user_id', Auth::id())
+        ->where(function ($query) use ($q) {
+            $query->where('tanggal_peminjaman', 'like', "%$q%")
+                  ->orWhere('tanggal_pengembalian', 'like', "%$q%")
+                  ->orWhere('tanggal_jatuh_tempo', 'like', "%$q%");
+        })
+        ->with('book')
+        ->get();
+
+    return view('siswa.transaksi', compact('transactions'));
+
+    }
+
 }
 
-}
 
     

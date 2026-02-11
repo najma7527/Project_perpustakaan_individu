@@ -72,8 +72,16 @@ class RowController extends Controller
     public function destroy(Row $row)
     {
         if (Auth::user()?->role !== 'admin') abort(403);
-        $row->delete();
-        return response()->json(['message' => 'Row deleted']);
+        
+        try {
+            $row->delete();
+            return response()->json(['success' => true, 'message' => 'Row deleted'], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false, 
+                'message' => 'Gagal menghapus baris: ' . $e->getMessage()
+            ], 400);
+        }
     }
 
     public function search(Request $request)
