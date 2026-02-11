@@ -18,7 +18,8 @@ class ProfileController extends Controller
     public function show()
     {
         $user = Auth::user();
-        return view('profile.index', compact('user'));
+        return view('admin.profile_admin', compact('user'));
+
     }
 
     // UPDATE DATA PROFIL

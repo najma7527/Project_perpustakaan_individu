@@ -2,8 +2,8 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Cetak Laporan Daftar pengunjung</title>
-    <link rel="stylesheet" href="{{ asset('css/cetak/cetak-daftar-pengunjung.css') }}">
+    <title>Cetak Laporan Kehilangan</title>
+    <link rel="stylesheet" href="{{ asset('css/cetak/cetak-kehilangan.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
@@ -17,8 +17,8 @@
                 <i class="fa-solid fa-print"></i>
             </div>
             <div class="top-text">
-                <h4>Cetak Daftar pengunjung </h4>
-                <span>Laporan Daftar pengunjung</span>
+                <h4>Cetak laporan kehilangan </h4>
+                <span>Laporan kehilanngan</span>
             </div>
         </div>
         <div class="top-right">
@@ -64,7 +64,7 @@
         <hr>
 
         <div class="info">
-            <p>Hal : Laporan Daftar Pengunjung Perpustaakan</p>
+            <p>Hal : Laporan Transaksi Perpustakaan</p>
             <p>Periode : 01 Januari s/d 31 Januari 2026</p>
         </div>
 
@@ -78,6 +78,7 @@
                     <th>Judul Buku</th>
                     <th>Transaksi</th>
                     <th>Tanggal Datang</th>
+                    <th>Setatus</th>
             
                 </tr>
             </thead>
@@ -89,6 +90,7 @@
                     <td>Tahu Bulat Ena</td>
                       <td>pengembalian</td>
                     <td>20/01/2026</td>
+                    <td class="status pending">Belum Diganti</td>
                 </tr>
                 <tr>
                     <td>2</td>
@@ -97,15 +99,16 @@
                     <td>Penggembala Kambing</td>
                     <td>peminjaman</td>
                     <td>20/01/2026</td>
-                
+                    <td class="status pending">Belum Diganti</td>
                 </tr>
                 <tr>
                     <td>3</td>
                     <td>Sahrulman</td>
                     <td>X ATR 2</td>
                     <td>kancil buaya</td>
-                      <td>pengembalian</td>
+                    <td>pengembalian</td>
                     <td>20/01/2026</td>
+                    <td class="status done">Sudah Diganti</td>
 
                 </tr>
             </tbody>
@@ -115,8 +118,7 @@
             <span>dicetak oleh Perpustakaan SMKN 4 Bojonegoro</span>
             <span>halaman 1 dari 3</span>
         </div>
-
-    </div>
+ </div>
 <div class="actions">
     <!-- KIRI -->
     <div class="actions-left">

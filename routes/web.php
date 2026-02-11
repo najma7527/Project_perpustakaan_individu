@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BookshelfController;
@@ -9,7 +10,6 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\VisitController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LaporanKehilanganController;
 use App\Http\Controllers\SiswaDashboardController;
 use App\Http\Controllers\AdminDashboardController;
@@ -98,6 +98,8 @@ Route::get('/dashboard-anggota', [SiswaDashboardController::class, 'index'])
     ->middleware('auth');
 
 
+Route::get('/profile_admin', [ProfileController::class, 'show'])
+        ->name('profile.show');
 
 
 /*
@@ -421,3 +423,18 @@ Route::get('/dashboard-admin', function () {
     return view('admin.dashboard_admin');
 });
 
+Route::get('/cetak-kehilangan', function () {
+    return view('cetak.cetak-kehilangan');
+});
+Route::get('/edit-foto-profile-admin', function () {
+    return view('admin.edit-foto-profile-admin');
+});
+
+//edit profil admin
+Route::get('/edit-profil', function () {
+    return view('admin.edit-profil');
+});
+
+Route::get('/edit-password', function () {
+    return view('admin.edit-password');
+});

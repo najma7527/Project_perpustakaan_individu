@@ -25,10 +25,10 @@ class AdminDashboardController extends Controller
         $totalBook = Book::count();
 
         // Total peminjaman
-        $totalBorrow = Transaction::where('status', 'borrow')->count();
+        $totalBorrow = Transaction::where('jenis_transaksi', 'dipinjam')->count();
 
         // Total pengembalian
-        $totalReturn = Transaction::where('status', 'return')->count();
+        $totalReturn = Transaction::where('jenis_transaksi', 'dikembalikan')->count();
 
         // Total pengunjung
         $totalVisit = Visit::count();
