@@ -134,12 +134,20 @@
             <tbody>
             @forelse($latestReport as $report)
             <tr>
-                <td>{{ $report->transaction->user->nama ?? '-' }}</td>
-                <td>{{ $report->transaction->book->judul ?? '-' }}</td>
-                <td>{{ $report->transaction->user->kelas ?? '-' }}</td>
-                <td>{{ optional($report->transaction->tanggal_pinjam)->format('d/m/Y') }}</td>
-                <td>{{ optional($report->tanggal_penggantian)->format('d/m/Y') }}</td>
-            </tr>
+                <td>{{ $report->transaction->user->name ?? '-' }}</td>
+
+            <td>{{ $report->transaction->book->judul ?? '-' }}</td>
+
+            <td>{{ $report->transaction->user->kelas ?? '-' }}</td>
+
+            <td>
+                {{ optional($report->transaction->tanggal_peminjaman)->format('d/m/Y') }}
+            </td>
+
+            <td>
+                {{ optional($report->tanggal_ganti)->format('d/m/Y') }}
+            </td>
+                    </tr>
             @empty
             <tr>
                 <td colspan="5" style="text-align:center">Tidak ada data</td>

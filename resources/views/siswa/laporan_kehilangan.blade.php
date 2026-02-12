@@ -47,6 +47,7 @@
             <div class="table-card">
                 <table>
                     <thead>
+                    <thead>
                         <tr>
                             <th>No</th>
                             <th>Judul Buku</th>
@@ -58,39 +59,42 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @for($i=1;$i<=10;$i++)
+                        @forelse($laporan as $item)
                         <tr>
-                            <td>{{ $i }}</td>
-                            <td>Malang Kota Dingin</td>
-                            <td>maaf buku hilang pada saat ekstra musik</td>
-                            <td>20/01/2026</td>
-                            <td>20/01/2026</td>
-                            @php
-                                if ($i % 3 == 0) {
-                                    $status = 'Menunggu konfirmasi';
-                                    $statusClass = 'status-yellow';
-                                } elseif ($i % 2) {
-                                    $status = 'Belum dikembalikan';
-                                    $statusClass = 'status-red';
-                                } else {
-                                    $status = 'Sudah dikembalikan';
-                                    $statusClass = 'status-green';
-                                }
-                            @endphp
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $item->transaction->book->judul ?? '-' }}</td>
+                            <td>{{ $item->keterangan }}</td>
+                            <td>{{ optional($item->transaction->tanggal_peminjaman)->format('d/m/Y') ?? '-' }}</td>
+                            <td>{{ optional($item->tanggal_ganti)->format('d/m/Y') ?? '-' }}</td>
                             <td>
-                                <span class="{{ $statusClass }}">{{ $status }}</span>
+                                @if($item->status === 'pending')
+                                    <span class="status-yellow">Menunggu Konfirmasi</span>
+                                @elseif($item->status === 'approved')
+                                    <span class="status-green">Disetujui</span>
+                                @elseif($item->status === 'belum_dikembalikan')
+                                    <span class="status-red">Belum Dikembalikan</span>
+                                @else
+                                    <span class="status-gray">{{ ucfirst($item->status) }}</span>
+                                @endif
                             </td>
                             <td>
-                                @if($status === 'Belum dikembalikan')
-                                    <button class="btn-pengembalian">
-                                        <i class="fa fa-rotate-left"></i>
-                                    </button>
+                                @if($item->status === 'belum_dikembalikan')
+                                    <form action="{{ route('laporan-kehilangan.kembalikan', $item->id) }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        <button type="submit" class="btn-pengembalian" title="Kembalikan">
+                                            <i class="fa fa-rotate-left"></i>
+                                        </button>
+                                    </form>
                                 @else
                                     <span class="no-action">-</span>
                                 @endif
                             </td>
                         </tr>
-                        @endfor
+                        @empty
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 20px;">Tidak ada laporan kehilangan</td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

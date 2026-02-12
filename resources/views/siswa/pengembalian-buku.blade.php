@@ -39,13 +39,26 @@
 
         {{-- TABLE --}}
         <div class="table-card">
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+
+            @if (session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+
             <table>
                 <thead>
                     <tr>
                         <th>No</th>
                         <th>Judul Buku</th>
-                        <th>Kategori</th>
-                        <th>Kode</th>
+                        <th>Kode Buku</th>
                         <th>Tgl Pinjam</th>
                         <th>Jatuh Tempo</th>
                         <th>Status</th>
@@ -53,169 +66,160 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Erika Putri Himawan</td>
-                        <td>Fiksi</td>
-                        <td>0087</td>
-                        <td>20/01/2026</td>
-                        <td>20/01/2026</td>
-                        <td><span class="status success">Sudah dikembalikan</span></td>
-                        <td>-</td>
-                    </tr>
+                    @forelse($transactions as $trx)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $trx->book->judul ?? '-' }}</td>
+                            <td>{{ $trx->book->kode_buku ?? '-' }}</td>
+                            <td>{{ optional($trx->tanggal_peminjaman)->format('d/m/Y') ?? '-' }}</td>
+                            <td>{{ optional($trx->tanggal_jatuh_tempo)->format('d/m/Y') ?? '-' }}</td>
+                            <td>
+                                @if($trx->status == 'belum_dikembalikan')
+                                    <span class="status danger">Belum Dikembalikan</span>
+                                @elseif($trx->status == 'sudah_dikembalikan')
+                                    <span class="status success">✓ Selesai</span>
+                                @elseif($trx->status == 'menunggu')
+                                    <span class="status warning">Menunggu Persetujuan</span>
+                                @elseif($trx->status == 'hilang')
+                                    <span class="status danger">Buku Hilang</span>
+                                @endif
+                            </td>
+                            <td class="aksi">
+                                {{-- Kembalikan Buku (hanya jika belum dikembalikan) --}}
+                                @if($trx->status == 'belum_dikembalikan')
+                                    <button class="aksi-btn blue"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalKembalikan{{ $trx->id }}"
+                                        title="Kembalikan Buku">
+                                        <i class="bi bi-arrow-return-left"></i>
+                                    </button>
+                                @endif
 
-                    <tr>
-                        <td>2</td>
-                        <td>Naila Sabyan</td>
-                        <td>Non Fiksi</td>
-                        <td>0087</td>
-                        <td>20/01/2026</td>
-                        <td>20/01/2026</td>
-                        <td><span class="status danger">Belum dikembalikan</span></td>
-                 <td class="aksi">
-    <!-- Kembalikan Buku -->
-    <button class="aksi-btn blue"
-        data-bs-toggle="modal"
-        data-bs-target="#modalKembalikan"
-        title="Kembalikan">
-        <i class="bi bi-arrow-return-left"></i>
-    </button>
+                                {{-- Perpanjang (hanya jika belum dikembalikan dan belum lewat tempo) --}}
+                                @if($trx->status == 'belum_dikembalikan' && now()->lessThan($trx->tanggal_jatuh_tempo))
+                                    <button class="aksi-btn orange"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalPerpanjang{{ $trx->id }}"
+                                        title="Perpanjang">
+                                        <i class="bi bi-calendar-event"></i>
+                                    </button>
+                                @endif
 
-    <!-- Perpanjang -->
-    <button class="aksi-btn orange"
-        data-bs-toggle="modal"
-        data-bs-target="#modalPerpanjang"
-        title="Perpanjang">
-        <i class="bi bi-calendar-event"></i>
-    </button>
+                                {{-- Laporan Kehilangan (hanya jika belum dikembalikan) --}}
+                                @if($trx->status == 'belum_dikembalikan')
+                                    <button class="aksi-btn red"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalKehilangan{{ $trx->id }}"
+                                        title="Laporan Kehilangan">
+                                        <i class="bi bi-chat-dots"></i>
+                                    </button>
+                                @endif
 
-    <!-- Laporan Kehilangan -->
-    <button class="aksi-btn red"
-        data-bs-toggle="modal"
-        data-bs-target="#modalKehilangan"
-        title="Laporan Kehilangan">
-        <i class="bi bi-chat-dots"></i>
-    </button>
- <!-- modal Laporan Kembalian -->
-   <div class="modal fade" id="modalKembalikan" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
+                                {{-- Tidak ada aksi jika sudah selesai --}}
+                                @if($trx->status == 'sudah_dikembalikan')
+                                    <span style="color: #6b7280; font-size: 12px;">-</span>
+                                @endif
+                            </td>
+                        </tr>
 
-      <div class="modal-header custom-header">
-        <h5 class="modal-title">Kembalikan Buku</h5>
-      </div>
+                        {{-- Modal Kembalikan Buku --}}
+                        <div class="modal fade" id="modalKembalikan{{ $trx->id }}" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header custom-header">
+                                        <h5 class="modal-title">Kembalikan Buku</h5>
+                                    </div>
+                                    <div class="modal-body text-center">
+                                        <p>Apakah kamu yakin ingin mengembalikan <strong>{{ $trx->book->judul }}</strong>?</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-batal btn-rounded" data-bs-dismiss="modal">
+                                            Batal
+                                        </button>
+                                        <form action="{{ route('transactions.ajukanPengembalian', $trx->id) }}" method="POST" style="display: inline;">
+                                            @csrf
+                                            <button type="submit" class="btn btn-yakin btn-rounded">
+                                                Iya, Kembalikan
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-      <div class="modal-body text-center">
-        <p>Apakah kamu yakin ingin mengembalikan buku?</p>
-      </div>
+                        {{-- Modal Perpanjang --}}
+                        <div class="modal fade" id="modalPerpanjang{{ $trx->id }}" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header custom-header">
+                                        <h5 class="modal-title">Perpanjang Peminjaman</h5>
+                                    </div>
+                                    <div class="modal-body text-center">
+                                        <p class="fs-6">
+                                            Apakah kamu yakin ingin memperpanjang waktu peminjaman <strong>{{ $trx->book->judul }}</strong> selama <strong>3 hari</strong>?
+                                        </p>
+                                        <small class="text-muted">
+                                            Jatuh tempo saat ini: {{ optional($trx->tanggal_jatuh_tempo)->format('d/m/Y') }}
+                                        </small>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-batal btn-rounded" data-bs-dismiss="modal">
+                                            Batal
+                                        </button>
+                                        <form action="{{ route('transactions.perpanjang', $trx->id) }}" method="POST" style="display: inline;">
+                                            @csrf
+                                            <button type="submit" class="btn btn-yakin btn-rounded">
+                                                Iya, Perpanjang
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-      <div class="modal-footer">
-        <button type="button"
-            class="btn btn-batal btn-rounded"
-            data-bs-dismiss="modal">
-            Batal
-        </button>
-        <button type="button"
-            class="btn btn-yakin btn-rounded">
-            Iya, saya yakin
-        </button>
-      </div>
-
-    </div>
-  </div>
-</div>
-
- <!--modal perpanjangan -->
-<div class="modal fade" id="modalPerpanjang" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-
-      <div class="modal-header custom-header">
-        <h5 class="modal-title">Perpanjang Waktu Peminjaman Buku</h5>
-      </div>
-
-      <div class="modal-body text-center">
-        <p class="fs-6">
-          Apakah kamu yakin ingin memperpanjang waktu peminjaman buku
-          selama <strong>3 hari</strong>?
-        </p>
-      </div>
-
-      <div class="modal-footer">
-        <button type="button"
-            class="btn btn-batal btn-rounded"
-            data-bs-dismiss="modal">
-            Batal
-        </button>
-        <button type="button"
-            class="btn btn-yakin btn-rounded">
-            Iya, saya yakin
-        </button>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<!-- modalLaporan Kehilangan -->
-<div class="modal fade" id="modalKehilangan" tabindex="-1">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-
-      <div class="modal-header custom-header">
-        <h5 class="modal-title">Laporan Kehilangan Buku</h5>
-      </div>
-
-      <div class="modal-body">
-        <div class="mb-4>
-          <label class="form-label fw-semibold">
-            Tanggal Pengembalian Buku
-          </label>
-          <input type="date" class="form-control">
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label fw-semibold">
-            Berikan alasan kenapa buku yang kamu pinjam bisa hilang?
-          </label>
-          <textarea class="form-control" rows="5"></textarea>
-          <small class="text-muted d-block text-end mt-1">
-            50/200 karakter
-          </small>
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button type="button"
-            class="btn btn-batal btn-rounded"
-            data-bs-dismiss="modal">
-            Batal
-        </button>
-        <button type="button"
-            class="btn btn-simpan btn-rounded">
-            Simpan
-        </button>
-      </div>
-
-    </div>
-  </div>
-</div>
-</td>
-</td>
-
-
-                    </tr>
-
-                    <tr>
-                        <td>3</td>
-                        <td>Alfian Tambal Ban</td>
-                        <td>Fiksi</td>
-                        <td>0087</td>
-                        <td>20/01/2026</td>
-                        <td>20/01/2026</td>
-                        <td><span class="status warning">Menunggu Persetujuan</span></td>
-                        <td>-</td>
-                    </tr>
+                        {{-- Modal Laporan Kehilangan --}}
+                        <div class="modal fade" id="modalKehilangan{{ $trx->id }}" tabindex="-1">
+                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header custom-header">
+                                        <h5 class="modal-title">Laporan Kehilangan Buku</h5>
+                                    </div>
+                                    <form action="{{ route('laporan-kehilangan.store') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="transactions_id" value="{{ $trx->id }}">
+                                        
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-semibold">Judul Buku</label>
+                                                <input type="text" class="form-control" value="{{ $trx->book->judul }}" readonly>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-semibold">Tanggal Kejadian</label>
+                                                <input type="date" class="form-control" name="tanggal_ganti" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-semibold">Alasan Kehilangan</label>
+                                                <textarea class="form-control" name="keterangan" rows="5" placeholder="Jelaskan alasan buku Anda hilang..." required maxlength="500"></textarea>
+                                                <small class="text-muted d-block text-end mt-1">Max 500 karakter</small>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-batal btn-rounded" data-bs-dismiss="modal">
+                                                Batal
+                                            </button>
+                                            <button type="submit" class="btn btn-simpan btn-rounded">
+                                                Lapor Kehilangan
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 20px;">Tidak ada data peminjaman</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

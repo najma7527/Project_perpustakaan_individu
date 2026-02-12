@@ -58,38 +58,40 @@ class VisitController extends Controller
      * Otomatis ambil transaksi aktif (status peminjaman) jika ada
      */
     public function checkIn(Request $request)
-    {
-        $user = Auth::user();
-        
-        // Validasi user adalah anggota
-        if ($user?->role !== 'anggota') {
-            return response()->json(['message' => 'Hanya anggota yang bisa melakukan check-in'], 403);
-        }
+{
+    $user = Auth::user();
 
-        // Cek apakah sudah pernah visit hari ini
-        $existingVisit = Visit::whereDate('tanggal_datang', now()->toDateString())
-            ->where('user_id', $user->id)
-            ->first();
-
-        if ($existingVisit) {
-            return response()->json(['message' => 'Anda sudah melakukan check-in hari ini'], 400);
-        }
-
-        // Cari transaksi aktif (peminjaman) dari user
-        $activeTransaction = Transaction::where('user_id', $user->id)
-            ->where('status', 'peminjaman')
-            ->latest('tanggal_peminjaman')
-            ->first();
-
-        // Buat record visit
-        $visit = Visit::create([
-            'user_id' => $user->id,
-            'transactios_id' => $activeTransaction?->id,
-            'tanggal_datang' => now()->toDateString(),
-        ]);
-
-        return back()->with('success', 'Berhasil check-in kunjungan');
+    if ($user?->role !== 'anggota') {
+        return response()->json([
+            'message' => 'Hanya anggota yang bisa check-in'
+        ], 403);
     }
+
+    $existingVisit = Visit::whereDate('tanggal_datang', today())
+        ->where('user_id', $user->id)
+        ->first();
+
+    if ($existingVisit) {
+        return response()->json([
+            'message' => 'Sudah check-in hari ini'
+        ], 400);
+    }
+
+    $activeTransaction = Transaction::where('user_id', $user->id)
+        ->where('status', 'dipinjam')
+        ->latest('tanggal_peminjaman')
+        ->first();
+
+    Visit::create([
+        'user_id' => $user->id,
+        'transaction_id' => $activeTransaction?->id,
+        'tanggal_datang' => today(),
+    ]);
+
+    return response()->json([
+        'message' => 'Check-in berhasil'
+    ]);
+}
 
     /**
      * Get riwayat kunjungan dan transaksi untuk user

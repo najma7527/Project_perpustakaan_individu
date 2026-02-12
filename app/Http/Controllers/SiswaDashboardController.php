@@ -48,22 +48,16 @@ class SiswaDashboardController extends Controller
             ->take(5)
             ->get();
 
-        // Laporan kehilangan terbaru
-        $laporanKehilanganTerbaru = Report::where('user_id', $userId)
-            ->latest()
-            ->take(5)
-            ->get();
 
         /* =======================
          * KIRIM KE VIEW
          * ======================= */
 
         return view('siswa.dashboard-siswa', compact(
-            'totalDipinjam',
-            'totalTerlambat',
-            'kunjunganHariIni',
-            'riwayatPeminjaman',
-            'laporanKehilanganTerbaru'
-        ));
+    'totalDipinjam',
+    'totalTerlambat',
+    'kunjunganHariIni',
+    'riwayatPeminjaman'
+));
     }
 }

@@ -31,20 +31,11 @@ Route::get('/', function () {
 
 Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard.admin')->middleware('auth');
 
+// Pinjam Buku - Route ke controller
+Route::get('/pinjam-buku', [BookController::class, 'browse'])->name('pinjam-buku')->middleware('auth');
 
-Route::get('/pinjam-buku', function () {
-    return view('siswa.pinjam-buku');
-});
-
-
-Route::get('/pengembalian-buku', function () {
-    if (Auth::user()?->role !== 'anggota') {
-        abort(403);
-    }
-
-    return view('siswa.pengembalian-buku');
-})->name('anggota.pengembalian')->middleware('auth');
-
+// Pengembalian Buku - Route ke controller
+Route::get('/pengembalian-buku', [TransactionController::class, 'myTransactions'])->name('anggota.pengembalian')->middleware('auth');
 
 Route::get('/crud_kelola_buku', function () {
     return view('admin.CRUD_kelola_buku');
@@ -144,6 +135,13 @@ Route::middleware('auth')->group(function () {
 
     Route::put('/laporan-kehilangan/{id}', [LaporanKehilanganController::class, 'update'])
         ->name('laporan-kehilangan.update');
+
+    // Aksi kembalikan buku dari laporan (oleh anggota)
+    Route::post('/laporan-kehilangan/{id}/kembalikan', [LaporanKehilanganController::class, 'kembalikan'])
+        ->name('laporan-kehilangan.kembalikan');
+
+    Route::delete('/laporan-kehilangan/{id}', [LaporanKehilanganController::class, 'destroy'])
+        ->name('laporan-kehilangan.destroy');
 });
 
 /*
@@ -265,7 +263,7 @@ Route::middleware('auth')->group(function () {
 */
 
 Route::middleware('auth')->group(function () {
-    // List semua peminjaman
+    // List semua peminjaman (untuk admin)
     Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
     
     // Form peminjaman buku
@@ -283,14 +281,32 @@ Route::middleware('auth')->group(function () {
     // Update peminjaman (admin)
     Route::put('/transactions/{transaction}', [TransactionController::class, 'update'])->name('transactions.update');
     
-    // Pengembalian buku
-    Route::put('/transactions/{transaction}/return', [TransactionController::class, 'returnBook'])->name('transactions.return');
-    
     // Hapus peminjaman (admin)
     Route::delete('/transactions/{transaction}', [TransactionController::class, 'destroy'])->name('transactions.destroy');
     
     // Lihat peminjaman saya (anggota)
     Route::get('/my-transactions', [TransactionController::class, 'myTransactions'])->name('transactions.mine');
+    
+    // Ajukan pengembalian
+    Route::post('/transactions/{id}/ajukan-pengembalian', [TransactionController::class, 'ajukanPengembalian'])->name('transactions.ajukanPengembalian');
+    
+    // Terima pengembalian (admin)
+    Route::post('/transactions/{id}/terima-pengembalian', [TransactionController::class, 'terimaPengembalian'])->name('transactions.terimaPengembalian');
+    
+    // Tolak pengembalian (admin)
+    Route::post('/transactions/{id}/tolak-pengembalian', [TransactionController::class, 'tolakPengembalian'])->name('transactions.tolakPengembalian');
+    
+    // Ajukan ulang pengembalian (anggota)
+    Route::post('/transactions/{id}/ajukan-ulang', [TransactionController::class, 'ajukanUlang'])->name('transactions.ajukanUlang');
+    
+    // Tandai buku hilang
+    Route::post('/transactions/{id}/tandai-hilang', [TransactionController::class, 'tandaiHilang'])->name('transactions.tandaiHilang');
+    
+    // Perpanjang peminjaman
+    Route::post('/transactions/{id}/perpanjang', [TransactionController::class, 'perpanjang'])->name('transactions.perpanjang');
+    
+    // Cari transaksi
+    Route::get('/transactions/cari', [TransactionController::class, 'search'])->name('transactions.search');
 });
 
 /*
@@ -360,7 +376,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/visits/date/search', [VisitController::class, 'getByDate'])->name('visits.by-date');
 
     // Check-in kunjungan untuk anggota
-    Route::post('/check-in', [VisitController::class, 'checkIn'])->name('visit.check-in');
+    Route::post('/check-in', [VisitController::class, 'checkIn'])->name('checkin');
 
     // Riwayat kunjungan dan transaksi untuk anggota
     Route::get('/my-visits-history', [VisitController::class, 'history'])->name('visit.history');

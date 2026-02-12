@@ -99,18 +99,18 @@
         <tr>
             <td>{{ $reports->firstItem() + $index }}</td>
 
-            <td>{{ $report->transaction->user->nama ?? '-' }}</td>
+            <td>{{ $report->transaction->user->name ?? '-' }}</td>
 
             <td>{{ $report->transaction->book->judul ?? '-' }}</td>
 
             <td>{{ $report->transaction->user->kelas ?? '-' }}</td>
 
             <td>
-                {{ optional($report->transaction->tanggal_pinjam)->format('d/m/Y') }}
+                {{ optional($report->transaction->tanggal_peminjaman)->format('d/m/Y') }}
             </td>
 
             <td>
-                {{ optional($report->tanggal_penggantian)->format('d/m/Y') }}
+                {{ optional($report->tanggal_ganti)->format('d/m/Y') }}
             </td>
 
             <td>
@@ -129,7 +129,7 @@
                         <i class="fa fa-xmark"></i>
                     </button>
                 @else
-                    <span class="no-action">-</span>
+    <span class="btn-filter btn-nota" data-nama="{{ $report->transaction->user->name }}"><i class="fa-solid fa-print"></i></span>
                 @endif
             </td>
         </tr>
