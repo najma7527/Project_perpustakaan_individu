@@ -152,6 +152,7 @@
                                             <input type="hidden" name="status" value="aktif">
                                             <button type="submit" class="btn-accept"><i class="fa fa-check"></i></button>
                                         </form>
+<<<<<<< HEAD
         @endif
 
     </td>
@@ -174,6 +175,200 @@
 </tr>
 </tfoot>
 </table>
+=======
+                                    @endif
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" style="text-align:center; padding:2rem;">Tidak ada data</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="7">
+                                <div class="table-pagination">
+                                    <span class="page-info">
+                                        Menampilkan {{ $users->firstItem() }}–{{ $users->lastItem() }} dari {{ $users->total() }} data
+                                    </span>
+
+                                    <div class="pagination">
+                                        @php
+    $current = $users->currentPage();
+    $last = $users->lastPage();
+@endphp
+
+{{-- PREV --}}
+@if ($users->onFirstPage())
+    <span class="page-btn disabled">
+        <i class="fa fa-chevron-left"></i>
+    </span>
+@else
+    <a href="{{ $users->appends(request()->query())->previousPageUrl() }}" class="page-btn">
+        <i class="fa fa-chevron-left"></i>
+    </a>
+@endif
+
+{{-- PAGE 1 --}}
+@if ($current == 1)
+    <span class="page-btn active">1</span>
+@else
+    <a href="{{ $users->appends(request()->query())->url(1) }}" class="page-btn">1</a>
+@endif
+
+{{-- CURRENT PAGE (jika bukan page 1) --}}
+@if ($current > 1)
+    <span class="page-btn active">{{ $current }}</span>
+@endif
+
+{{-- NEXT PAGE NUMBER --}}
+@if ($current + 1 <= $last)
+    <a href="{{ $users->appends(request()->query())->url($current + 1) }}" class="page-btn">
+        {{ $current + 1 }}
+    </a>
+@endif
+
+{{-- DOTS --}}
+@if ($current + 1 < $last)
+    <span class="page-dots">…</span>
+@endif
+
+{{-- LAST PAGE --}}
+@if ($last > 1)
+    <a href="{{ $users->appends(request()->query())->url($last) }}" class="page-btn">
+        {{ $last }}
+    </a>
+@endif
+
+{{-- NEXT --}}
+@if ($users->hasMorePages())
+    <a href="{{ $users->appends(request()->query())->nextPageUrl() }}" class="page-btn">
+        <i class="fa fa-chevron-right"></i>
+    </a>
+@else
+    <span class="page-btn disabled">
+        <i class="fa fa-chevron-right"></i>
+    </span>
+@endif
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            
+                </table>
+@if ($users->hasPages())
+@endif
+
+
+            </div>
+        </div>
+
+        <!-- MODAL EDIT - Hanya muncul di tab Diterima -->
+        @if($tab == 'diterima')
+<div class="modal" id="editModal">
+    <div class="modal-box">
+        <button class="btn-modal-close" onclick="closeModal()">&times;</button>
+        
+        <div class="modal-header">
+            <h3>Kelola Anggota</h3>
+        </div>
+
+        <!-- TAB HEADER -->
+        <div class="modal-tabs">
+            <button class="modal-tab-btn active" data-tab="tab-data" onclick="switchTab(event, 'tab-data')">
+                <i class="fa fa-user"></i> Data Siswa
+            </button>
+            <button class="modal-tab-btn" data-tab="tab-password" onclick="switchTab(event, 'tab-password')">
+                <i class="fa fa-key"></i> Reset Password
+            </button>
+        </div>
+
+        <!-- TAB CONTENT -->
+        <div class="modal-content-wrapper">
+            
+            <!-- TAB 1: DATA SISWA & STATUS -->
+            <div id="tab-data" class="modal-tab-content active">
+                <form id="formEditStatus" method="POST">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="form-group">
+                        <label class="form-label">Nama Siswa</label>
+                        <input type="text" id="edit_name" class="form-control" disabled>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Username</label>
+                            <input type="text" id="edit_username" class="form-control" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">NIS / NISN</label>
+                            <input type="text" id="edit_nis" class="form-control" disabled>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div clasts="form-group">
+                            <label class="form-label">Kelas</label>
+                            <input type="text" id="edit_kelas" class="form-control" disabled>
+                        </div>
+                    </div>
+
+                    <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid #e0e0e0;">
+
+                    <div class="form-group">
+                        <label class="form-label">Status Anggota <span class="required">*</span></label>
+                        <select name="status" id="edit_status" class="form-control" required>
+                            <option value="">-- Pilih Status --</option>
+                            <option value="aktif">Aktif</option>
+                            <option value="nonaktif">Nonaktif</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-save"></i> Simpan Status
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- TAB 2: RESET PASSWORD -->
+            <div id="tab-password" class="modal-tab-content">
+                <form id="formResetPassword" method="POST">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="form-group">
+                        <label class="form-label">Password Baru <span class="required">*</span></label>
+                        <input type="password" name="password" id="new_password" class="form-control" 
+                               placeholder="Minimal 6 karakter" required minlength="6">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Konfirmasi Password <span class="required">*</span></label>
+                        <input type="password" name="password_confirmation" id="confirm_password" class="form-control" 
+                               placeholder="Konfirmasi password" required minlength="6">
+                    </div>
+
+                    <div class="password-info" style="background-color: #e8f4f8; padding: 10px; border-radius: 4px; margin: 1rem 0; font-size: 0.9rem; color: #0066cc;">
+                        <i class="fa fa-info-circle"></i> Password minimal harus 6 karakter
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fa fa-key"></i> Reset Password
+                        </button>
+                    </div>
+                </form>
+        </div>
+    </div>
+>>>>>>> ef7b14f836cd1fbece2803fc6011a3fd47247061
 </div>
 </div>
 
