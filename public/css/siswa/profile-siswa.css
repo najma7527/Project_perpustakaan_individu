@@ -1,0 +1,247 @@
+* {
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    margin: 0;
+    background: #f4f6f9;
+    overflow-x: hidden; /* penting */
+}
+
+.wrapper {
+    display: flex;
+}
+
+/* ================= SIDEBAR ================= */
+.sidebar {
+    width: 220px;
+    background: #ffffff;
+    height: 100vh;
+    padding: 20px;
+    position: fixed; /* FIX UTAMA */
+    top: 0;
+    left: 0;
+}
+
+.logo img {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu li {
+    padding: 10px;
+    color: #555;
+    cursor: pointer;
+}
+
+.btn-profile {
+    margin-top: 20px;
+    width: 100%;
+    padding: 10px;
+    background: #2196f3;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+}
+
+/* ================= CONTENT ================= */
+.content {
+    margin-left: 220px; /* SAMA dengan sidebar */
+    width: calc(100% - 220px);
+    padding: 20px;
+}
+
+/* ================= TOPBAR ================= */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative; /* penting utk dropdown */
+}
+
+.user-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.user-area img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+/* ================= DROPDOWN ================= */
+.dropdown {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    width: 260px;
+    background: #fff;
+    border-radius: 10px;
+    display: none;
+    box-shadow: 0 5px 20px rgba(0,0,0,.2);
+    z-index: 100;
+}
+
+.dropdown.show {
+    display: block;
+}
+
+.dropdown-header {
+    display: flex;
+    gap: 10px;
+    padding: 15px;
+    align-items: center;
+}
+
+.dropdown-header img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.dropdown-link {
+    display: block;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #333;
+}
+
+.dropdown-link.active {
+    background: #2196f3;
+    color: #fff;
+}
+
+.logout {
+    color: red;
+}
+
+/* ================= HEADER ================= */
+.header {
+    background: linear-gradient(to right, #0d47a1, #2196f3);
+    padding: 20px;
+    color: #fff;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+/* ================= PROFILE ================= */
+.profile-wrapper {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.profile-card {
+    width: 260px;
+    text-align: center;
+}
+
+.avatar {
+    position: relative;
+    display: inline-block;
+}
+
+.avatar img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+}
+
+.edit-icon {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: #2196f3;
+    color: #fff;
+    padding: 6px;
+    border-radius: 50%;
+    font-size: 12px;
+}
+
+.role {
+    color: #2196f3;
+    font-weight: bold;
+}
+
+.biodata-card {
+    flex: 1;
+}
+
+/* ================= TABLE ================= */
+.table-card {
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: #4fc3f7;
+    color: #fff;
+    padding: 10px;
+    text-align: left;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* ================= BUTTON ================= */
+.btn-edit {
+    margin-top: 15px;
+    float: right;
+    padding: 10px 15px;
+    background: #2196f3;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.menu li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #333;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.menu li a:hover {
+    background: #f2f6ff;
+}
+
+/* tombol profile */
+.btn-profile {
+    display: block;
+    text-align: center;
+    background: #2196f3;
+    color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+.btn-profile:hover {
+    background: #1976d2;
+}
