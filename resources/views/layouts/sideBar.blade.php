@@ -1,6 +1,10 @@
 <aside class="sidebar">
     <div class="logo">
         <img src="{{ asset('img/logo.png') }}">
+        <div class="logo-text-horizontal">
+        <span class="edutech">EduTech</span>
+        <span class="library">Library</span>
+    </div>
     </div>
 
     <ul class="menu">

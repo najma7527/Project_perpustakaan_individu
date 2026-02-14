@@ -21,6 +21,7 @@ class Book extends Model
         'cover',
         'deskripsi',
         'status',
+        'stok',
     ];
 
     public function row()

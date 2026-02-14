@@ -59,7 +59,7 @@
         </div>
         </div>
     </form>
-</div>
+
 
 
         <div class="table-wrapper">
@@ -113,6 +113,64 @@
 
             </table>
         </div>
+        <tfoot>
+            <tr>
+                <td colspan="6">
+                    <div class="table-pagination">
+                        <span class="page-info">
+                            Menampilkan {{ $visits->firstItem() }}–{{ $visits->lastItem() }} dari {{ $visits->total() }} data
+                        </span>
+
+                        <div class="pagination">
+                            @if ($visits->onFirstPage())
+                                <span class="page-btn disabled">
+                                    <i class="fa fa-chevron-left"></i>
+                                </span>
+                            @else
+                                <a href="{{ $visits->previousPageUrl() }}" class="page-btn">
+                                    <i class="fa fa-chevron-left"></i>
+                                </a>
+                            @endif
+
+                            @php
+                                $current = $visits->currentPage();
+                                $last = $visits->lastPage();
+                            @endphp
+
+                            @if ($current == 1)
+                                <span class="page-btn active">1</span>
+                            @else
+                                <a href="{{ $visits->url(1) }}" class="page-btn">1</a>
+                            @endif
+
+                            @if ($current > 1)
+                                <span class="page-btn active">{{ $current }}</span>
+                            @endif
+
+                            @if ($current + 1 <= $last)
+                                <a href="{{ $visits->url($current + 1) }}" class="page-btn">{{ $current + 1 }}</a>
+                            @endif
+
+                            @if ($current + 1 < $last)
+                                <span class="page-dots">…</span>
+                            @endif
+
+                            @if ($last > 1)
+                                <a href="{{ $visits->url($last) }}" class="page-btn">{{ $last }}</a>
+                            @endif
+
+                            @if ($visits->hasMorePages())
+                                <a href="{{ $visits->nextPageUrl() }}" class="page-btn">
+                                    <i class="fa fa-chevron-right"></i>
+                                </a>
+                            @else
+                                <span class="page-btn disabled"><i class="fa fa-chevron-right"></i></span>
+                            @endif
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tfoot>
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {

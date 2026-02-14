@@ -99,18 +99,18 @@
         <tr>
             <td>{{ $reports->firstItem() + $index }}</td>
 
-            <td>{{ $report->transaction->user->nama ?? '-' }}</td>
+            <td>{{ $report->transaction->user->name ?? '-' }}</td>
 
             <td>{{ $report->transaction->book->judul ?? '-' }}</td>
 
             <td>{{ $report->transaction->user->kelas ?? '-' }}</td>
 
             <td>
-                {{ optional($report->transaction->tanggal_pinjam)->format('d/m/Y') }}
+                {{ optional($report->transaction->tanggal_peminjaman)->format('d/m/Y') }}
             </td>
 
             <td>
-                {{ optional($report->tanggal_penggantian)->format('d/m/Y') }}
+                {{ $report->tanggal_ganti ?? '-' }}
             </td>
 
             <td>
@@ -129,7 +129,7 @@
                         <i class="fa fa-xmark"></i>
                     </button>
                 @else
-                    <span class="no-action">-</span>
+    <span class="btn-filter btn-nota" data-nama="{{ $report->transaction->user->name }}"><i class="fa-solid fa-print"></i></span>
                 @endif
             </td>
         </tr>
@@ -142,11 +142,50 @@
         </tbody>
 
     </table>
-</div>
-
 {{-- PAGINATION --}}
 <div style="margin-top:20px;">
-    {{ $reports->links() }}
+    <div class="table-pagination">
+        <span class="page-info">Menampilkan {{ $reports->firstItem() }}–{{ $reports->lastItem() }} dari {{ $reports->total() }} data</span>
+
+        <div class="pagination">
+            @if ($reports->onFirstPage())
+                <span class="page-btn disabled"><i class="fa fa-chevron-left"></i></span>
+            @else
+                <a href="{{ $reports->previousPageUrl() }}" class="page-btn"><i class="fa fa-chevron-left"></i></a>
+            @endif
+
+            @php $current = $reports->currentPage(); $last = $reports->lastPage(); @endphp
+
+            @if ($current == 1)
+                <span class="page-btn active">1</span>
+            @else
+                <a href="{{ $reports->url(1) }}" class="page-btn">1</a>
+            @endif
+
+            @if ($current > 1)
+                <span class="page-btn active">{{ $current }}</span>
+            @endif
+
+            @if ($current + 1 <= $last)
+                <a href="{{ $reports->url($current + 1) }}" class="page-btn">{{ $current + 1 }}</a>
+            @endif
+
+            @if ($current + 1 < $last)
+                <span class="page-dots">…</span>
+            @endif
+
+            @if ($last > 1)
+                <a href="{{ $reports->url($last) }}" class="page-btn">{{ $last }}</a>
+            @endif
+
+            @if ($reports->hasMorePages())
+                <a href="{{ $reports->nextPageUrl() }}" class="page-btn"><i class="fa fa-chevron-right"></i></a>
+            @else
+                <span class="page-btn disabled"><i class="fa fa-chevron-right"></i></span>
+            @endif
+        </div>
+    </div>
+</div>
 </div>
 
 @endsection

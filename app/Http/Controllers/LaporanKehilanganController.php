@@ -8,40 +8,51 @@ use Illuminate\Support\Facades\Auth;
 
 class LaporanKehilanganController extends Controller
 {
-        public function create()
+    public function create()
     {
         return view('siswa.laporan-kehilangan.create');
     }
 
-        public function store(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
-            'book_id' => 'required',
-            'keterangan' => 'required|string'
+            'transactions_id' => 'required|exists:transactions,id',
+            'tanggal_ganti' => 'required|date',
+            'keterangan' => 'required|string|max:500'
         ]);
 
-    Report::create([
-            'user_id' => Auth:: id(),
-            'book_id' => $request->book_id,
+        // Pastikan user hanya bisa membuat laporan untuk transaksi mereka sendiri
+        $transaction = \App\Models\Transaction::where('id', $request->transactions_id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        Report::create([
+            'user_id' => Auth::id(),
+            'transactions_id' => $request->transactions_id,
+            'tanggal_ganti' => $request->tanggal_ganti,
             'keterangan' => $request->keterangan,
-            'status' => 'pending'
+            'status' => 'belum_dikembalikan'
         ]);
+
+        // Update status transaksi menjadi 'hilang'
+        $transaction->update(['status' => 'buku_hilang']);
 
         return redirect()
-            ->route('laporan-kehilangan.index')
-            ->with('success', 'Laporan kehilangan berhasil dibuat');
+            ->route('anggota.pengembalian')
+            ->with('success', 'Laporan kehilangan berhasil dibuat. Buku ditandai sebagai hilang.');
     }
 
-        public function index()
+    public function index()
     {
         $laporan = Report::where('user_id', Auth::id())
+            ->with('transaction.book')
             ->latest()
             ->get();
 
         return view('siswa.laporan_kehilangan', compact('laporan'));
     }
 
-        public function edit($id)
+    public function edit($id)
     {
         $laporan = Report::where('id', $id)
             ->where('user_id', Auth::id())
@@ -50,10 +61,11 @@ class LaporanKehilanganController extends Controller
         return view('siswa.laporan-kehilangan.edit', compact('laporan'));
     }
 
-        public function update(Request $request, $id)
+    public function update(Request $request, $id)
     {
         $request->validate([
-            'keterangan' => 'required|string'
+            'tanggal_ganti' => 'required|date',
+            'keterangan' => 'required|string|max:500'
         ]);
 
         $laporan = Report::where('id', $id)
@@ -61,20 +73,60 @@ class LaporanKehilanganController extends Controller
             ->firstOrFail();
 
         if ($laporan->status !== 'pending') {
-            return back()->with('error', 'Laporan tidak bisa diubah');
+            return back()->with('error', 'Laporan yang sudah diproses tidak bisa diubah');
         }
 
         $laporan->update([
+            'tanggal_ganti' => $request->tanggal_ganti,
             'keterangan' => $request->keterangan
         ]);
 
         return redirect()
             ->route('laporan-kehilangan.index')
-            ->with('success', 'Laporan berhasil diperbarui');
+            ->with('success', 'Laporan kehilangan berhasil diperbarui');
     }
 
+    public function destroy($id)
+    {
+        $laporan = Report::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
 
+        if ($laporan->status !== 'pending') {
+            return back()->with('error', 'Hanya laporan yang pending bisa dihapus');
+        }
 
+        // Reset status transaksi ke belum_dikembalikan jika laporan dihapus
+        if ($laporan->transaction) {
+            $laporan->transaction->update(['status' => 'belum_dikembalikan']);
+        }
 
+        $laporan->delete();
 
+        return redirect()
+            ->route('laporan-kehilangan.index')
+            ->with('success', 'Laporan kehilangan berhasil dihapus');
+    }
+
+    /**
+     * Anggota menandai laporan sebagai kembalikan (mengembalikan buku).
+     */
+    public function kembalikan($id)
+    {
+        $laporan = Report::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->with('transaction.book')
+            ->firstOrFail();
+
+        if ($laporan->status !== 'belum_dikembalikan') {
+            return back()->with('error', 'Laporan tidak dapat diproses');
+        }
+
+        // Set laporan menjadi approved dan update transaksi + buku
+        $laporan->update(['status' => 'pending']);
+
+        return redirect()
+            ->route('laporan-kehilangan.index')
+            ->with('success', 'Buku berhasil dikembalikan');
+    }
 }

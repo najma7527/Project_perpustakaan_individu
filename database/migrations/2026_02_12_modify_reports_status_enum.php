@@ -1,0 +1,40 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        // Modify enum column to include 'pending' status
+        Schema::table('reports', function (Blueprint $table) {
+            $table->enum('status', [
+                'pending',
+                'buku_hilang',
+                'sudah_dikembalikan',
+                'belum_dikembalikan',
+                'approved',
+                'rejected'
+            ])->default('pending')->change();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('reports', function (Blueprint $table) {
+            $table->enum('status', [
+                'buku_hilang',
+                'sudah_dikembalikan',
+                'belum_dikembalikan'
+            ])->default('belum_dikembalikan')->change();
+        });
+    }
+};

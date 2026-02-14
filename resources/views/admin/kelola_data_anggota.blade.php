@@ -81,8 +81,7 @@
                     <tbody>
                         @forelse ($users as $index => $user)
                             <tr>
-                                <td>{{ $users->firstItem() + $index }}</td>
-
+                                <td>{{ $loop->iteration }}</td>
                                 <td class="user-cell">
                                     @if($user->profile_photo && file_exists(public_path($user->profile_photo)))
                                         <img src="{{ asset($user->profile_photo) }}" class="avatar" alt="{{ $user->name }}">
@@ -156,12 +155,114 @@
                             </tr>
                         @endforelse
                     </tbody>
-                </table>
+                    <tfoot>
+                        <tr>
+                            <td colspan="7">
+                                <div class="table-pagination">
+                                    <span class="page-info">
+                                        Menampilkan {{ $users->firstItem() }}–{{ $users->lastItem() }} dari {{ $users->total() }} data
+                                    </span>
 
-                <!-- Pagination -->
-                <div class="pagination">
-                    {{ $users->links() }}
-                </div>
+                                    <div class="pagination">
+                                        {{-- PREV --}}
+                                        @if ($users->onFirstPage())
+                                            <span class="page-btn disabled">
+                                                <i class="fa fa-chevron-left"></i>
+                                            </span>
+                                        @else
+                                            <a href="{{ $users->previousPageUrl() }}" class="page-btn">
+                                                <i class="fa fa-chevron-left"></i>
+                                            </a>
+                                        @endif
+
+                                        @php
+                                            $current = $users->currentPage();
+                                            $last = $users->lastPage();
+                                        @endphp
+
+                                        {{-- PAGE 1 --}}
+                                        @if ($current == 1)
+                                            <span class="page-btn active">1</span>
+                                        @else
+                                            <a href="{{ $users->url(1) }}" class="page-btn">1</a>
+                                        @endif
+
+                                        {{-- CURRENT PAGE (jika bukan page 1) --}}
+                                        @if ($current > 1)
+                                            <span class="page-btn active">{{ $current }}</span>
+                                        @endif
+
+                                        {{-- NEXT PAGE --}}
+                                        @if ($current + 1 <= $last)
+                                            <a href="{{ $users->url($current + 1) }}" class="page-btn">
+                                                {{ $current + 1 }}
+                                            </a>
+                                        @endif
+
+                                        {{-- DOTS --}}
+                                        @if ($current + 1 < $last)
+                                            <span class="page-dots">…</span>
+                                        @endif
+
+                                        {{-- LAST PAGE --}}
+                                        @if ($last > 1)
+                                            <a href="{{ $users->url($last) }}" class="page-btn">
+                                                {{ $last }}
+                                            </a>
+                                        @endif
+
+                                        {{-- NEXT --}}
+                                        @if ($users->hasMorePages())
+                                            <a href="{{ $users->nextPageUrl() }}" class="page-btn">
+                                                <i class="fa fa-chevron-right"></i>
+                                            </a>
+                                        @else
+                                            <span class="page-btn disabled">
+                                                <i class="fa fa-chevron-right"></i>
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            
+                </table>
+@if ($users->hasPages())
+    <div class="simple-pagination">
+
+        {{-- Previous --}}
+        @if ($users->onFirstPage())
+            <button class="nav-btn disabled">
+                &#8249;
+            </button>
+        @else
+            <a href="{{ $users->previousPageUrl() }}" class="nav-btn active">
+                &#8249;
+            </a>
+        @endif
+
+        {{-- Page Info --}}
+        <div class="page-info">
+            {{ $users->currentPage() }} of {{ $users->lastPage() }}
+        </div>
+
+        {{-- Next --}}
+        @if ($users->hasMorePages())
+            <a href="{{ $users->nextPageUrl() }}" class="nav-btn active">
+                &#8250;
+            </a>
+        @else
+            <button class="nav-btn disabled">
+                &#8250;
+            </button>
+        @endif
+
+    </div>
+@endif
+
+
             </div>
         </div>
 
@@ -336,4 +437,5 @@
     @method('DELETE')
 </form>
 <script src="{{ asset('js/kelola_anggota.js') }}"></script>
+
 @endsection

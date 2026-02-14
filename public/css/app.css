@@ -92,8 +92,54 @@
      } 
  .logo img {
      width: 85px;
-      margin-bottom: 30px;
-     }
+      margin-bottom: 5px;
+       display: block;
+}
+
+
+ /* LOGO AREA */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+/* WRAPPER LOGO */
+.logo img {
+    width: 70px;
+    height: auto;
+    display: block;
+}
+
+/* TEKS */
+.logo-text-horizontal {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+/* HILANGKAN BASELINE SHIFT */
+.logo-text-horizontal span {
+    display: flex;
+    align-items: center;
+}
+
+/* Warna */
+.edutech {
+    color: #1565C0;
+}
+
+.library {
+    color: #FFC107;
+}
+
+.logo-text-horizontal {
+    line-height: normal;
+}
+
  .menu li {
       list-style: none;
       margin-bottom: 6px;
@@ -234,4 +280,65 @@
 
 .btn-logout:hover {
     background: #ffebee;
+}
+
+/* ================= PAGINATION ================= */
+
+.pagination-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.pagination-info {
+    font-size: 13px;
+    color: #666;
+}
+
+.pagination-links nav {
+    display: flex;
+}
+
+.pagination-links .pagination {
+    display: flex;
+    list-style: none;
+    gap: 6px;
+}
+
+.pagination-links .page-item {
+    list-style: none;
+}
+
+.pagination-links .page-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    color: #1e88e5;
+    text-decoration: none;
+    font-size: 13px;
+    background: #fff;
+    transition: 0.2s;
+}
+
+.pagination-links .page-link:hover {
+    background: #e3f2fd;
+}
+
+.pagination-links .active .page-link {
+    background: #1e88e5;
+    color: #fff;
+    border-color: #1e88e5;
+}
+
+.pagination-links .disabled .page-link {
+    color: #aaa;
+    pointer-events: none;
+    background: #f5f5f5;
 }

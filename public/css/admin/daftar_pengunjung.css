@@ -171,3 +171,74 @@ tbody tr {
         padding-top: 80px;
     }
 }
+
+/* ================= PAGINATION (TABLE) ================= */
+.table-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-top: 12px;
+}
+
+/* info kiri */
+.page-info {
+    font-size: 14px;
+    color: #6b7280;
+    white-space: nowrap; /* cegah turun */
+}
+
+/* container pagination kanan */
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto; /* 🔥 paksa ke kanan */
+}
+
+/* tombol page */
+.page-btn {
+    min-width: 36px;
+    height: 36px;
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: transparent;
+    color: #1e7cff;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+/* halaman aktif */
+.page-btn.active {
+    background: #eaf3ff;
+    color: #1e7cff;
+}
+
+/* hover */
+.page-btn:hover:not(.active):not(.disabled) {
+    background: #dbeafe;
+}
+
+/* disabled (prev / next) */
+.page-btn.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* dots (...) */
+.page-dots {
+    padding: 0 6px;
+    color: #1e7cff;
+    font-size: 16px;
+}
+
+/* hilangkan garis dobel tabel */
+table tfoot,
+table tfoot td {
+    border-top: none !important;
+}

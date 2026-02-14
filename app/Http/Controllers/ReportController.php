@@ -42,7 +42,7 @@ class ReportController extends Controller
         });
     }
 
-    $reports = $query->latest()->paginate(10);
+    $reports = $query->latest()->paginate();
     $statuses = ['buku_hilang', 'sudah_dikembalikan', 'belum_dikembalikan'];
 
     return view('admin.laporan_data_kehilangan', compact('reports', 'statuses'));

@@ -125,8 +125,96 @@
                     @endif
                     @endforeach
                 </tbody>
-            </table>
 
+            </table>
+            <!-- PAGINATION START -->
+<div class="pagination-wrapper">
+    <div class="pagination-info">
+        Menampilkan {{ $books->firstItem() }}–
+        {{ $books->lastItem() }} dari
+        {{ $books->total() }} data
+    </div>
+
+    <div class="pagination-links">
+        {{ $books->appends(request()->query())->links() }}
+    </div>
+</div>
+        <tfoot>
+            <tr>
+                <td colspan="8">
+                    <div class="table-pagination">
+                        <span class="page-info">
+                            Menampilkan {{ $books->firstItem() }}–{{ $books->lastItem() }} dari {{ $books->total() }} data
+                        </span>
+
+                        <div class="pagination">
+                            {{-- PREV --}}
+                            @if ($books->onFirstPage())
+                                <span class="page-btn disabled">
+                                    <i class="fa fa-chevron-left"></i>
+                                </span>
+                            @else
+                                <a href="{{ $books->previousPageUrl() }}" class="page-btn">
+                                    <i class="fa fa-chevron-left"></i>
+                                </a>
+                            @endif
+@php
+    $current = $books->currentPage();
+    $last = $books->lastPage();
+@endphp
+
+{{-- PAGE 1 --}}
+@if ($current == 1)
+    <span class="page-btn active">1</span>
+@else
+    <a href="{{ $books->url(1) }}" class="page-btn">1</a>
+@endif
+
+{{-- CURRENT PAGE (jika bukan page 1) --}}
+@if ($current > 1)
+    <span class="page-btn active">{{ $current }}</span>
+@endif
+
+{{-- NEXT PAGE --}}
+@if ($current + 1 <= $last)
+    <a href="{{ $books->url($current + 1) }}" class="page-btn">
+        {{ $current + 1 }}
+    </a>
+@endif
+
+{{-- DOTS --}}
+@if ($current + 1 < $last)
+    <span class="page-dots">…</span>
+@endif
+
+{{-- LAST PAGE --}}
+@if ($last > 1)
+    <a href="{{ $books->url($last) }}" class="page-btn">
+        {{ $last }}
+    </a>
+@endif
+
+
+                            {{-- NEXT --}}
+                            @if ($books->hasMorePages())
+                                <a href="{{ $books->nextPageUrl() }}" class="page-btn">
+                                    <i class="fa fa-chevron-right"></i>
+                                </a>
+                            @else
+                                <span class="page-btn disabled">
+                                    <i class="fa fa-chevron-right"></i>
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tfoot>
+    
+
+    </table>
+
+</div>
         </div>
 
     </main>
@@ -175,6 +263,8 @@
             </div>
         </div>
     </div>
+
+    
 
 <script>
 
@@ -243,4 +333,6 @@ function toggleFilterKategori(){
         if (e.target === this) closeDetail();
     });
 </script>
+
+
 @endsection
