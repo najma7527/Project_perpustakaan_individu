@@ -53,110 +53,8 @@
         <p class="title">Sudah Dikembalikan</p>
         <h2>{{ $totalPengembalian }}</h2>
     </div>
-
-</section>
-        <!-- CONTENT -->
-        <section class="dashboard-content">
-            <div class="card visitor-card">
-        <h4 class="card-title">
-            <i class="fa fa-users"></i>list Pengunjung
-        </h4>
-
-        <ul class="visitor-list">
-
-        <li>
-    <a href="/cetak-kartu" class="visitor-item">
-        <span class="icon card">
-     <i class="fa fa-id-card"></i>
-     </span>
-        <span class="text">Cetak Kartu</span>
-      </a>
-      </li>
-
-            <li>
-                <a href="/laporan_kehilangan" class="visitor-item">
-                    <span class="icon warning">
-                        <i class="fa fa-triangle-exclamation"></i>
-                    </span>
-                    <span class="text">Laporan Kehilangan</span>
-                </a>
-            </li>
-
-            <li>
-                <a href="/pengembalian-buku" class="visitor-item">
-                    <span class="icon primary">
-                        <i class="fa fa-book"></i>
-                    </span>
-                    <span class="text">Kembali Buku</span>
-                </a>
-            </li>
-
-            <li>
-                <a href="/pinjam-buku" class="visitor-item">
-                    <span class="icon danger">
-                        <i class="fa fa-flag"></i>
-                    </span>
-                    <span class="text">Pinjam Buku</span>
-                </a>
-            </li>
-        </ul>
-    </div>
-
-       <div class="card modern-card">
-    <div class="card-header">
-        <i class="fa fa-rotate-left"></i>
-        <h4>Data Pengembalian Buku</h4>
-    </div>
-
-    <div class="table-responsive">
-        <table class="modern-table">
-            <thead>
-                <tr>
-                    <th>Judul Buku</th>
-                    <th>Kategori</th>
-                    <th>Kode Buku</th>
-                    <th>Tanggal Pinjam</th>
-                    <th>Jatuh Tempo</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                <tr>
-                    <td>Laut Bercerita</td>
-                    <td>Fiksi</td>
-                    <td>0087</td>
-                    <td>24/01/2026</td>
-                    <td>24/01/2026</td>
-                    <td><span class="badge success">Dikembalikan</span></td>
-                </tr>
-
-                <tr>
-                    <td>Si Anak Pintar</td>
-                    <td>Non Fiksi</td>
-                    <td>0087</td>
-                    <td>26/01/2026</td>
-                    <td>26/01/2026</td>
-                    <td><span class="badge danger">Belum</span></td>
-                </tr>
-
-                <tr>
-                    <td>Kayangan Api</td>
-                    <td>Fiksi</td>
-                    <td>0087</td>
-                    <td>26/01/2026</td>
-                    <td>26/01/2026</td>
-                    <td><span class="badge warning">Menunggu</span></td>
-                </tr>
-            </tbody>
-        </table>
-
-    <div class="stat-icon">
-        <i class="fa fa-arrow-rotate-left"></i>
-    </div>
-</div>
-
-        <div class="stat-box red">
+        </div>
+    <div class="stat-box red">
             <div class="stat-left">
                 <p class="title">Buku Hilang</p>
                 <h2>{{ $totalBukuHilang }}</h2>
@@ -165,7 +63,8 @@
                 <i class="fa fa-flag"></i>
             </div>
         </div>
-    </section>
+
+</section>
 
     <!-- HADIR -->
     <section class="hadir-section">
@@ -205,6 +104,14 @@
             </h4>
 
             <ul class="visitor-list">
+                <li>
+                    <a href="/cetak-kartu" class="visitor-item">
+                            <span class="icon card">
+                        <i class="fa fa-id-card"></i>
+                        </span>
+                            <span class="text">Cetak Kartu</span>
+                    </a>
+                </li>
 
                 <li>
                     <a href="{{ route('laporan-kehilangan.index') }}" class="visitor-item">
