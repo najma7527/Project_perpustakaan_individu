@@ -3,6 +3,7 @@
 @section('title', 'Kelola Anggota - ' . ucfirst($tab))
 
 @push('styles')
+    {{-- Load CSS sesuai tab --}}
     @if($tab == 'verifikasi')
         <link rel="stylesheet" href="{{ asset('css/admin/kelola-anggota-verifikasi.css') }}">
     @elseif($tab == 'diterima')
@@ -10,172 +11,143 @@
     @else
         <link rel="stylesheet" href="{{ asset('css/admin/kelola-anggota-ditolak.css') }}">
     @endif
-
+    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 @endpush
 
 @section('content')
-
-<!-- HEADER -->
-<div class="header-card">
-    <div class="header-left">
-        <div class="header-icon"><i class="fa fa-user-check"></i></div>
-        <div>
-            <h3>Kelola Anggota</h3>
-            <p>
-                @if($tab == 'verifikasi')
-                    Daftar anggota menunggu verifikasi
-                @elseif($tab == 'diterima')
-                    Daftar anggota yang telah diterima
-                @else
-                    Daftar anggota ditolak / non-aktif
-                @endif
-            </p>
-        </div>
-    </div>
-    <img src="{{ asset('img/book.png') }}" alt="book">
-</div>
-
-<!-- TAB -->
-<div class="tab-wrapper">
-    <a href="{{ route('admin.anggota.index', ['tab'=>'verifikasi']) }}" class="tab-item {{ $tab=='verifikasi'?'active':'' }}">Verifikasi</a>
-    <a href="{{ route('admin.anggota.index', ['tab'=>'diterima']) }}" class="tab-item {{ $tab=='diterima'?'active':'' }}">Diterima</a>
-    <a href="{{ route('admin.anggota.index', ['tab'=>'ditolak']) }}" class="tab-item {{ $tab=='ditolak'?'active':'' }}">Ditolak</a>
-</div>
-
-<div class="table-card">
-
-<!-- FILTER -->
-<form method="GET" action="{{ route('admin.anggota.index') }}">
-    <input type="hidden" name="tab" value="{{ $tab }}">
-    <div class="filter">
-        <div class="search">
-            <i class="fa fa-search"></i>
-            <input type="text" name="search" value="{{ $search }}" placeholder="Cari sesuatu...">
+        <!-- HEADER CARD -->
+        <div class="header-card">
+            <div class="header-left">
+                <div class="header-icon">
+                    <i class="fa fa-user-check"></i>
+                </div>
+                <div>
+                    <h3>Kelola Anggota</h3>
+                    <p>
+                        @if($tab == 'verifikasi') Daftar anggota menunggu verifikasi
+                        @elseif($tab == 'diterima') Daftar anggota yang telah diterima
+                        @else Daftar anggota ditolak / non-aktif
+                        @endif
+                    </p>
+                </div>
+            </div>
+            <img src="{{ asset('img/book.png') }}" alt="book">
         </div>
 
-        @if($tab=='verifikasi')
-        <div class="date">
-            <i class="fa fa-calendar"></i>
-            <input type="date" name="date" value="{{ $date }}">
+        <!-- TAB -->
+        <div class="tab-wrapper">
+            <a href="{{ route('admin.anggota.index', ['tab' => 'verifikasi']) }}" class="tab-item {{ $tab == 'verifikasi' ? 'active' : '' }}">Verifikasi</a>
+            <a href="{{ route('admin.anggota.index', ['tab' => 'diterima']) }}"   class="tab-item {{ $tab == 'diterima'   ? 'active' : '' }}">Diterima</a>
+            <a href="{{ route('admin.anggota.index', ['tab' => 'ditolak']) }}"    class="tab-item {{ $tab == 'ditolak'    ? 'active' : '' }}">Ditolak</a>
         </div>
-        @endif
-    </div>
-</form>
 
-<!-- TABLE -->
-<div class="table-wrapper">
-<table>
-<thead>
-<tr>
-    <th>No</th>
-    <th>Username</th>
-    <th>NIS</th>
+        <!-- FILTER -->
+        <div class="table-card">
+            <form method="GET" action="{{ route('admin.anggota.index') }}">
+                <input type="hidden" name="tab" value="{{ $tab }}">
 
-    @if($tab=='diterima')
-        <th>No. Telp</th>
-        <th>Alamat</th>
-    @endif
-
-    <th>Kelas</th>
-
-    @if($tab=='verifikasi')
-        <th>Tanggal Daftar</th>
-    @elseif($tab=='diterima')
-        <th>Status</th>
-    @endif
-
-    <th>Aksi</th>
-</tr>
-</thead>
-
-<tbody>
-@forelse($users as $user)
-<tr>
-    <td>{{ $loop->iteration }}</td>
-
-    <td class="user-cell">
-        @if($user->profile_photo && file_exists(public_path($user->profile_photo)))
-            <img src="{{ asset($user->profile_photo) }}" class="avatar">
-        @else
-            <div class="avatar avatar-default"><i class="fa fa-user"></i></div>
-        @endif
-        <div class="user-info">
-            <strong>{{ $user->name }}</strong>
-            <small>@{{ $user->username }}</small>
-        </div>
-    </td>
-
-    <td>{{ $user->nis_nisn ?? '-' }}</td>
-
-    @if($tab=='diterima')
-        <td>{{ $user->telephone ?? '-' }}</td>
-        <td class="alamat-cell">
-            {{ $user->alamat && trim($user->alamat) !== '' ? $user->alamat : 'Belum diisi' }}
-        </td>
-    @endif
-
-    <td>{{ $user->kelas ?? '-' }}</td>
-
-    @if($tab=='verifikasi')
-        <td>{{ $user->created_at->format('d/m/Y') }}</td>
-    @elseif($tab=='diterima')
-        <td><span class="status aktif">DITERIMA</span></td>
-    @endif
-
-    <td class="aksi">
-
-        {{-- TAB VERIFIKASI --}}
-        @if($tab=='verifikasi')
-            <form method="POST" action="{{ route('admin.anggota.status',$user->id) }}" style="display:inline">
-                @csrf
-                <input type="hidden" name="status" value="aktif">
-                <button class="yes"><i class="fa fa-check"></i></button>
+                <div class="filter">
+                    <div class="search">
+                        <i class="fa fa-search"></i>
+                        <input type="text" name="search" value="{{ $search }}" placeholder="Cari sesuatu...">
+                    </div>
+                    @if($tab == 'verifikasi')
+                    <div class="date">
+                        <i class="fa fa-calendar"></i>
+                        <input type="date" name="date" value="{{ $date }}">
+                    </div>
+                    @endif
+                </div>
             </form>
 
-            <form method="POST" action="{{ route('admin.anggota.status',$user->id) }}" style="display:inline">
-                @csrf
-                <input type="hidden" name="status" value="ditolak">
-                <button class="no"><i class="fa fa-times"></i></button>
-            </form>
+            <!-- TABEL -->
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Username</th>
+                            <th>NIS</th>
+                            <th>Kelas</th>
+                            <th>Alamat</th>
+                            @if($tab == 'verifikasi')
+                                <th>Tanggal Daftar</th>
+                            @elseif($tab == 'diterima')
+                                <th>Status</th>
+                            @endif
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($users as $index => $user)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td class="user-cell">
+                                    @if($user->profile_photo && file_exists(public_path($user->profile_photo)))
+                                        <img src="{{ asset($user->profile_photo) }}" class="avatar" alt="{{ $user->name }}">
+                                    @else
+                                        <div class="avatar avatar-default">
+                                            <i class="fa fa-user"></i>
+                                        </div>
+                                    @endif
+                                    <div class="user-info">
+                                        <strong>{{ $user->name }}</strong>
+                                        <small>@.{{ $user->username }}</small>
+                                    </div>
+                                </td>
 
-        {{-- TAB DITERIMA --}}
-        @elseif($tab=='diterima')
-            <button class="view"><i class="fa fa-eye"></i></button>
-            <button class="edit"><i class="fa fa-pen"></i></button>
-            <button class="delete"><i class="fa fa-trash"></i></button>
+                                <td>{{ $user->nis_nisn ?? '-' }}</td>
+                                <td>{{ $user->kelas ?? '-' }}</td>
+                                <td>{{ $user->alamat ?? '-' }}</td>
 
-        {{-- TAB DITOLAK --}}
-        @elseif($tab=='ditolak')
-             <form action="{{ route('admin.anggota.status', $user->id) }}" method="POST" style="display:inline;">
+                                @if($tab == 'verifikasi')
+                                    <td>{{ $user->created_at->format('d/m/Y') }}</td>
+                                @elseif($tab == 'diterima')
+                                    <td ><span class="status aktif">{{ $user->status }}</span></td>
+                                @endif
+
+                                <td class="aksi">
+                                    @if($tab == 'verifikasi')
+                                        <form action="{{ route('admin.anggota.status', $user->id) }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            <input type="hidden" name="status" value="aktif">
+                                            <button type="submit" class="yes"><i class="fa fa-check"></i></button>
+                                        </form>
+                                        <form action="{{ route('admin.anggota.status', $user->id) }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            <input type="hidden" name="status" value="ditolak">
+                                            <button type="submit" class="no"><i class="fa fa-times"></i></button>
+                                        </form>
+
+                                    @elseif($tab == 'diterima')
+                                        <button type="button" class="view" title="Lihat Detail"
+                                            onclick="openDetailModal({
+                                                name: '{{ addslashes($user->name) }}',
+                                                username: '{{ $user->username }}',
+                                                telephone: '{{ $user->telephone ?? '-' }}',
+                                                nis_nisn: '{{ $user->nis_nisn ?? '-' }}',
+                                                kelas: '{{ $user->kelas ?? '-' }}',
+                                                status: '{{ $user->status }}',
+                                                created_at: '{{ $user->created_at }}'
+                                            })">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+
+                                        <button type="button" class="edit" title="Kelola"
+                                            onclick="openEditModal('{{ $user->id }}', '{{ addslashes($user->name) }}', '{{ $user->username }}', '{{ $user->nis_nisn }}', '{{ $user->kelas }}')">
+                                            <i class="fa fa-pen"></i>
+                                        </button>
+
+                                        <button type="button" class="delete" title="Hapus" onclick="confirmDelete('{{ $user->id }}', '{{ addslashes($user->name) }}')">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    @elseif($tab == 'ditolak')
+                                        <form action="{{ route('admin.anggota.status', $user->id) }}" method="POST" style="display:inline;">
                                             @csrf
                                             <input type="hidden" name="status" value="aktif">
                                             <button type="submit" class="btn-accept"><i class="fa fa-check"></i></button>
                                         </form>
-<<<<<<< HEAD
-        @endif
-
-    </td>
-</tr>
-
-@empty
-<tr>
-    <td colspan="{{ $tab=='diterima' ? 8 : 7 }}" style="text-align:center;padding:2rem">
-        Tidak ada data
-    </td>
-</tr>
-@endforelse
-</tbody>
-
-<tfoot>
-<tr>
-    <td colspan="{{ $tab=='diterima' ? 8 : 7 }}">
-        {{ $users->links() }}
-    </td>
-</tr>
-</tfoot>
-</table>
-=======
                                     @endif
                                 </td>
                             </tr>
@@ -368,9 +340,75 @@
                 </form>
         </div>
     </div>
->>>>>>> ef7b14f836cd1fbece2803fc6011a3fd47247061
 </div>
-</div>
+ @endif
 
+<!-- MODAL DETAIL - Hanya muncul di tab Diterima -->
+@if($tab == 'diterima')
+<div class="modal" id="detailModal">
+    <div class="modal-box">
+        <button class="btn-modal-close" onclick="closeDetailModal()">&times;</button>
+        
+        <div class="modal-header">
+            <h3><i class="fa fa-info-circle"></i> Detail Anggota</h3>
+        </div>
+
+        <div class="modal-content-wrapper">
+            <div class="detail-content">
+                <div class="detail-section">
+                    <h4 class="section-title">Informasi Pribadi</h4>
+                    <div class="detail-row">
+                        <label>Nama Lengkap</label>
+                        <p id="detail_name">-</p>
+                    </div>
+                    <div class="detail-row">
+                        <label>Username</label>
+                        <p id="detail_username">-</p>
+                    </div>
+                    <div class="detail-row">
+                        <label>Nomor Telepon</label>
+                        <p id="detail_telephone">-</p>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h4 class="section-title">Informasi Akademik</h4>
+                    <div class="detail-row">
+                        <label>NIS / NISN</label>
+                        <p id="detail_nis">-</p>
+                    </div>
+                    <div class="detail-row">
+                        <label>Kelas</label>
+                        <p id="detail_kelas">-</p>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h4 class="section-title">Status & Tanggal</h4>
+                    <div class="detail-row">
+                        <label>Status</label>
+                        <p id="detail_status">-</p>
+                    </div>
+                    <div class="detail-row">
+                        <label>Tanggal Pendaftaran</label>
+                        <p id="detail_date">-</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeDetailModal()">
+                <i class="fa fa-times"></i> Tutup
+            </button>
+        </div>
+    </div>
+</div>
+@endif
+<form id="deleteForm" method="POST" style="display:none;">
+    @csrf
+    @method('DELETE')
+</form>
 <script src="{{ asset('js/kelola_anggota.js') }}"></script>
+
 @endsection
