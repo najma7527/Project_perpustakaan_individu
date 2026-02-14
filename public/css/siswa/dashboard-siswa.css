@@ -112,12 +112,12 @@
     color:#16a34a;
 }
 
-.purple{
-    border-color:#2563eb;
+.red{
+    border-color:#eb2525;
 }
-.purple .stat-icon{
+.red .stat-icon{
     background:#f3e8ff;
-    color:#2563eb;
+    color:#eb2525;
 }
 
 .orange{

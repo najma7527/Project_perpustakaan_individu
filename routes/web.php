@@ -95,7 +95,7 @@ Route::get('/profile_admin', [ProfileController::class, 'show'])
 
         // Profile-siswa
      Route::get('/profile-siswa', function () {
-    return view('siswa.profile-siswa');
+    return view('auth.profile.siswa.profile-siswa');
 })->name('profile');
 /*
 |--------------------------------------------------------------------------

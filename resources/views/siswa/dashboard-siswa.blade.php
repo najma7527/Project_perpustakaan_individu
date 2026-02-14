@@ -48,6 +48,25 @@
             </div>
         </div>
 
+        <div class="stat-box green">
+    <div class="stat-left">
+        <p class="title">Sudah Dikembalikan</p>
+        <h2>{{ $totalPengembalian }}</h2>
+    </div>
+    <div class="stat-icon">
+        <i class="fa fa-arrow-rotate-left"></i>
+    </div>
+</div>
+
+        <div class="stat-box red">
+            <div class="stat-left">
+                <p class="title">Buku Hilang</p>
+                <h2>{{ $totalBukuHilang }}</h2>
+            </div>
+            <div class="stat-icon">
+                <i class="fa fa-flag"></i>
+            </div>
+        </div>
     </section>
 
     <!-- HADIR -->
@@ -143,7 +162,7 @@
                         <tr>
                             <td>{{ $trx->book->judul ?? '-' }}</td>
                             <td>{{ $trx->tanggal_peminjaman }}</td>
-                            <td>{{ $trx->tanggal_pengembalian }}</td>
+                            <td>{{ $trx->tanggal_jatuh_tempo }}</td>
                             <td>
                                 <span class="badge">
                                     {{ $trx->status }}
