@@ -110,7 +110,7 @@
             </td>
 
             <td>
-                {{ optional($report->tanggal_ganti)->format('d/m/Y') }}
+                {{ $report->tanggal_ganti ?? '-' }}
             </td>
 
             <td>
@@ -144,39 +144,10 @@
     </table>
 </div>
 
-@if ($users->hasPages())
-    <div class="simple-pagination">
-
-        {{-- Previous --}}
-        @if ($users->onFirstPage())
-            <button class="nav-btn disabled">
-                &#8249;
-            </button>
-        @else
-            <a href="{{ $users->previousPageUrl() }}" class="nav-btn active">
-                &#8249;
-            </a>
-        @endif
-
-        {{-- Page Info --}}
-        <div class="page-info">
-            {{ $users->currentPage() }} of {{ $users->lastPage() }}
-        </div>
-
-        {{-- Next --}}
-        @if ($users->hasMorePages())
-            <a href="{{ $users->nextPageUrl() }}" class="nav-btn active">
-                &#8250;
-            </a>
-        @else
-            <button class="nav-btn disabled">
-                &#8250;
-            </button>
-        @endif
-
-    </div>
-@endif
-
+<!-- {{-- PAGINATION --}}
+<div style="margin-top:20px;" class="pagination">
+    {{ $reports->links() }}
+</div> -->
 
 @endsection
 

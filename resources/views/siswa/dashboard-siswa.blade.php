@@ -59,7 +59,7 @@
                     <i class="fa fa-user-check"></i>
                 </div>
                 <div class="hadir-text">
-                    <h3>Absensi Kehadiran</h3>
+                    <h3>Kunjungan Perpustakaan</h3>
                     <p>Klik tombol hadir untuk check-in hari ini</p>
                 </div>
             </div>

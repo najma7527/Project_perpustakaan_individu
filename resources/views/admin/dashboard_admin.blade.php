@@ -87,17 +87,15 @@
                     <th>Nama Pengunjung</th>
                     <th>Transaksi</th>
                     <th>Kelas</th>
-                    <th>Tanggal Datang</th>
                 </tr>
             </thead>
 
             <tbody>
             @forelse($todayVisit as $visit)
             <tr>
-                <td>{{ $visit->nama_pengunjung ?? '-' }}</td>
-                <td>{{ $visit->transaksi ?? '-' }}</td>
-                <td>{{ $visit->kelas ?? '-' }}</td>
-                <td>{{ optional($visit->tanggal_datang)->format('d/m/Y') }}</td>
+                <td>{{ $visit->user->name ?? '-' }}</td>
+                <td>{{ $visit->transaction->jenis_transaksi ?? '-' }}</td>
+                <td>{{ $visit->user->kelas ?? '-' }}</td>
             </tr>
             @empty
             <tr>

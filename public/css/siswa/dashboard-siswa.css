@@ -113,11 +113,11 @@
 }
 
 .purple{
-    border-color:#a855f7;
+    border-color:#2563eb;
 }
 .purple .stat-icon{
     background:#f3e8ff;
-    color:#9333ea;
+    color:#2563eb;
 }
 
 .orange{
@@ -269,7 +269,7 @@
 
 /* THEAD */
 .modern-table thead{
-    background:#4f46e5;
+    background:#2563eb;
 }
 
 .modern-table thead th{

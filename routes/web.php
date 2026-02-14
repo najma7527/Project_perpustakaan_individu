@@ -70,9 +70,9 @@ Route::get('/kelola_anggota-ditolak', function () {
 })->middleware('auth');
 
 // LAPORAN KEHILANGAN
-Route::get('/laporan_data_kehilangan', function () {
-    return view('admin.laporan_data_kehilangan');
-})->middleware('auth');
+Route::get('/laporan_data_kehilangan', [ReportController::class, 'index'])
+    ->name('admin.laporan_data_kehilangan')
+    ->middleware('auth');
 
 // TRANSAKSI (BUKAN ADMIN)
 Route::get('/transaksi', function () {

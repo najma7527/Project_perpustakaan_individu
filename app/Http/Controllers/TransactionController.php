@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Book;
+use App\Models\Visit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -59,6 +60,9 @@ class TransactionController extends Controller
     public function pinjam(Request $request, $bukuId)
     {
         $buku = Book::findOrFail($bukuId);
+        $visit = Visit::where('user_id', Auth::id())
+        ->whereDate('tanggal_datang', now()->toDateString())
+        ->first();
 
         $request->validate([
             'tanggal_peminjaman' => 'required|date',
@@ -70,17 +74,23 @@ class TransactionController extends Controller
             return back()->with('error', 'Buku tidak tersedia untuk dipinjam');
         }
 
-        Transaction::create([
-            'user_id' => Auth::id(),
-            'buku_id' => $bukuId,
-            'tanggal_peminjaman' => $request->tanggal_peminjaman,
-            'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
-            'jenis_transaksi' => 'dipinjam',
-            'status' => 'belum_dikembalikan',
+         $transaction = Transaction::create([
+        'user_id' => Auth::id(),
+        'buku_id' => $bukuId,
+        'tanggal_peminjaman' => $request->tanggal_peminjaman,
+        'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
+        'jenis_transaksi' => 'dipinjam',
+        'status' => 'belum_dikembalikan',
         ]);
 
         // Ubah status buku menjadi dipinjam
         $buku->update(['status' => 'dipinjam']);
+        // Update visit jika ada
+    if ($visit) {
+        $visit->update([
+            'transaction_id' => $transaction->id
+        ]);
+    }
 
         return back()->with('success', 'Buku "' . $buku->judul . '" berhasil dipinjam!');
     }
