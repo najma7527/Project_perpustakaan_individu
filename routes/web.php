@@ -412,7 +412,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
 
 });
 
-Route::middleware(auth())->group(function () {
-    Route::get('/cetak-nota-transaksi/{id}', [CetakController::class, 'notaTransaksi'])->name('cetak-nota-transaksi');
-    Route::get('/cetak-nota-kehilangan/{id}', [CetakController::class, 'notaKehilangan'])->name('cetak-nota-kehilangan');
-});
+   Route::get('/filter-daftar-kunjungan', function () { return view('cetak.laporan.cetak-daftar-pengunjung');})->name('cetak.filter-daftar-kunjungan');
+    Route::get('/filter-transaksi', function () { return view('cetak.laporan.cetak-transaksi');})->name('cetak.filter-transaksi');
+    Route::get('/filter-kehilangan', function () { return view('cetak.laporan.cetak-kehilangan');})->name('cetak.filter-kehilangan');
+
