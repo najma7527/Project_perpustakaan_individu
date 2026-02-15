@@ -89,14 +89,23 @@ Route::get('/dashboard-anggota', [SiswaDashboardController::class, 'index'])
     ->middleware('auth');
 
 
-Route::get('/profile_admin', [ProfileController::class, 'show'])
-        ->name('profile.show');
+// PROFILE ROUTES
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.show');
+    Route::get('/profile/edit', function() { return view('auth.profile.edit'); })->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.updatePhoto');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.updatePassword');
+});
+
+// Route::get('/profile_admin', [ProfileController::class, 'show'])
+//         ->name('profile.show');
 
 
-        // Profile-siswa
-     Route::get('/profile-siswa', function () {
-    return view('auth.profile.siswa.profile-siswa');
-})->name('profile');
+//         // Profile-siswa
+//      Route::get('/profile-siswa', function () {
+//     return view('auth.profile.siswa.profile-siswa');
+// })->name('profile');
 /*
 |--------------------------------------------------------------------------
 | Authentication Routes

@@ -82,7 +82,7 @@
     <td>{{ $visit->user->name }}</td>
 
     <td>
-        {{ $visit->transaction?->status ?? 'Tidak ada transaksi' }}
+        {{ $visit->transaction->jenis_transaksi ?? 'Tidak ada transaksi' }}
     </td>
 
     <td>
