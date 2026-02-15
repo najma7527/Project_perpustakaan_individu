@@ -232,7 +232,12 @@ class TransactionController extends Controller
     public function myTransactions()
     {
         $user = Auth::user();
-        $transactions = Transaction::where('user_id', $user->id)->with('book')->get();
+        // paginate user's transactions so view pagination works
+        $transactions = Transaction::where('user_id', $user->id)
+            ->with('book')
+            ->latest()
+            ->paginate(10);
+
         return view('siswa.pengembalian-buku', compact('transactions'));
     }
 

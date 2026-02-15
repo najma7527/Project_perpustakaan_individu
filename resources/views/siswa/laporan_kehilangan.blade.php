@@ -59,7 +59,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($laporan as $item)
+                        @forelse($reports as $item)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item->transaction->book->judul ?? '-' }}</td>
@@ -97,10 +97,53 @@
                         @endforelse
                     </tbody>
                 </table>
-            </div>
+                
+    {{-- PAGINATION --}}
+<div style="margin-top:20px;">
+    <div class="table-pagination">
+        <span class="page-info">Menampilkan {{ $reports->firstItem() }}–{{ $reports->lastItem() }} dari {{ $reports->total() }} data</span>
 
-        </section>
-    </main>
+        <div class="pagination">
+            @if ($reports->onFirstPage())
+                <span class="page-btn disabled"><i class="fa fa-chevron-left"></i></span>
+            @else
+                <a href="{{ $reports->previousPageUrl() }}" class="page-btn"><i class="fa fa-chevron-left"></i></a>
+            @endif
+
+            @php $current = $reports->currentPage(); $last = $reports->lastPage(); @endphp
+
+            @if ($current == 1)
+                <span class="page-btn active">1</span>
+            @else
+                <a href="{{ $reports->url(1) }}" class="page-btn">1</a>
+            @endif
+
+            @if ($current > 1)
+                <span class="page-btn active">{{ $current }}</span>
+            @endif
+
+            @if ($current + 1 <= $last)
+                <a href="{{ $reports->url($current + 1) }}" class="page-btn">{{ $current + 1 }}</a>
+            @endif
+
+            @if ($current + 1 < $last)
+                <span class="page-dots">…</span>
+            @endif
+
+            @if ($last > 1)
+                <a href="{{ $reports->url($last) }}" class="page-btn">{{ $last }}</a>
+            @endif
+
+            @if ($reports->hasMorePages())
+                <a href="{{ $reports->nextPageUrl() }}" class="page-btn"><i class="fa fa-chevron-right"></i></a>
+            @else
+                <span class="page-btn disabled"><i class="fa fa-chevron-right"></i></span>
+            @endif
+        </div>
+    </div>
+</div>
+</div>
+            </div>
 
 </div>
 

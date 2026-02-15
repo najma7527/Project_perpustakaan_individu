@@ -44,12 +44,13 @@ class LaporanKehilanganController extends Controller
 
     public function index()
     {
-        $laporan = Report::where('user_id', Auth::id())
+        // use pagination so large result sets won't time out and to match view
+        $reports = Report::where('user_id', Auth::id())
             ->with('transaction.book')
             ->latest()
-            ->get();
+            ->paginate(10);
 
-        return view('siswa.laporan_kehilangan', compact('laporan'));
+        return view('siswa.laporan_kehilangan', compact('reports'));
     }
 
     public function edit($id)
