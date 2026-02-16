@@ -1,0 +1,178 @@
+* {
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ====== BODY ====== */
+body {
+    background: #3f3f3f;
+    padding: 40px;
+}
+
+/* ====== WRAPPER ====== */
+.card-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+/* ====== KARTU REALISTIS ====== */
+.library-card {
+    width: 540px;                 /* 🔥 diperkecil seperti kartu */
+    background: #ffffff;          /* 🔥 putih bersih */
+    position: relative;
+    overflow: hidden;
+
+    border-radius: 14px;
+    box-shadow: 0 10px 22px rgba(0,0,0,0.25);
+    border: 1px solid #d0d0d0;
+}
+
+/* ===== HEADER ===== */
+.card-header {
+    background: #209EEB;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;            /* 🔥 diperkecil */
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+}
+.card-header {
+    background: #209EEB;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+    position: relative; /* 🔥 penting */
+}
+
+.header-text {
+    position: absolute;
+    left: 50%;
+    top: 52%;              /* 🔥 sedikit turun biar balance */
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 100%;
+    pointer-events: none;
+}
+
+
+
+.header-text h2 {
+    font-size: 16px;
+    margin: 0;
+    letter-spacing: 0.5px;  /* 🔥 lebih elegan */
+}
+
+.header-text h3 {
+    font-size: 13px;
+    margin: 3px 0 2px 0;   /* 🔥 spacing lebih enak */
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+
+
+.header-text p {
+    font-size: 10px;
+    line-height: 1.45;      /* 🔥 lebih lega */
+    margin-top: 4px;
+    max-width: 420px;       /* 🔥 biar tidak kepanjangan */
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0.95;
+}
+
+
+.logo {
+    width: 65px;
+    height: auto;
+    display: block;
+    position: relative;
+    z-index: 2;
+
+    margin-left: -12px;   
+}
+
+
+
+
+/* ===== BODY ===== */
+.card-body {
+    display: flex;
+    gap: 14px;              /* 🔥 jarak rapi */
+    padding: 12px 18px;     /* 🔥 lebih presisi */
+    position: relative;
+    z-index: 2;
+    align-items: center;    /* 🔥 sejajar tengah */
+}
+
+/* foto */
+.photo {
+    width: 85px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 8px;
+
+    border: none;          /* 🔥 hapus garis */
+    outline: none;         /* 🔥 jaga-jaga */
+    box-shadow: none;      /* 🔥 kalau ada shadow */
+}
+
+
+/* teks */
+.center table {
+    font-size: 12px;
+}
+
+.center td {
+    padding: 2px 6px;
+}
+
+/* ===== FOOTER TTD ===== */
+.card-footer {
+    padding: 6px 20px 14px; /* 🔥 lebih tipis */
+    display: flex;
+    justify-content: flex-end;
+    position: relative;
+    z-index: 2;
+    background: transparent; /* 🔥 biar watermark kelihatan */
+}
+
+
+/* area tanda tangan */
+.ttd {
+    text-align: center;
+    min-width: 120px;
+}
+
+.ttd p {
+    font-size: 11px;
+    margin-bottom: 30px; /* 🔥 lebih kecil */
+    line-height: 1.2;
+}
+
+.ttd span {
+    font-size: 10.5px;
+}
+
+
+/* ===== WATERMARK ===== */
+.watermark {
+    position: absolute;
+    width: 260px;         
+    opacity: 0.15;         
+    left: 50%;
+    top: 65%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.card-body,
+.card-footer {
+    position: relative;
+    z-index: 2;
+}
