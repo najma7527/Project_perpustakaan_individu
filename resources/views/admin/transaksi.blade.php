@@ -89,20 +89,22 @@
     <td>{{ optional($trx->tanggal_peminjaman)->format('d/m/Y') }}</td>
     <td>{{ optional($trx->tanggal_jatuh_tempo)->format('d/m/Y') }}</td>
     <td>
-@if($trx->status == 'belum_dikembalikan')
-    <span class="status danger">Belum Dikembalikan</span>
-
-@elseif($trx->status == 'buku_hilang')
-    <span class="status warning">Buku Hilang</span>
-
-@elseif($trx->status == 'sudah_dikembalikan')
-    <span class="status success">Sudah Dikembalikan</span>
-@endif
-</td>
+    @if($trx->status == 'belum_dikembalikan')
+        <span class="status danger">Belum Dikembalikan</span>
+    @elseif($trx->status == 'buku_hilang')
+        <span class="status warning">Buku Hilang</span>
+    @elseif($trx->status == 'sudah_dikembalikan')
+        <span class="status success">Sudah Dikembalikan</span>
+    @elseif($trx->status == 'terlambat')
+        <span class="status danger">Terlambat</span>
+    @elseif($trx->status == 'menunggu_konfirmasi')
+        <span class="status warning">Menunggu Konfirmasi</span>
+    @endif
+    </td>
 <td class="aksi">
 @if($trx->status == 'buku_hilang')
     <span>-</span>
-@elseif($trx->status == 'belum_dikembalikan')
+@elseif(in_array($trx->status, ['belum_dikembalikan', 'terlambat', 'sudah_dikembalikan']))
     <span class="btn-filter btn-nota" data-nama="{{ $trx->user->name }}"><i class="fa-solid fa-print"></i></span>
 @endif
 </td>
@@ -175,7 +177,8 @@
     <th>Judul Buku</th>
     <th>Kelas</th>
     <th>Jatuh Tempo</th>
-    <th>Tanggal Pengembalian</th>
+    <th>Status</th>
+    <th>Tgl Kembali</th>
     <th>Aksi</th>
 </tr>
 </thead>
@@ -188,12 +191,26 @@
     <td>{{ $trx->book->judul ?? '-' }}</td>
     <td>{{ $trx->user->kelas ?? '-' }}</td>
     <td>{{ optional($trx->tanggal_jatuh_tempo)->format('d/m/Y') }}</td>
-    <td>{{ optional($trx->tanggal_pengembalian)->format('d/m/Y') }}</td>
-    <td class="aksi">
+    <td>
+        @if($trx->status == 'menunggu_konfirmasi')
+            <span class="status warning">Menunggu Persetujuan</span>
+        @elseif($trx->status == 'sudah_dikembalikan')
+            <span class="status success">Sudah Dikembalikan</span>
+        @endif
+    </td>
+    <td>{{ $trx->tanggal_pengembalian ? $trx->tanggal_pengembalian->format('d/m/Y') : '-' }}</td>
+    <td class="aksi" style="display: flex; gap: 5px; justify-content: center;">
 @if($trx->status == 'menunggu_konfirmasi')
-    <span class="btn-green btn-approve" data-nama="{{ $trx->user->name }}">✔</span>
-    <span class="btn-red btn-reject" data-nama="{{ $trx->user->name }}">✖</span>
-
+    <form action="{{ route('transactions.terimaPengembalian', $trx->id) }}" method="POST" onsubmit="return confirm('Terima pengembalian buku ini?')">
+        @csrf
+        @method('PUT')
+        <button type="submit" class="btn-green" title="Terima" style="border:none; border-radius:4px; padding: 2px 8px; cursor:pointer;">✔</button>
+    </form>
+    <form action="{{ route('transactions.tolakPengembalian', $trx->id) }}" method="POST" onsubmit="return confirm('Tolak pengembalian buku ini?')">
+        @csrf
+        @method('PUT')
+        <button type="submit" class="btn-red" title="Tolak" style="border:none; border-radius:4px; padding: 2px 8px; cursor:pointer;">✖</button>
+    </form>
 @elseif($trx->status == 'sudah_dikembalikan')
     <span class="btn-filter btn-nota" data-nama="{{ $trx->user->name }}"><i class="fa-solid fa-print"></i></span>
 @endif
@@ -201,13 +218,13 @@
 </tr>
 @empty
 <tr>
-    <td colspan="7" style="text-align:center">Tidak ada data</td>
+    <td colspan="8" style="text-align:center">Tidak ada data</td>
 </tr>
 @endforelse
 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="7">
+                        <td colspan="8">
                             <div class="table-pagination">
                                 <span class="page-info">Menampilkan {{ $transactions->firstItem() }}–{{ $transactions->lastItem() }} dari {{ $transactions->total() }} data</span>
                                 <div class="pagination">
@@ -254,65 +271,5 @@
 </table>
 </div>
 @endif
-<script>
-    // ambil data yang sudah disetujui
-    const approved = JSON.parse(localStorage.getItem("approved_peminjaman")) || {};
-
-    // === LOAD STATUS SAAT HALAMAN DIBUKA ===
-    document.querySelectorAll(".btn-approve").forEach(btn => {
-        const nama = btn.dataset.nama;
-        const row = btn.closest("tr");
-        const reject = row.querySelector(".btn-reject");
-
-        if (approved[nama]) {
-            row.style.background = "#ecfdf5";
-            if (reject) reject.remove();
-
-            btn.style.opacity = "0.6";
-            btn.style.cursor = "default";
-            btn.replaceWith(btn.cloneNode(true));
-        }
-    });
-
-    // === KLIK SETUJUI ===
-    document.querySelectorAll(".btn-approve").forEach(btn => {
-        btn.addEventListener("click", function () {
-            const nama = this.dataset.nama;
-            const row = this.closest("tr");
-            const reject = row.querySelector(".btn-reject");
-
-            if (confirm("Setujui peminjaman?")) {
-                approved[nama] = true;
-                localStorage.setItem(
-                    "approved_peminjaman",
-                    JSON.stringify(approved)
-                );
-
-                row.style.background = "#ecfdf5";
-                if (reject) reject.remove();
-
-                this.style.opacity = "0.6";
-                this.style.cursor = "default";
-                this.replaceWith(this.cloneNode(true));
-            }
-        });
-    });
-
-    // === KLIK TOLAK ===
-    document.querySelectorAll(".btn-reject").forEach(btn => {
-        btn.addEventListener("click", function () {
-            const nama = this.dataset.nama;
-
-            if (confirm("Tolak peminjaman?")) {
-                delete approved[nama];
-                localStorage.setItem(
-                    "approved_peminjaman",
-                    JSON.stringify(approved)
-                );
-
-                this.closest("tr").remove();
-            }
-        });
-    });
-</script>
 @endsection
+

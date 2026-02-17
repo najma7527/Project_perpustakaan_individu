@@ -12,37 +12,37 @@
         {{-- ================= ADMIN ================= --}}
         @if(Auth::check() && Auth::user()->role === 'admin')
 
-            <li class="{{ Request::is('dashboard') ? 'active' : '' }}">
+            <li class="{{ Request::is('admin/dashboard') ? 'active' : '' }}">
                 <a href="{{ route('dashboard.admin') }}">
                     <i class="fa fa-home"></i> Dashboard
                 </a>
             </li>
 
-            <li class="{{ Request::is('kelola_data_buku*') ? 'active' : '' }}">
+            <li class="{{ Request::is('admin/books*') ? 'active' : '' }}">
                 <a href="{{ route('books.index') }}">
                     <i class="fa fa-book"></i> Kelola Data Buku
                 </a>
             </li>
 
-            <li class="{{ Request::is('kelola_anggota*') ? 'active' : '' }}">
+            <li class="{{ Request::is('admin/anggota*') ? 'active' : '' }}">
                 <a href="{{ route('admin.anggota.index', ['tab' => 'verifikasi']) }}">
                     <i class="fa fa-users"></i> Kelola Anggota
                 </a>
             </li>
 
-            <li class="{{ Request::is('transaksi*') ? 'active' : '' }}">
+            <li class="{{ Request::is('admin/transactions*') ? 'active' : '' }}">
                 <a href="{{ route('transactions.index') }}">
                     <i class="fa fa-right-left"></i> Transaksi
                 </a>
             </li>
 
-            <li class="{{ Request::is('daftar_pengunjung*') ? 'active' : '' }}">
+            <li class="{{ Request::is('admin/visits*') ? 'active' : '' }}">
                 <a href="{{ route('visits.index') }}">
                     <i class="fa fa-list"></i> Daftar Pengunjung
                 </a>
             </li>
 
-            <li class="{{ Request::is('laporan_data_kehilangan*') ? 'active' : '' }}">
+            <li class="{{ Request::is('admin/reports*') ? 'active' : '' }}">
                 <a href="{{ route('reports.index') }}">
                     <i class="fa fa-file"></i> Laporan Kehilangan
                 </a>
@@ -51,25 +51,25 @@
         {{-- ================= ANGGOTA ================= --}}
         @elseif(Auth::check() && Auth::user()->role === 'anggota')
 
-            <li class="{{ Request::is('dashboard-siswa*') || Request::routeIs('dashboard.anggota') ? 'active' : '' }}">
+            <li class="{{ Request::is('dashboard-siswa*') || Request::is('dashboard-anggota*') ? 'active' : '' }}">
                 <a href="{{ route('dashboard.anggota') }}">
                     <i class="fa fa-home"></i> Dashboard
                 </a>
             </li>
 
-            <li class="{{ Request::routeIs('books.browse') ? 'active' : '' }}">
+            <li class="{{ Request::is('pinjam-buku*') ? 'active' : '' }}">
                 <a href="{{ route('books.browse') }}">
                     <i class="fa fa-book"></i> Pinjam Buku
                 </a>
             </li>
 
-            <li class="{{ Request::routeIs('transactions.mine') ? 'active' : '' }}">
+            <li class="{{ Request::is('my-transactions*') || Request::is('pengembalian-buku*') ? 'active' : '' }}">
                 <a href="{{ route('transactions.mine') }}">
-                    <i class="fa fa-book-open"></i> kembali Buku
+                    <i class="fa fa-book-open"></i> Kembali Buku
                 </a>
             </li>
 
-            <li class="{{ Request::routeIs('laporan-kehilangan.index') ? 'active' : '' }}">
+            <li class="{{ Request::is('laporan-kehilangan*') || Request::is('laporan_kehilangan*') ? 'active' : '' }}">
                 <a href="{{ route('laporan-kehilangan.index') }}">
                     <i class="fa fa-file-circle-exclamation"></i> Laporan Kehilangan
                 </a>
@@ -80,3 +80,4 @@
 
     </ul>
 </aside>
+

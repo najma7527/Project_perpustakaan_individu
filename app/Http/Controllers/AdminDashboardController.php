@@ -10,7 +10,6 @@ use App\Models\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-use function Symfony\Component\Clock\now;
 
 class AdminDashboardController extends Controller
 {

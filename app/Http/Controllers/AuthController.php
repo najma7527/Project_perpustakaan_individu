@@ -123,9 +123,10 @@ class AuthController extends Controller
         'password' => Hash::make($data['password']),
         'kelas' => $data['kelas'],
         'alamat' => $data['alamat'],
-        'photo_profile' => $photoPath,
+        'profile_photo' => $photoPath,
         'role' => 'anggota',
         'status' => 'menunggu',
+        'tanggal_pengajuan' => now(),
     ]);
 
     return redirect()->route('login')

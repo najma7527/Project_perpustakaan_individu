@@ -31,13 +31,13 @@ class TransactionController extends Controller
 
         $transactions = Transaction::with(['user', 'book'])
             ->when($mode === 'peminjaman', function($q) {
-                $q->whereIn('status', ['buku_hilang', 'belum_dikembalikan']);
+                $q->whereIn('status', ['buku_hilang', 'belum_dikembalikan', 'terlambat', 'sudah_dikembalikan', 'menunggu_konfirmasi']);
             })
             ->when($mode === 'pengembalian', function($q) {
                 $q->whereIn('status', ['menunggu_konfirmasi', 'sudah_dikembalikan']);
             })
-                ->latest()
-                ->paginate(10);
+            ->latest()
+            ->paginate(10);
 
         return view('admin.transaksi', compact('transactions', 'mode'));
     }
@@ -97,13 +97,13 @@ class TransactionController extends Controller
     }
 
     /**
-     * User mengajukan pengembalian buku (status menjadi 'menunggu')
+     * User mengajukan pengembalian buku (status menjadi 'menunggu_konfirmasi')
      */
     public function ajukanPengembalian($id)
     {
         $transaction = Transaction::where('id', $id)
             ->where('user_id', Auth::id())
-            ->where('status', 'belum_dikembalikan')
+            ->whereIn('status', ['belum_dikembalikan', 'terlambat'])
             ->firstOrFail();
 
         $transaction->update([
@@ -111,6 +111,14 @@ class TransactionController extends Controller
         ]);
 
         return back()->with('success', 'Pengajuan pengembalian berhasil, menunggu persetujuan admin');
+    }
+
+    /**
+     * Alias for ajukanPengembalian (used by route)
+     */
+    public function returnBook($id)
+    {
+        return $this->ajukanPengembalian($id);
     }
 
     /**
@@ -190,12 +198,12 @@ class TransactionController extends Controller
             abort(403);
         }
 
-        if (!in_array($transaksi->status, ['belum_dikembalikan', 'menunggu'])) {
+        if (!in_array($transaksi->status, ['belum_dikembalikan', 'menunggu_konfirmasi', 'terlambat'])) {
             return back()->with('error', 'Tidak bisa ditandai hilang');
         }
 
         $transaksi->update([
-            'status' => 'hilang',
+            'status' => 'buku_hilang',
             'tanggal_pengembalian' => now(),
         ]);
 
@@ -301,7 +309,7 @@ class TransactionController extends Controller
         }
 
         try {
-            if (in_array($transaction->status, ['belum_dikembalikan', 'menunggu'])) {
+            if (in_array($transaction->status, ['belum_dikembalikan', 'menunggu_konfirmasi', 'terlambat'])) {
                 // Kembalikan status buku ke tersedia
                 $transaction->book->update(['status' => 'tersedia']);
             }
@@ -339,32 +347,23 @@ class TransactionController extends Controller
     {
         $today = Carbon::today();
 
-        $peminjaman = Peminjaman::where('status', 'dipinjam')->get();
+        $transactions = Transaction::where('status', 'belum_dikembalikan')->get();
 
-        foreach ($peminjaman as $pinjam) {
-
-            // H-1 Reminder
-            if ($pinjam->due_date->subDay()->isSameDay($today)) {
-            
-                Notifikasi::create([
-                    'user_id' => $pinjam->user_id,
-                    'pesan' => 'Besok adalah batas pengembalian buku Anda.'
-                ]);
-            }
-
+        $updated = 0;
+        foreach ($transactions as $trx) {
             // Sudah lewat jatuh tempo
-            if ($today->greaterThan($pinjam->due_date)) {
-            
-                $pinjam->update([
+            if ($today->greaterThan($trx->tanggal_jatuh_tempo)) {
+                $trx->update([
                     'status' => 'terlambat'
                 ]);
-
-                Notifikasi::create([
-                    'user_id' => $pinjam->user_id,
-                    'pesan' => 'Anda terlambat mengembalikan buku.'
-                ]);
+                $updated++;
             }
         }
+
+        return response()->json([
+            'message' => 'Pengecekan jatuh tempo selesai',
+            'jumlah_terlambat' => $updated
+        ]);
     }
 
     public function cekKeterlambatan()
@@ -386,7 +385,4 @@ class TransactionController extends Controller
             'jumlah' => $terlambat->count()
         ]);
     }
-
 }
-
-    

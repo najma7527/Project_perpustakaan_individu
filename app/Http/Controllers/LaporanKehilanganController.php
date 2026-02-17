@@ -73,7 +73,7 @@ class LaporanKehilanganController extends Controller
             ->where('user_id', Auth::id())
             ->firstOrFail();
 
-        if ($laporan->status !== 'pending') {
+        if ($laporan->status !== 'belum_dikembalikan') {
             return back()->with('error', 'Laporan yang sudah diproses tidak bisa diubah');
         }
 
@@ -93,8 +93,8 @@ class LaporanKehilanganController extends Controller
             ->where('user_id', Auth::id())
             ->firstOrFail();
 
-        if ($laporan->status !== 'pending') {
-            return back()->with('error', 'Hanya laporan yang pending bisa dihapus');
+        if ($laporan->status !== 'belum_dikembalikan') {
+            return back()->with('error', 'Hanya laporan yang belum diproses bisa dihapus');
         }
 
         // Reset status transaksi ke belum_dikembalikan jika laporan dihapus

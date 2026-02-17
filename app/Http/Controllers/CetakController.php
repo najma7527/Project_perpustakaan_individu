@@ -36,7 +36,6 @@ class CetakController extends Controller
         return Pdf::loadView('pdf.transaction-id', compact('transaction'))
             ->setPaper('A5')
             ->stream("transaksi-$id.pdf");
-            return view('cetak.nota.cetak-peminjaman', compact('transaction'));
     }
 
     // =====================================================
@@ -104,13 +103,13 @@ class CetakController extends Controller
 
     public function reportPrintById($id)
     {
-        $report = Report::with('user', 'book')->findOrFail($id);
+        $report = Report::with(['user', 'transaction.book'])->findOrFail($id);
         return view('print.report-id', compact('report'));
     }
 
     public function reportPdfById($id)
     {
-        $report = Report::with('user', 'book')->findOrFail($id);
+        $report = Report::with(['user', 'transaction.book'])->findOrFail($id);
 
         return Pdf::loadView('pdf.report-id', compact('report'))
             ->setPaper('A5')
@@ -119,13 +118,13 @@ class CetakController extends Controller
 
     public function reportPrint()
     {
-        $reports = Report::with('user', 'book')->get();
+        $reports = Report::with(['user', 'transaction.book'])->get();
         return view('print.report', compact('reports'));
     }
 
     public function reportPdf()
     {
-        $reports = Report::with('user', 'book')->get();
+        $reports = Report::with(['user', 'transaction.book'])->get();
 
         return Pdf::loadView('pdf.report', compact('reports'))
             ->download('laporan-kehilangan.pdf');
@@ -134,7 +133,7 @@ class CetakController extends Controller
     // ✅ EXCEL KEHILANGAN
     public function reportExcel()
     {
-        $reports = Report::with('user', 'book')->get();
+        $reports = Report::with(['user', 'transaction.book'])->get();
 
         Excel::create('laporan-kehilangan', function ($excel) use ($reports) {
 
@@ -211,5 +210,24 @@ class CetakController extends Controller
             });
 
         })->export('xlsx');
+    }
+
+    // =====================================================
+    // 🔹 ROUTE ALIASES (match route definitions)
+    // =====================================================
+    
+    public function transaksiPrint() { return $this->transactionReport(request()); }
+    public function transaksiPdf() { return $this->transactionReportPdf(request()); }
+    public function kehilanganPrint() { return $this->reportPrint(); }
+    public function kehilanganPdf() { return $this->reportPdf(); }
+    public function kehilanganExcel() { return $this->reportExcel(); }
+    public function kunjunganPrint() { return $this->visitPrint(); }
+    public function kunjunganPdf() { return $this->visitPdf(); }
+    public function kunjunganExcel() { return $this->visitExcel(); }
+
+    public function kartuSiswa()
+    {
+        $user = \Illuminate\Support\Facades\Auth::user();
+        return view('cetak.kartu-siswa', compact('user'));
     }
 }

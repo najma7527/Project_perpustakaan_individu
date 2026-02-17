@@ -34,7 +34,7 @@ class ReportController extends Controller
 
         $query->where(function($q) use ($search) {
             $q->whereHas('transaction.user', function ($qq) use ($search) {
-                $qq->where('nama', 'like', "%$search%");
+                $qq->where('name', 'like', "%$search%");
             })
             ->orWhereHas('transaction.book', function ($qq) use ($search) {
                 $qq->where('judul', 'like', "%$search%");

@@ -46,8 +46,7 @@ class BookController extends Controller
         $query->where('kategori_buku', $filter);
     }
 
-    // Baru get
-    $books = $query->get();
+    // Paginate results
     $books = $query->paginate(10);
 
     return view('admin.kelola_data_buku', compact(

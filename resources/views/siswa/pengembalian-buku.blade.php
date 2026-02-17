@@ -78,9 +78,11 @@
                                     <span class="status danger">Belum Dikembalikan</span>
                                 @elseif($trx->status == 'sudah_dikembalikan')
                                     <span class="status success">✓ Selesai</span>
-                                @elseif($trx->status == 'menunggu')
+                                @elseif($trx->status == 'menunggu_konfirmasi')
                                     <span class="status warning">Menunggu Persetujuan</span>
-                                @elseif($trx->status == 'hilang')
+                                @elseif($trx->status == 'terlambat')
+                                    <span class="status danger">Terlambat</span>
+                                @elseif($trx->status == 'buku_hilang')
                                     <span class="status danger">Buku Hilang</span>
                                 @endif
                             </td>

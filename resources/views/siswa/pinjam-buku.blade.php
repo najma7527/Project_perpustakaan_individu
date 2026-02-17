@@ -131,7 +131,7 @@ function openModal(bookId, bookTitle) {
 
     // Update form action
     const form = document.getElementById('formPinjam');
-    form.action = '/books/' + bookId + '/pinjam';
+    form.action = '/pinjam-buku/' + bookId;
 
     document.getElementById('modalPinjam').classList.add('show');
 }

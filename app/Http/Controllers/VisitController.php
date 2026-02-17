@@ -78,7 +78,7 @@ class VisitController extends Controller
     }
 
     $activeTransaction = Transaction::where('user_id', $user->id)
-        ->where('status', 'dipinjam')
+        ->where('status', 'belum_dikembalikan')
         ->latest('tanggal_peminjaman')
         ->first();
 
@@ -114,6 +114,6 @@ class VisitController extends Controller
             ->orderBy('tanggal_peminjaman', 'desc')
             ->get();
 
-        return view('anggota.profile', compact('visits', 'transactions'));
+        return view('siswa.pengembalian-buku', compact('visits', 'transactions'));
     }
 }
