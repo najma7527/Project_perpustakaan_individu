@@ -2551,6 +2551,7 @@
         },
         {
             "name": "maennchen/zipstream-php",
+<<<<<<< HEAD
             "version": "3.1.2",
             "source": {
                 "type": "git",
@@ -2561,21 +2562,45 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/maennchen/ZipStream-PHP/zipball/aeadcf5c412332eb426c0f9b4485f6accba2a99f",
                 "reference": "aeadcf5c412332eb426c0f9b4485f6accba2a99f",
+=======
+            "version": "3.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/maennchen/ZipStream-PHP.git",
+                "reference": "682f1098a8fddbaf43edac2306a691c7ad508ec5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/maennchen/ZipStream-PHP/zipball/682f1098a8fddbaf43edac2306a691c7ad508ec5",
+                "reference": "682f1098a8fddbaf43edac2306a691c7ad508ec5",
+>>>>>>> da159c563b528f099ef2c44e17741c7357b17db4
                 "shasum": ""
             },
             "require": {
                 "ext-mbstring": "*",
                 "ext-zlib": "*",
+<<<<<<< HEAD
                 "php-64bit": "^8.2"
+=======
+                "php-64bit": "^8.3"
+>>>>>>> da159c563b528f099ef2c44e17741c7357b17db4
             },
             "require-dev": {
                 "brianium/paratest": "^7.7",
                 "ext-zip": "*",
+<<<<<<< HEAD
                 "friendsofphp/php-cs-fixer": "^3.16",
                 "guzzlehttp/guzzle": "^7.5",
                 "mikey179/vfsstream": "^1.6",
                 "php-coveralls/php-coveralls": "^2.5",
                 "phpunit/phpunit": "^11.0",
+=======
+                "friendsofphp/php-cs-fixer": "^3.86",
+                "guzzlehttp/guzzle": "^7.5",
+                "mikey179/vfsstream": "^1.6",
+                "php-coveralls/php-coveralls": "^2.5",
+                "phpunit/phpunit": "^12.0",
+>>>>>>> da159c563b528f099ef2c44e17741c7357b17db4
                 "vimeo/psalm": "^6.0"
             },
             "suggest": {
@@ -2617,7 +2642,11 @@
             ],
             "support": {
                 "issues": "https://github.com/maennchen/ZipStream-PHP/issues",
+<<<<<<< HEAD
                 "source": "https://github.com/maennchen/ZipStream-PHP/tree/3.1.2"
+=======
+                "source": "https://github.com/maennchen/ZipStream-PHP/tree/3.2.1"
+>>>>>>> da159c563b528f099ef2c44e17741c7357b17db4
             },
             "funding": [
                 {
@@ -2625,7 +2654,11 @@
                     "type": "github"
                 }
             ],
+<<<<<<< HEAD
             "time": "2025-01-27T12:07:53+00:00"
+=======
+            "time": "2025-12-10T09:58:31+00:00"
+>>>>>>> da159c563b528f099ef2c44e17741c7357b17db4
         },
         {
             "name": "markbaker/complex",

@@ -50,7 +50,6 @@
         <i class="fa-solid fa-print"></i>
         Cetak Laporan
     </a>
-    @endauth
 
 </div>
 
@@ -75,24 +74,24 @@
 
         @php
         switch($report->status){
-            case 'buku_hilang':
-                $status = 'Menunggu konfirmasi';
+            case 'pending':
+                $status = 'Menunggu Konfirmasi';
                 $statusClass = 'status-yellow';
                 break;
 
             case 'belum_dikembalikan':
-                $status = 'Belum dikembalikan';
+                $status = 'Belum Dikembalikan';
                 $statusClass = 'status-red';
                 break;
 
             case 'sudah_dikembalikan':
-                $status = 'Sudah dikembalikan';
+                $status = 'Sudah Dikembalikan';
                 $statusClass = 'status-green';
                 break;
 
             default:
-                $status = '-';
-                $statusClass = '';
+                $status = ucfirst(str_replace('_', ' ', $report->status));
+                $statusClass = 'status-gray';
         }
         @endphp
 
@@ -110,7 +109,7 @@
             </td>
 
             <td>
-                {{ $report->tanggal_ganti ?? '-' }}
+                {{ $report->tanggal_ganti ? \Carbon\Carbon::parse($report->tanggal_ganti)->format('d/m/Y') : '-' }}
             </td>
 
             <td>
@@ -120,16 +119,26 @@
             </td>
 
             <td class="aksi">
-                @if($report->status === 'buku_hilang')
-                    <button class="btn ok">
-                        <i class="fa fa-check"></i>
-                    </button>
+                @if($report->status === 'pending')
+                    <form action="{{ route('reports.approve', $report->id) }}" method="POST" style="display:inline;">
+                        @csrf
+                        @method('PUT')
+                        <button type="submit" class="btn ok" title="Setujui">
+                            <i class="fa fa-check"></i>
+                        </button>
+                    </form>
 
-                    <button class="btn del">
-                        <i class="fa fa-xmark"></i>
-                    </button>
+                    <form action="{{ route('reports.reject', $report->id) }}" method="POST" style="display:inline;">
+                        @csrf
+                        @method('PUT')
+                        <button type="submit" class="btn del" title="Tolak">
+                            <i class="fa fa-xmark"></i>
+                        </button>
+                    </form>
+                @elseif($report->status === 'sudah_dikembalikan')
+                    <span class="btn-filter btn-nota" data-nama="{{ $report->transaction->user->name }}"><i class="fa-solid fa-print"></i></span>
                 @else
-    <span class="btn-filter btn-nota" data-nama="{{ $report->transaction->user->name }}"><i class="fa-solid fa-print"></i></span>
+                    <span class="no-action">-</span>
                 @endif
             </td>
         </tr>

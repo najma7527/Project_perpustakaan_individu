@@ -97,8 +97,8 @@
                                     </button>
                                 @endif
 
-                                {{-- Perpanjang (hanya jika belum dikembalikan dan belum lewat tempo) --}}
-                                @if($trx->status == 'belum_dikembalikan' && now()->lessThan($trx->tanggal_jatuh_tempo))
+                                {{-- Perpanjang (hanya jika belum dikembalikan/terlambat) --}}
+                                @if(in_array($trx->status, ['belum_dikembalikan', 'terlambat']))
                                     <button class="aksi-btn orange"
                                         data-bs-toggle="modal"
                                         data-bs-target="#modalPerpanjang{{ $trx->id }}"

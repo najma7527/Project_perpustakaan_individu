@@ -1,178 +1,226 @@
-* {
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
-}
+ /* Reset & Base */
+ body {
+     font-family: Arial, Helvetica, sans-serif;
+     margin: 0;
+     padding: 0;
+     background-color: #fff;
+ }
 
-/* ====== BODY ====== */
-body {
-    background: #3f3f3f;
-    padding: 40px;
-}
+ /* Container for Preview & PDF */
+ .card-container {
+     width: 100%;
+     height: auto;
+     padding: 20px;
+     text-align: center;
+ }
 
-/* ====== WRAPPER ====== */
-.card-wrapper {
-    display: flex;
-    justify-content: center;
-}
+ /* The Card */
+ .library-card {
+     width: 650px;
+     height: 400px;
+     background: #fff;
+     border: 1px solid #ddd;
+     position: relative;
+     overflow: visible;
+     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+     display: inline-block;
+     text-align: left;
+ }
 
-/* ====== KARTU REALISTIS ====== */
-.library-card {
-    width: 540px;                 /* 🔥 diperkecil seperti kartu */
-    background: #ffffff;          /* 🔥 putih bersih */
-    position: relative;
-    overflow: hidden;
+ /* Header */
+ .card-header {
+     background-color: #209EEB;
+     color: white;
+     padding: 15px 20px;
+     height: 90px;
+     display: flex;
+     align-items: center;
+     position: relative;
+     z-index: 2;
+ }
 
-    border-radius: 14px;
-    box-shadow: 0 10px 22px rgba(0,0,0,0.25);
-    border: 1px solid #d0d0d0;
-}
+ .header-logo {
+     width: 60px;
+     height: auto;
+     position: absolute;
+     left: 20px;
+     top: 15px;
+ }
 
-/* ===== HEADER ===== */
-.card-header {
-    background: #209EEB;
-    color: white;
-    display: flex;
-    align-items: center;
-    padding: 8px 16px;            /* 🔥 diperkecil */
-    border-top-left-radius: 14px;
-    border-top-right-radius: 14px;
-}
-.card-header {
-    background: #209EEB;
-    color: white;
-    display: flex;
-    align-items: center;
-    padding: 10px 16px;
-    border-top-left-radius: 14px;
-    border-top-right-radius: 14px;
-    position: relative; /* 🔥 penting */
-}
+ .header-text {
+     width: 100%;
+     text-align: center;
+     padding: 0;
+     z-index: 10;
+ }
 
-.header-text {
-    position: absolute;
-    left: 50%;
-    top: 52%;              /* 🔥 sedikit turun biar balance */
-    transform: translate(-50%, -50%);
-    text-align: center;
-    width: 100%;
-    pointer-events: none;
-}
+ .header-text h1 {
+     font-size: 18px;
+     font-weight: bold;
+     margin: 0;
+     text-transform: uppercase;
+     letter-spacing: 1px;
+ }
 
+ .header-text h2 {
+     font-size: 16px;
+     font-weight: bold;
+     margin: 5px 0;
+ }
 
+ .header-text p {
+     font-size: 9px;
+     margin: 0;
+     line-height: 1.3;
+ }
 
-.header-text h2 {
-    font-size: 16px;
-    margin: 0;
-    letter-spacing: 0.5px;  /* 🔥 lebih elegan */
-}
+ /* Body Content */
+ .card-body {
+     padding: 25px 30px;
+     position: relative;
+     z-index: 2;
+     display: flex;
+ }
 
-.header-text h3 {
-    font-size: 13px;
-    margin: 3px 0 2px 0;   /* 🔥 spacing lebih enak */
-    font-weight: 600;
-    letter-spacing: 0.3px;
-}
+ /* Table layout for PDF compatibility */
+ .layout-table {
+     width: 100%;
+     border-collapse: collapse;
+ }
 
+ .layout-table td {
+     vertical-align: top;
+ }
 
+ .col-photo {
+     width: 120px;
+     padding-right: 20px;
+ }
 
-.header-text p {
-    font-size: 10px;
-    line-height: 1.45;      /* 🔥 lebih lega */
-    margin-top: 4px;
-    max-width: 420px;       /* 🔥 biar tidak kepanjangan */
-    margin-left: auto;
-    margin-right: auto;
-    opacity: 0.95;
-}
+ .col-info {
+     width: auto;
+ }
 
+ /* Photo */
+ .member-photo {
+     width: 100px;
+     height: 130px;
+     object-fit: cover;
+     border: 1px solid #ccc;
+     border-radius: 4px;
+     background-color: #f0f0f0;
+ }
 
-.logo {
-    width: 65px;
-    height: auto;
-    display: block;
-    position: relative;
-    z-index: 2;
+ /* Details Table */
+ .details-table {
+     width: 100%;
+     font-size: 11px;
+     border-collapse: collapse;
+ }
 
-    margin-left: -12px;   
-}
+ .details-table td {
+     padding: 4px 0;
+     vertical-align: top;
+ }
 
+ .details-table .label {
+     width: 70px;
+     font-weight: bold;
+     color: #333;
+ }
 
+ .details-table .sep {
+     width: 15px;
+     text-align: center;
+ }
 
+ .details-table .val {
+     color: #000;
+     font-weight: bold;
+ }
 
-/* ===== BODY ===== */
-.card-body {
-    display: flex;
-    gap: 14px;              /* 🔥 jarak rapi */
-    padding: 12px 18px;     /* 🔥 lebih presisi */
-    position: relative;
-    z-index: 2;
-    align-items: center;    /* 🔥 sejajar tengah */
-}
+ /* Watermark */
+ .watermark {
+     position: absolute;
+     width: 280px;
+     opacity: 0.3;
+     left: 50%;
+     top: 55%;
+     transform: translate(-50%, -50%);
+     z-index: 1;
+ }
 
-/* foto */
-.photo {
-    width: 85px;
-    height: 110px;
-    object-fit: cover;
-    border-radius: 8px;
+ /* Signature Section */
+ .signature-section {
+     position: absolute;
+     bottom: 20px;
+     right: 30px;
+     text-align: center;
+     width: 150px;
+     z-index: 3;
+ }
 
-    border: none;          /* 🔥 hapus garis */
-    outline: none;         /* 🔥 jaga-jaga */
-    box-shadow: none;      /* 🔥 kalau ada shadow */
-}
+ .signature-section p.name {
+     font-size: 11px;
+     font-weight: bold;
+     margin: 0 0 5px 0;
+     z-index: 5;
+     position: relative;
+ }
 
+ .signature-image {
+     width: 60px;
+     height: auto;
+     margin: 0 auto;
+     display: block;
+     position: relative;
+     z-index: 4;
+     margin-bottom: -5px;
+ }
 
-/* teks */
-.center table {
-    font-size: 12px;
-}
+ .signature-section p.title {
+     font-size: 10px;
+     margin: 0;
+     border-top: 1px solid #333;
+     padding-top: 5px;
+     position: relative;
+     z-index: 5;
+ }
 
-.center td {
-    padding: 2px 6px;
-}
+ /* PDF Specific Overrides */
+ @page {
+     margin: 0;
+     size: A4;
+ }
 
-/* ===== FOOTER TTD ===== */
-.card-footer {
-    padding: 6px 20px 14px; /* 🔥 lebih tipis */
-    display: flex;
-    justify-content: flex-end;
-    position: relative;
-    z-index: 2;
-    background: transparent; /* 🔥 biar watermark kelihatan */
-}
+ @media print {
 
+     html,
+     body {
+         width: 210mm;
+         height: 297mm;
+         background: none;
+         margin: 0;
+         padding: 0;
+     }
 
-/* area tanda tangan */
-.ttd {
-    text-align: center;
-    min-width: 120px;
-}
+     .card-container {
+         display: block;
+         width: 100%;
+         height: auto;
+         padding: 0;
+         margin: 0;
+         page-break-after: avoid;
+         page-break-inside: avoid;
+         position: absolute;
+         top: 0;
+         left: 0;
+     }
 
-.ttd p {
-    font-size: 11px;
-    margin-bottom: 30px; /* 🔥 lebih kecil */
-    line-height: 1.2;
-}
-
-.ttd span {
-    font-size: 10.5px;
-}
-
-
-/* ===== WATERMARK ===== */
-.watermark {
-    position: absolute;
-    width: 260px;         
-    opacity: 0.15;         
-    left: 50%;
-    top: 65%;
-    transform: translate(-50%, -50%);
-    z-index: 1;
-    pointer-events: none;
-}
-
-.card-body,
-.card-footer {
-    position: relative;
-    z-index: 2;
-}
+     .library-card {
+         box-shadow: none;
+         border: none;
+         margin: 20px auto;
+         page-break-inside: avoid;
+     }
+ }

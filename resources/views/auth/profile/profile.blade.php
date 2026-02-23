@@ -76,7 +76,7 @@
                 <tr style="border-bottom:1px solid #e9ecef;">
                     <td style="padding:0.75rem 1rem;">{{ $item->transaction->jenis_transaksi ?? '-' }}</td>
                     <td style="padding:0.75rem 1rem;">{{ $item->transaction->book->judul ?? '-' }}</td>
-                    <td style="padding:0.75rem 1rem;">{{ $item->tanggal_datang->format('d M Y') }}</td>
+                    <td style="padding:0.75rem 1rem;">{{ \Carbon\Carbon::parse($item->tanggal_datang)->format('d M Y') }}</td>
                 </tr>
                 @empty
                 <tr>
