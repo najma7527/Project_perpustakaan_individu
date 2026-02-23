@@ -47,7 +47,6 @@
             <div class="table-card">
                 <table>
                     <thead>
-                    <thead>
                         <tr>
                             <th>No</th>
                             <th>Judul Buku</th>
@@ -61,7 +60,7 @@
                     <tbody>
                         @forelse($reports as $item)
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $reports->firstItem() + $loop->index }}</td>
                             <td>{{ $item->transaction->book->judul ?? '-' }}</td>
                             <td>{{ $item->keterangan }}</td>
                             <td>{{ optional($item->transaction->tanggal_peminjaman)->format('d/m/Y') ?? '-' }}</td>
@@ -100,47 +99,7 @@
                 
     {{-- PAGINATION --}}
 <div style="margin-top:20px;">
-    <div class="table-pagination">
-        <span class="page-info">Menampilkan {{ $reports->firstItem() }}–{{ $reports->lastItem() }} dari {{ $reports->total() }} data</span>
-
-        <div class="pagination">
-            @if ($reports->onFirstPage())
-                <span class="page-btn disabled"><i class="fa fa-chevron-left"></i></span>
-            @else
-                <a href="{{ $reports->previousPageUrl() }}" class="page-btn"><i class="fa fa-chevron-left"></i></a>
-            @endif
-
-            @php $current = $reports->currentPage(); $last = $reports->lastPage(); @endphp
-
-            @if ($current == 1)
-                <span class="page-btn active">1</span>
-            @else
-                <a href="{{ $reports->url(1) }}" class="page-btn">1</a>
-            @endif
-
-            @if ($current > 1)
-                <span class="page-btn active">{{ $current }}</span>
-            @endif
-
-            @if ($current + 1 <= $last)
-                <a href="{{ $reports->url($current + 1) }}" class="page-btn">{{ $current + 1 }}</a>
-            @endif
-
-            @if ($current + 1 < $last)
-                <span class="page-dots">…</span>
-            @endif
-
-            @if ($last > 1)
-                <a href="{{ $reports->url($last) }}" class="page-btn">{{ $last }}</a>
-            @endif
-
-            @if ($reports->hasMorePages())
-                <a href="{{ $reports->nextPageUrl() }}" class="page-btn"><i class="fa fa-chevron-right"></i></a>
-            @else
-                <span class="page-btn disabled"><i class="fa fa-chevron-right"></i></span>
-            @endif
-        </div>
-    </div>
+    @include('components.pagination', ['paginator' => $reports])
 </div>
 </div>
             </div>
