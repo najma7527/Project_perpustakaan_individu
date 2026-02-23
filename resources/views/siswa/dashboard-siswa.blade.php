@@ -92,6 +92,23 @@
             </button>
 
         </div>
+        
+            <!-- BUTTON CETAK KARTU ANGGOTA -->
+            <div class="cetak-card">
+                <div class="cetak-left">
+                    <div class="cetak-icon">
+                        <i class="fa fa-id-card"></i>
+                    </div>
+                    <div class="cetak-text">
+                        <h3>Kartu Anggota</h3>
+                        <p>Unduh kartu anggota perpustakaan kamu</p>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-cetak-action" id="btnCetakKartu" onclick="downloadKartuSiswa()">
+                    <i class="fa fa-download"></i> Unduh Kartu
+                </button>
+            </div>
 
     </section>
 
@@ -105,7 +122,7 @@
 
             <ul class="visitor-list">
                 <li>
-                    <a href="/cetak-kartu" class="visitor-item">
+                    <a href="#" class="visitor-item" onclick="event.preventDefault(); downloadKartuSiswa()">
                             <span class="icon card">
                         <i class="fa fa-id-card"></i>
                         </span>
@@ -222,6 +239,47 @@ if(btnHadir){
         }
 
     });
+}
+</script>
+
+<script>
+function downloadKartuSiswa() {
+    const btn = document.getElementById('btnCetakKartu');
+    const originalHTML = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Mengunduh...';
+        btn.disabled = true;
+    }
+
+    fetch("{{ route('kartu.download') }}")
+        .then(response => {
+            if (!response.ok) throw new Error('Gagal mengunduh kartu');
+            const cd = response.headers.get('Content-Disposition');
+            let filename = 'kartu-anggota.pdf';
+            if (cd) {
+                const match = cd.match(/filename[^;=\n]*=(['"]?)([^'"\n]*?)\1(;|$)/);
+                if (match) filename = match[2];
+            }
+            return response.blob().then(blob => ({ blob, filename }));
+        })
+        .then(({ blob, filename }) => {
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
+        })
+        .catch(error => {
+            alert(error.message || 'Terjadi kesalahan saat mengunduh kartu.');
+        })
+        .finally(() => {
+            if (btn) {
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }
+        });
 }
 </script>
 

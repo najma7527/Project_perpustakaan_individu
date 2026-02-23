@@ -48,20 +48,26 @@
 }
 
 /* PEMBUNGKUS SEARCH DAN DATE */
-.search, .date {
+.search,
+.date {
     display: flex;
     align-items: center;
-    background: #fff; /* Latar belakang putih */
-    border: 1.5px solid #ccc; /* Garis tepi abu-abu */
+    background: #fff;
+    /* Latar belakang putih */
+    border: 1.5px solid #ccc;
+    /* Garis tepi abu-abu */
     border-radius: 10px;
-    overflow: hidden; /* Agar sudut ikon ikut melengkung */
+    overflow: hidden;
+    /* Agar sudut ikon ikut melengkung */
     height: 45px;
     min-width: 250px;
 }
 
 /* KOTAK IKON BIRU (Kiri) */
-.search i, .date i {
-    background-color: #2196f3; /* Warna biru sesuai app.css */
+.search i,
+.date i {
+    background-color: #2196f3;
+    /* Warna biru sesuai app.css */
     color: #fff;
     height: 100%;
     width: 45px;
@@ -72,7 +78,8 @@
 }
 
 /* AREA INPUT TEKS */
-.search input, .date input {
+.search input,
+.date input {
     border: none;
     background: transparent;
     outline: none;
@@ -98,13 +105,58 @@
     transition: background 0.3s;
 }
 
+.btn-group-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-export-excel {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #1b8a2e, #27ae60);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(39, 174, 96, 0.25);
+}
+
+.btn-export-excel:hover {
+    background: linear-gradient(135deg, #15692a, #1e8449);
+    box-shadow: 0 4px 14px rgba(39, 174, 96, 0.4);
+    transform: translateY(-1px);
+}
+
 .btn-add {
     background: #2d7df6;
     color: #ffffff;
     border: none;
-    padding: 10px 14px;
+    padding: 10px 18px;
     border-radius: 8px;
     cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(45, 125, 246, 0.25);
+}
+
+.btn-add:hover {
+    background: #1a6ae0;
+    box-shadow: 0 4px 14px rgba(45, 125, 246, 0.4);
+    transform: translateY(-1px);
 }
 
 /* ================= TABLE ================= */
@@ -119,7 +171,8 @@ thead {
     color: #fff;
 }
 
-th, td {
+th,
+td {
     padding: 12px;
     font-size: 14px;
     text-align: center;
@@ -145,9 +198,17 @@ tbody tr {
     font-size: 13px;
 }
 
-.btn.edit { background: #fbc02d; }
-.btn.delete { background: #e53935; }
-.btn.view { background: #1e88e5; }
+.btn.edit {
+    background: #fbc02d;
+}
+
+.btn.delete {
+    background: #e53935;
+}
+
+.btn.view {
+    background: #1e88e5;
+}
 
 /* ================= RESPONSIVE ================= */
 @media (max-width: 1024px) {
@@ -195,7 +256,9 @@ tbody tr {
 }
 
 @media (max-width: 480px) {
-    th, td {
+
+    th,
+    td {
         font-size: 12px;
         padding: 10px;
     }
@@ -205,7 +268,7 @@ tbody tr {
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,.6);
+    background: rgba(0, 0, 0, .6);
     display: none;
     justify-content: center;
     align-items: center;
@@ -261,6 +324,7 @@ tbody tr {
         transform: scale(.9);
         opacity: 0;
     }
+
     to {
         transform: scale(1);
         opacity: 1;
@@ -286,7 +350,7 @@ tbody tr {
 .modal-detail-body img {
     width: 220px;
     border-radius: 6px;
-    box-shadow: 0 4px 10px rgba(0,0,0,.15);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, .15);
 }
 
 .detail-text h2 {
@@ -326,6 +390,7 @@ tbody tr {
     border-radius: 8px;
     cursor: pointer;
 }
+
 /* ================= PAGINATION (TABLE) ================= */
 .table-pagination {
     display: flex;
@@ -339,7 +404,8 @@ tbody tr {
 .page-info {
     font-size: 14px;
     color: #6b7280;
-    white-space: nowrap; /* cegah turun */
+    white-space: nowrap;
+    /* cegah turun */
 }
 
 /* container pagination kanan */
@@ -347,7 +413,8 @@ tbody tr {
     display: flex;
     align-items: center;
     gap: 6px;
-    margin-left: auto; /* 🔥 paksa ke kanan */
+    margin-left: auto;
+    /* 🔥 paksa ke kanan */
 }
 
 /* tombol page */

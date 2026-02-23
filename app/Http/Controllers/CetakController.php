@@ -11,6 +11,12 @@ use App\Models\Transaction;
 use App\Models\Report;
 use App\Models\Visit;
 
+use App\Exports\TransaksiExport;
+use App\Exports\KehilanganExport;
+use App\Exports\KunjunganExport;
+use App\Exports\AnggotaDiterimaExport;
+use App\Exports\BukuExport;
+
 
 class CetakController extends Controller
 {
@@ -64,37 +70,10 @@ class CetakController extends Controller
             ->download('laporan-transaksi.pdf');
     }
 
-    // ✅ EXCEL TRANSAKSI (VERSI LAMA)
+    // ✅ EXCEL TRANSAKSI (maatwebsite/excel v3)
     public function transaksiExcel()
     {
-        $transactions = Transaction::with('user', 'book')->get();
-
-        Excel::create('laporan-transaksi', function ($excel) use ($transactions) {
-
-            $excel->sheet('Transaksi', function ($sheet) use ($transactions) {
-
-                $sheet->row(1, [
-                    'No', 'Nama User', 'Judul Buku', 'Tipe', 'Tanggal'
-                ]);
-
-                $row = 2;
-                foreach ($transactions as $t) {
-                    $sheet->row($row++, [
-                        $row - 2,
-                        $t->user->name ?? '-',
-                        $t->book->title ?? '-',
-                        $t->type,
-                        $t->created_at
-                    ]);
-                }
-
-                $sheet->row(1, function ($row) {
-                    $row->setFontWeight('bold');
-                });
-
-            });
-
-        })->export('xlsx');
+        return Excel::download(new TransaksiExport, 'laporan-transaksi.xlsx');
     }
 
     // =====================================================
@@ -130,37 +109,10 @@ class CetakController extends Controller
             ->download('laporan-kehilangan.pdf');
     }
 
-    // ✅ EXCEL KEHILANGAN
+    // ✅ EXCEL KEHILANGAN (maatwebsite/excel v3)
     public function reportExcel()
     {
-        $reports = Report::with(['user', 'transaction.book'])->get();
-
-        Excel::create('laporan-kehilangan', function ($excel) use ($reports) {
-
-            $excel->sheet('Kehilangan', function ($sheet) use ($reports) {
-
-                $sheet->row(1, [
-                    'No', 'Nama User', 'Judul Buku', 'Keterangan', 'Tanggal'
-                ]);
-
-                $row = 2;
-                foreach ($reports as $r) {
-                    $sheet->row($row++, [
-                        $row - 2,
-                        $r->user->name ?? '-',
-                        $r->book->title ?? '-',
-                        $r->description,
-                        $r->created_at
-                    ]);
-                }
-
-                $sheet->row(1, function ($row) {
-                    $row->setFontWeight('bold');
-                });
-
-            });
-
-        })->export('xlsx');
+        return Excel::download(new KehilanganExport, 'laporan-kehilangan.xlsx');
     }
 
     // =====================================================
@@ -181,35 +133,10 @@ class CetakController extends Controller
             ->download('laporan-kunjungan.pdf');
     }
 
-    // ✅ EXCEL KUNJUNGAN
+    // ✅ EXCEL KUNJUNGAN (maatwebsite/excel v3)
     public function visitExcel()
     {
-        $visits = Visit::with('user')->get();
-
-        Excel::create('laporan-kunjungan', function ($excel) use ($visits) {
-
-            $excel->sheet('Kunjungan', function ($sheet) use ($visits) {
-
-                $sheet->row(1, [
-                    'No', 'Nama User', 'Tanggal'
-                ]);
-
-                $row = 2;
-                foreach ($visits as $v) {
-                    $sheet->row($row++, [
-                        $row - 2,
-                        $v->user->name ?? '-',
-                        $v->created_at
-                    ]);
-                }
-
-                $sheet->row(1, function ($row) {
-                    $row->setFontWeight('bold');
-                });
-
-            });
-
-        })->export('xlsx');
+        return Excel::download(new KunjunganExport, 'laporan-kunjungan.xlsx');
     }
 
     // =====================================================
@@ -228,6 +155,52 @@ class CetakController extends Controller
     public function kartuSiswa()
     {
         $user = \Illuminate\Support\Facades\Auth::user();
-        return view('cetak.kartu-siswa', compact('user'));
+        return view('cetak.cetak-kartu', compact('user'));
+    }
+
+    public function downloadKartuSiswa()
+    {
+        $user = \Illuminate\Support\Facades\Auth::user();
+        $pdf = Pdf::loadView('cetak.cetak-kartu', compact('user'))
+            ->setPaper('A4', 'portrait');
+
+        return $pdf->download("kartu-anggota-{$user->nis_nisn}.pdf");
+    }
+
+    // =====================================================
+    // 🔹 CETAK KARTU ANGGOTA (ADMIN)
+    // =====================================================
+
+    public function exportKartuAdmin($id)
+    {
+        if (\Illuminate\Support\Facades\Auth::user()?->role !== 'admin') abort(403);
+
+        $user = \App\Models\User::findOrFail($id);
+        $pdf = Pdf::loadView('cetak.cetak-kartu', compact('user'))
+            ->setPaper('A4', 'portrait');
+
+        return $pdf->download("kartu-anggota-{$user->nis_nisn}.pdf");
+    }
+
+    // =====================================================
+    // 🔹 EXPORT EXCEL DATA ANGGOTA DITERIMA
+    // =====================================================
+
+    public function anggotaDiterimaExcel()
+    {
+        if (\Illuminate\Support\Facades\Auth::user()?->role !== 'admin') abort(403);
+
+        return Excel::download(new AnggotaDiterimaExport, 'data-anggota-diterima.xlsx');
+    }
+
+    // =====================================================
+    // 🔹 EXPORT EXCEL DATA BUKU
+    // =====================================================
+
+    public function bukuExcel()
+    {
+        if (\Illuminate\Support\Facades\Auth::user()?->role !== 'admin') abort(403);
+
+        return Excel::download(new BukuExport, 'data-buku.xlsx');
     }
 }

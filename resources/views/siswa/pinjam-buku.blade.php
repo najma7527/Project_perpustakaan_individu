@@ -24,6 +24,13 @@
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
+    @if($hasActiveLoan)
+    <div class="alert alert-warning" style="background: #fff3cd; color: #856404; border: 1px solid #ffc107; border-radius: 8px; padding: 14px 18px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
+        <i class="fa fa-exclamation-triangle"></i>
+        <span>Anda masih memiliki buku yang belum dikembalikan. Kembalikan terlebih dahulu sebelum meminjam buku lain.</span>
+    </div>
+    @endif
+
     <div class="banner">
         <div>
             <h3>Pinjam Buku</h3>
@@ -59,7 +66,11 @@
 
                     <p>{{ $book->deskripsi }}</p>
 
-                    @if($book->status === 'tersedia')
+                    @if($hasActiveLoan)
+                        <button type="button" class="btn-pinjam" disabled style="opacity: 0.5; cursor: not-allowed;">
+                            Tidak Bisa Meminjam
+                        </button>
+                    @elseif($book->status === 'tersedia')
                         <button type="button" class="btn-pinjam" onclick="openModal({{ $book->id }}, '{{ $book->judul }}')">
                             Pinjam Buku
                         </button>

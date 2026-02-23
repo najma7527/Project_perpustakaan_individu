@@ -43,7 +43,7 @@ class ReportController extends Controller
     }
 
     $reports = $query->latest()->paginate();
-    $statuses = ['buku_hilang', 'sudah_dikembalikan', 'belum_dikembalikan'];
+    $statuses = ['pending', 'belum_dikembalikan', 'sudah_dikembalikan'];
 
     return view('admin.laporan_data_kehilangan', compact('reports', 'statuses'));
 }
@@ -213,6 +213,46 @@ class ReportController extends Controller
 
             return back()->with('error', 'Gagal menghapus laporan: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Admin menyetujui pengembalian buku (approve)
+     */
+    public function approve(Report $report)
+    {
+        if (Auth::user()?->role !== 'admin') abort(403);
+
+        if ($report->status !== 'pending') {
+            return back()->with('error', 'Hanya laporan dengan status menunggu konfirmasi yang bisa disetujui');
+        }
+
+        $report->update([
+            'status' => 'sudah_dikembalikan',
+            'tanggal_ganti' => now(),
+        ]);
+
+        // Update status transaksi
+        if ($report->transaction) {
+            $report->transaction->update(['status' => 'sudah_dikembalikan']);
+        }
+
+        return back()->with('success', 'Laporan berhasil disetujui. Buku ditandai sudah dikembalikan.');
+    }
+
+    /**
+     * Admin menolak pengembalian buku (reject)
+     */
+    public function reject(Report $report)
+    {
+        if (Auth::user()?->role !== 'admin') abort(403);
+
+        if ($report->status !== 'pending') {
+            return back()->with('error', 'Hanya laporan dengan status menunggu konfirmasi yang bisa ditolak');
+        }
+
+        $report->update(['status' => 'belum_dikembalikan']);
+
+        return back()->with('success', 'Laporan ditolak. Status dikembalikan ke belum dikembalikan.');
     }
 
     /**

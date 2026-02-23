@@ -69,12 +69,12 @@
                             <td>
                                 @if($item->status === 'pending')
                                     <span class="status-yellow">Menunggu Konfirmasi</span>
-                                @elseif($item->status === 'approved')
-                                    <span class="status-green">Disetujui</span>
+                                @elseif($item->status === 'sudah_dikembalikan')
+                                    <span class="status-green">Sudah Dikembalikan</span>
                                 @elseif($item->status === 'belum_dikembalikan')
                                     <span class="status-red">Belum Dikembalikan</span>
                                 @else
-                                    <span class="status-gray">{{ ucfirst($item->status) }}</span>
+                                    <span class="status-gray">{{ ucfirst(str_replace('_', ' ', $item->status)) }}</span>
                                 @endif
                             </td>
                             <td>
@@ -168,26 +168,25 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    let currentStatus = null;
+    let currentForm = null;
 
     document.querySelectorAll('.btn-pengembalian').forEach(btn => {
-        btn.addEventListener('click', function () {
-            // status span is in the 6th cell
-            currentStatus = this.closest('tr').querySelector('td:nth-child(6) span');
+        btn.addEventListener('click', function (e) {
+            e.preventDefault(); // Prevent immediate submission
+            currentForm = this.closest('form');
             document.getElementById('modalPengembalian').style.display = 'flex';
         });
     });
 
-    document.querySelector('.btn-batal').addEventListener('click', function () {
+    document.getElementById('btnBatal').addEventListener('click', function () {
         document.getElementById('modalPengembalian').style.display = 'none';
+        currentForm = null;
     });
 
-    document.querySelector('.btn-ya').addEventListener('click', function () {
-        if (currentStatus) {
-            currentStatus.className = 'status-green';
-            currentStatus.innerText = 'Sudah dikembalikan';
+    document.getElementById('btnYa').addEventListener('click', function () {
+        if (currentForm) {
+            currentForm.submit();
         }
-        document.getElementById('modalPengembalian').style.display = 'none';
     });
 
 });

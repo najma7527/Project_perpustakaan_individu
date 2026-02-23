@@ -15,11 +15,10 @@ use App\Http\Controllers\SiswaDashboardController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\CetakController;
 use Illuminate\Support\Facades\Auth;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 /*
 |--------------------------------------------------------------------------
-| Public Routes
+| Public Routes 
 |--------------------------------------------------------------------------
 */
 Route::get('/', function () {
@@ -78,12 +77,13 @@ Route::middleware(['auth'])->group(function () {
         // User Management (Kelola Anggota)
         Route::prefix('anggota')->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('admin.anggota.index');
+            Route::get('/export-excel', [CetakController::class, 'anggotaDiterimaExcel'])->name('admin.anggota.exportExcel');
+            Route::get('/kartu/{id}/export', [CetakController::class, 'exportKartuAdmin'])->name('admin.kartu.export');
             Route::get('/{id}', [UserController::class, 'show'])->name('admin.anggota.show');
             Route::put('/{id}', [UserController::class, 'update'])->name('admin.anggota.update');
             Route::delete('/{id}', [UserController::class, 'destroy'])->name('admin.anggota.destroy');
             Route::post('/{id}/status', [UserController::class, 'updateStatus'])->name('admin.anggota.status');
             Route::put('/{id}/reset-password', [UserController::class, 'resetPassword'])->name('admin.anggota.resetPassword');
-            Route::get('/kartu/{id}/export', [UserController::class, 'exportKartuAdmin'])->name('admin.kartu.export');
         });
 
         // Verification View Routes (Legacy)
@@ -95,10 +95,11 @@ Route::middleware(['auth'])->group(function () {
             if (Auth::user()?->role !== 'admin') abort(403);
             return view('admin.kelola_data_anggota-ditolak');
         });
-
+        
         // Resources (CRUD)
         Route::resource('bookshelves', BookshelfController::class);
         Route::resource('rows', RowController::class);
+        Route::get('/books/export-excel', [CetakController::class, 'bukuExcel'])->name('books.exportExcel');
         Route::resource('books', BookController::class);
         Route::get('/books/search/results', [BookController::class, 'search'])->name('books.search');
         Route::get('/crud_kelola_buku', function () { return view('admin.CRUD_kelola_buku'); });
@@ -111,6 +112,8 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/transactions/{transaction}/reject-return', [TransactionController::class, 'tolakPengembalian'])->name('transactions.tolakPengembalian');
 
         Route::resource('reports', ReportController::class);
+        Route::put('/reports/{report}/approve', [ReportController::class, 'approve'])->name('reports.approve');
+        Route::put('/reports/{report}/reject', [ReportController::class, 'reject'])->name('reports.reject');
         Route::get('/reports/status/{status}', [ReportController::class, 'getByStatus'])->name('reports.by-status');
 
         Route::resource('visits', VisitController::class);
@@ -185,14 +188,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/my-transactions', [TransactionController::class, 'myTransactions'])->name('transactions.mine');
         Route::get('/my-visits-history', [VisitController::class, 'history'])->name('visit.history');
         Route::get('/kartu/export', [CetakController::class, 'kartuSiswa'])->name('kartu.export');
+        Route::get('/kartu/download', [CetakController::class, 'downloadKartuSiswa'])->name('kartu.download');
 
         // Peminjaman & Pengembalian
         Route::get('/pinjam-buku', [BookController::class, 'browse'])->name('books.browse');
         Route::post('/pinjam-buku/{bookId}', [TransactionController::class, 'pinjam'])->name('transactions.pinjam');
-        Route::get('/pengembalian-buku', function () {
-            if (Auth::user()?->role !== 'anggota') abort(403);
-            return view('siswa.pengembalian-buku');
-        })->name('anggota.pengembalian');
+        Route::get('/pengembalian-buku', [TransactionController::class, 'myTransactions'])->name('anggota.pengembalian');
         
         Route::post('/transactions/{transaction}/ajukan-pengembalian', [TransactionController::class, 'returnBook'])->name('transactions.ajukanPengembalian');
         Route::post('/transactions/{transaction}/perpanjang', [TransactionController::class, 'perpanjang'])->name('transactions.perpanjang');
@@ -205,6 +206,7 @@ Route::middleware(['auth'])->group(function () {
             'edit' => 'laporan-kehilangan.edit',
             'update' => 'laporan-kehilangan.update',
         ]);
+        Route::post('laporan-kehilangan/{id}/kembalikan', [LaporanKehilanganController::class, 'kembalikan'])->name('laporan-kehilangan.kembalikan');
         
         // Additional Loss Report Views (Legacy)
         Route::get('/laporan_kehilangan', function () { 
