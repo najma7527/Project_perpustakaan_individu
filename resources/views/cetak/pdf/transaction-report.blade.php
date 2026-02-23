@@ -3,58 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Cetak Laporan Transaksi</title>
-    <style>
-@media print {
-    .wrap, .topbar, .filter-right, .actions, .top-left, .top-right { display: none !important; }
-    .paper { margin: 0; padding: 20px; box-shadow: none; width: 100%; }
-}
-</style>
-    <link rel="stylesheet" href="{{ asset('css/cetak/cetak-transaksi.css') }}">
+    <link rel="stylesheet" href="{{ public_path('css/cetak/cetak-transaksi.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 
-<div class="wrap">
-
-    <!-- HEADER -->
-    <div class="topbar">
-        <div class="top-left">
-            <div class="top-icon">
-                <i class="fa-solid fa-print"></i>
-            </div>
-            <div class="top-text">
-                <h4>Cetak Laporan Transaksi</h4>
-                <span>laporan transaksi</span>
-            </div>
-        </div>
-        <div class="top-right">
-            <i class="fa-solid fa-book-bookmark"></i>
-        </div>
-    </div>
-
-    <!-- FILTER (KANAN) -->
-    <form method="GET" action="{{ route('cetak.filter-transaksi') }}">
-    <div class="filter-right">
-        <div class="date-box">
-            <i class="fa-regular fa-calendar"></i>
-            <input type="date" name="start_date" value="{{ request('start_date') }}">
-        </div>
-        <i class="fa-solid fa-arrows-left-right"></i>
-        <div class="date-box">
-            <i class="fa-regular fa-calendar"></i>
-            <input type="date" name="end_date" value="{{ request('end_date') }}">
-        </div>
-        <button type="submit" class="btn-filter">Pilih Tanggal</button>
-    </div>
-</form>
-
-
+<!-- KERTAS -->
     <!-- KERTAS -->
     <div class="paper">
 
         <!-- KOP -->
         <div class="kop">
-            <img src="{{ asset('img/logo-smk4.png') }}" class="logo">
+            <img src="{{ public_path('img/logo_smk4.png') }}" class="logo">
             <div class="kop-text">
                 <h2>SMK NEGERI 4 BOJONEGORO</h2>
                 <h3>PERPUSTAKAAN</h3>
@@ -115,37 +75,9 @@
 
         <div class="paper-footer">
             <span>dicetak oleh Perpustakaan SMKN 4 Bojonegoro</span>
-            <span>halaman 1 dari 3</span>
+            <span>{{ now()->format('d/m/Y H:i') }}</span>
         </div>
 
     </div>
-
-    <!-- BUTTON (KANAN) -->
-   <div class="actions">
-    
-    <button class="btn" id="btnPrint">
-        <i class="fa-solid fa-print"></i> Print
-    </button>
-
-    <a href="{{ route('cetak.transaksi.pdf', request()->all()) }}" class="btn" id="btnPdf"><i class="fa-solid fa-file-pdf"></i> Export PDF</a>
-    <a href="{{ route('cetak.transaksi.excel', request()->all()) }}" class="btn" id="btnExcel"><i class="fa-solid fa-file-excel"></i> Export Excel</a>
-
-    <button class="btn" id="btnBack">
-        <i class="fa-solid fa-arrow-left"></i> Kembali
-    </button>
-</div>
-
-</div>
-
 </body>
-<script>
-
-    // KEMBALI
-    document.getElementById('btnBack').addEventListener('click', function () {
-        if (confirm('Yakin ingin kembali?')) {
-            window.history.back();
-        }
-    });
-</script>
-
 </html>

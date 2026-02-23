@@ -14,15 +14,57 @@ use App\Models\Visit;
 
 class CetakController extends Controller
 {
-     public function __construct()
+    public function __construct()
     {
         $this->middleware('auth');
     }
 
     // =====================================================
-    // 🔹 TRANSAKSI - CETAK PER ID
+    // 🔹 FILTER - halaman preview dengan data
     // =====================================================
+    public function filterTransaksi(Request $request)
+    {
+        $start = $request->get('start_date');
+        $end   = $request->get('end_date');
+        
+        $transactions = Transaction::with('user', 'book')
+            ->when($start && $end, fn($q) => $q->whereBetween('tanggal_peminjaman', [$start, $end]))
+            ->when($request->type, fn($q) => $q->where('type', $request->type))
+            ->orderBy('tanggal_peminjaman', 'desc')
+            ->get();
 
+        return view('cetak.laporan.cetak-transaksi', compact('transactions'));
+    }
+
+    public function filterKehilangan(Request $request)
+    {
+        $start = $request->get('start_date');
+        $end   = $request->get('end_date');
+        
+        $reports = Report::with(['user', 'transaction.book'])
+            ->when($start && $end, fn($q) => $q->whereBetween('created_at', [$start, $end]))
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('cetak.laporan.cetak-kehilangan', compact('reports'));
+    }
+
+    public function filterKunjungan(Request $request)
+    {
+        $start = $request->get('start_date');
+        $end   = $request->get('end_date');
+        
+        $visits = Visit::with('user', 'transaction')
+            ->when($start && $end, fn($q) => $q->whereBetween('tanggal_datang', [$start, $end]))
+            ->orderBy('tanggal_datang', 'desc')
+            ->get();
+
+        return view('cetak.laporan.cetak-daftar-pengunjung', compact('visits'));
+    }
+
+    // =====================================================
+    // 🔹 TRANSAKSI - CETAK PER ID (tetap seperti lama)
+    // =====================================================
     public function transactionPrint($id)
     {
         $transaction = Transaction::with('user', 'book')->findOrFail($id);
@@ -32,75 +74,68 @@ class CetakController extends Controller
     public function transactionPdf($id)
     {
         $transaction = Transaction::with('user', 'book')->findOrFail($id);
-
         return Pdf::loadView('pdf.transaction-id', compact('transaction'))
             ->setPaper('A5')
             ->stream("transaksi-$id.pdf");
     }
 
     // =====================================================
-    // 🔹 TRANSAKSI - LAPORAN KESELURUHAN
+    // 🔹 LAPORAN KESELURUHAN + EXPORT
     // =====================================================
-
     public function transactionReport(Request $request)
     {
         $transactions = Transaction::with('user', 'book')
-            ->when($request->type, fn ($q) =>
-                $q->where('type', $request->type)
-            )->get();
-
+            ->when($request->type, fn($q) => $q->where('type', $request->type))
+            ->get();
         return view('print.transaction-report', compact('transactions'));
     }
 
-    public function transactionReportPdf(Request $request)
+    public function transaksiExportPdf(Request $request)
     {
-        $transactions = Transaction::with('user', 'book')
-            ->when($request->type, fn ($q) =>
-                $q->where('type', $request->type)
-            )->get();
-
-        return Pdf::loadView('pdf.transaction-report', compact('transactions'))
-            ->setPaper('A4', 'landscape')
-            ->download('laporan-transaksi.pdf');
+        $transactions = $this->getTransactions($request);
+        $pdf = Pdf::loadView('cetak.pdf.transaction-report', compact('transactions'))
+                  ->setPaper('A4', 'landscape');
+        return $pdf->download('laporan_transaksi.pdf');
     }
 
-    // ✅ EXCEL TRANSAKSI (VERSI LAMA)
-    public function transaksiExcel()
+    public function transaksiExportExcel(Request $request)
     {
-        $transactions = Transaction::with('user', 'book')->get();
+        $transactions = $this->getTransactions($request);
 
         Excel::create('laporan-transaksi', function ($excel) use ($transactions) {
-
             $excel->sheet('Transaksi', function ($sheet) use ($transactions) {
-
-                $sheet->row(1, [
-                    'No', 'Nama User', 'Judul Buku', 'Tipe', 'Tanggal'
-                ]);
-
+                $sheet->row(1, ['No', 'Nama Anggota', 'Judul Buku', 'Kelas', 'Tgl Pinjam', 'Jatuh Tempo', 'Tgl Kembali', 'Status']);
                 $row = 2;
                 foreach ($transactions as $t) {
                     $sheet->row($row++, [
                         $row - 2,
                         $t->user->name ?? '-',
-                        $t->book->title ?? '-',
-                        $t->type,
-                        $t->created_at
+                        $t->book->judul ?? '-',
+                        $t->user->kelas ?? '-',
+                        $t->tanggal_peminjaman,
+                        $t->tanggal_jatuh_tempo,
+                        $t->tanggal_pengembalian,
+                        $t->status
                     ]);
                 }
-
-                $sheet->row(1, function ($row) {
-                    $row->setFontWeight('bold');
-                });
-
+                $sheet->row(1, function ($r) { $r->setFontWeight('bold'); });
             });
-
         })->export('xlsx');
     }
 
-    // =====================================================
-    // 🔹 KEHILANGAN BUKU
-    // =====================================================
+    private function getTransactions(Request $request)
+    {
+        $start = $request->get('start_date');
+        $end   = $request->get('end_date');
+        return Transaction::with('user', 'book')
+            ->when($start && $end, fn($q) => $q->whereBetween('tanggal_peminjaman', [$start, $end]))
+            ->orderBy('tanggal_peminjaman', 'desc')
+            ->get();
+    }
 
+    // =====================================================
+    // 🔹 KEHILANGAN
+    // =====================================================
     public function reportPrintById($id)
     {
         $report = Report::with(['user', 'transaction.book'])->findOrFail($id);
@@ -110,8 +145,7 @@ class CetakController extends Controller
     public function reportPdfById($id)
     {
         $report = Report::with(['user', 'transaction.book'])->findOrFail($id);
-
-        return Pdf::loadView('pdf.report-id', compact('report'))
+        return Pdf::loadView('report-id', compact('report'))
             ->setPaper('A5')
             ->stream("kehilangan-$id.pdf");
     }
@@ -122,108 +156,109 @@ class CetakController extends Controller
         return view('print.report', compact('reports'));
     }
 
-    public function reportPdf()
+    public function kehilanganExportPdf(Request $request)
     {
-        $reports = Report::with(['user', 'transaction.book'])->get();
-
-        return Pdf::loadView('pdf.report', compact('reports'))
-            ->download('laporan-kehilangan.pdf');
+        $reports = $this->getReports($request);
+        $pdf = Pdf::loadView('cetak.pdf.report', compact('reports'))
+                  ->setPaper('A4', 'landscape');
+        return $pdf->download('laporan_kehilangan.pdf');
     }
 
-    // ✅ EXCEL KEHILANGAN
-    public function reportExcel()
+    public function kehilanganExportExcel(Request $request)
     {
-        $reports = Report::with(['user', 'transaction.book'])->get();
+        $reports = $this->getReports($request);
 
         Excel::create('laporan-kehilangan', function ($excel) use ($reports) {
-
             $excel->sheet('Kehilangan', function ($sheet) use ($reports) {
-
-                $sheet->row(1, [
-                    'No', 'Nama User', 'Judul Buku', 'Keterangan', 'Tanggal'
-                ]);
-
+                $sheet->row(1, ['No', 'Nama Anggota', 'Kelas', 'Judul Buku', 'Transaksi', 'Tanggal Laporan', 'Status']);
                 $row = 2;
                 foreach ($reports as $r) {
                     $sheet->row($row++, [
                         $row - 2,
-                        $r->user->name ?? '-',
-                        $r->book->title ?? '-',
-                        $r->description,
-                        $r->created_at
+                        $r->user->name ?? $r->transaction->user->name ?? '-',
+                        $r->user->kelas ?? $r->transaction->user->kelas ?? '-',
+                        $r->transaction->book->judul ?? '-',
+                        $r->jenis_transaksi ?? ($r->transaction->jenis_transaksi ?? '-'),
+                        $r->created_at->format('Y-m-d'),
+                        $r->status == 'sudah_dikembalikan' ? 'Sudah Diganti' : 'Belum Diganti'
                     ]);
                 }
-
-                $sheet->row(1, function ($row) {
-                    $row->setFontWeight('bold');
-                });
-
+                $sheet->row(1, function ($r) { $r->setFontWeight('bold'); });
             });
-
         })->export('xlsx');
+    }
+
+    private function getReports(Request $request)
+    {
+        $start = $request->get('start_date');
+        $end   = $request->get('end_date');
+        return Report::with(['user', 'transaction.book'])
+            ->when($start && $end, fn($q) => $q->whereBetween('created_at', [$start, $end]))
+            ->orderBy('created_at', 'desc')
+            ->get();
     }
 
     // =====================================================
     // 🔹 KUNJUNGAN
     // =====================================================
-
     public function visitPrint()
     {
         $visits = Visit::with('user')->get();
         return view('print.visit', compact('visits'));
     }
 
-    public function visitPdf()
+    public function kunjunganExportPdf(Request $request)
     {
-        $visits = Visit::with('user')->get();
-
-        return Pdf::loadView('pdf.visit', compact('visits'))
-            ->download('laporan-kunjungan.pdf');
+        $visits = $this->getVisits($request);
+        $pdf = Pdf::loadView('cetak.pdf.visit', compact('visits'))
+                  ->setPaper('A4', 'landscape');
+        return $pdf->download('laporan_kunjungan.pdf');
     }
 
-    // ✅ EXCEL KUNJUNGAN
-    public function visitExcel()
+    public function kunjunganExportExcel(Request $request)
     {
-        $visits = Visit::with('user')->get();
+        $visits = $this->getVisits($request);
 
         Excel::create('laporan-kunjungan', function ($excel) use ($visits) {
-
             $excel->sheet('Kunjungan', function ($sheet) use ($visits) {
-
-                $sheet->row(1, [
-                    'No', 'Nama User', 'Tanggal'
-                ]);
-
+                $sheet->row(1, ['No', 'Nama Anggota', 'Kelas', 'Judul Buku', 'Transaksi', 'Tanggal Datang']);
                 $row = 2;
                 foreach ($visits as $v) {
                     $sheet->row($row++, [
                         $row - 2,
                         $v->user->name ?? '-',
-                        $v->created_at
+                        $v->user->kelas ?? '-',
+                        $v->transaction->book->judul ?? '-',
+                        $v->transaction->jenis_transaksi ?? '-',
+                        $v->tanggal_datang
                     ]);
                 }
-
-                $sheet->row(1, function ($row) {
-                    $row->setFontWeight('bold');
-                });
-
+                $sheet->row(1, function ($r) { $r->setFontWeight('bold'); });
             });
-
         })->export('xlsx');
     }
 
+    private function getVisits(Request $request)
+    {
+        $start = $request->get('start_date');
+        $end   = $request->get('end_date');
+        return Visit::with('user', 'transaction')
+            ->when($start && $end, fn($q) => $q->whereBetween('tanggal_datang', [$start, $end]))
+            ->orderBy('tanggal_datang', 'desc')
+            ->get();
+    }
+
     // =====================================================
-    // 🔹 ROUTE ALIASES (match route definitions)
+    // 🔹 ROUTE ALIASES (SUDAH DIBENARKAN!)
     // =====================================================
-    
-    public function transaksiPrint() { return $this->transactionReport(request()); }
-    public function transaksiPdf() { return $this->transactionReportPdf(request()); }
-    public function kehilanganPrint() { return $this->reportPrint(); }
-    public function kehilanganPdf() { return $this->reportPdf(); }
-    public function kehilanganExcel() { return $this->reportExcel(); }
-    public function kunjunganPrint() { return $this->visitPrint(); }
-    public function kunjunganPdf() { return $this->visitPdf(); }
-    public function kunjunganExcel() { return $this->visitExcel(); }
+    public function transaksiPrint()     { return $this->transactionReport(request()); }
+    public function transaksiPdf()       { return $this->transaksiExportPdf(request()); }
+    public function kehilanganPrint()    { return $this->reportPrint(); }
+    public function kehilanganPdf()      { return $this->kehilanganExportPdf(request()); }
+    public function kehilanganExcel()    { return $this->kehilanganExportExcel(request()); }
+    public function kunjunganPrint()     { return $this->visitPrint(); }
+    public function kunjunganPdf()       { return $this->kunjunganExportPdf(request()); }
+    public function kunjunganExcel()     { return $this->kunjunganExportExcel(request()); }
 
     public function kartuSiswa()
     {

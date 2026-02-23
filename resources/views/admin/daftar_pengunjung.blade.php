@@ -51,7 +51,7 @@
                 <i class="fa fa-sliders"></i>
             </button>
             @auth
-                <a href="" class="btn-print">
+                <a href="{{ route('cetak.filter-daftar-kunjungan') }}" class="btn-print">
                     <i class="fa-solid fa-print"></i>
                     Cetak Laporan
                 </a>

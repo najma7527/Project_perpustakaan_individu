@@ -46,7 +46,7 @@
     </form>
 
     @auth
-    <a href="" class="btn-print">
+    <a href="{{ route('cetak.filter-kehilangan') }}" class="btn-print">
         <i class="fa-solid fa-print"></i>
         Cetak Laporan
     </a>

@@ -6,7 +6,7 @@
 }
 
 body {
-    background: #4a4a4a;
+    background: #ffffff;
 }
 
 .wrap {
@@ -20,12 +20,12 @@ body {
 .topbar {
     background: linear-gradient(90deg, #0b4db8, #1fa2ff);
     color: #fff;
-    padding: 15px 20px;
-    border-radius: 10px;
+    padding: 20px 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
+
 
 .top-left {
     display: flex;
@@ -82,7 +82,10 @@ body {
 
 /* PAPER */
 .paper {
+    background: white;
     border: 1px solid #cfcfcf;
+    width: 1450px;
+    margin: 20px auto;
     padding: 20px;
 }
 
