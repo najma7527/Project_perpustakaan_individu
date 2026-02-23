@@ -43,7 +43,7 @@ class ReportController extends Controller
     }
 
     $reports = $query->latest()->paginate();
-    $statuses = ['pending', 'belum_dikembalikan', 'sudah_dikembalikan'];
+    $statuses = ['pending', 'belum_dikembalikan', 'sudah_dikembalikan', 'buku_hilang', 'approved', 'rejected'];
 
     return view('admin.laporan_data_kehilangan', compact('reports', 'statuses'));
 }

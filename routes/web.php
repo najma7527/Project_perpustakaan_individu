@@ -162,16 +162,16 @@ Route::middleware(['auth'])->group(function () {
             return view('admin.edit-password');
         });
 
-        // Cetak View Pages
-        Route::get('/cetak-transaksi', function () {
-            return view('cetak.cetak-transaksi');
-        });
-        Route::get('/cetak-daftar-pengunjung', function () {
-            return view('cetak.cetak-daftar-pengunjung');
-        });
-        Route::get('/cetak-kehilangan', function () {
-            return view('cetak.cetak-kehilangan');
-        });
+        // // Cetak View Pages
+        // Route::get('/cetak-transaksi', function () {
+        //     return view('cetak.cetak-transaksi');
+        // });
+        // Route::get('/cetak-daftar-pengunjung', function () {
+        //     return view('cetak.cetak-daftar-pengunjung');
+        // });
+        // Route::get('/cetak-kehilangan', function () {
+        //     return view('cetak.cetak-kehilangan');
+        // });
     });
 
     /*
@@ -243,5 +243,11 @@ Route::middleware(['auth'])->group(function () {
             return view('siswa.edit-foto-profil');
         });
     });
+
+    Route::get('/cetak/nota/{id}/{jenis?}', [CetakController::class, 'cetakNotaPdf'])
+     ->name('cetak.nota');
+
+    Route::get('/cetak/pengembalian-hilang/{id}', [CetakController::class, 'pengembalianHilangPdf'])
+     ->name('cetak.pengembalian.hilang');
 
 });

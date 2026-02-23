@@ -71,30 +71,51 @@ class CetakController extends Controller
     // =====================================================
     // 🔹 TRANSAKSI - CETAK PER ID (tetap seperti lama)
     // =====================================================
-    public function transactionPrint($id)
-    {
-        $transaction = Transaction::with('user', 'book')->findOrFail($id);
-        return view('print.transaction-id', compact('transaction'));
+
+    public function cetakNotaPdf($id, $jenis = 'peminjaman')
+{
+    $transaction = Transaction::with('user', 'book')->findOrFail($id);
+
+    if ($jenis === 'peminjaman') {
+        $peminjam = (object)[
+            'nama' => $transaction->user->name,
+            'nis'  => $transaction->user->nis_nisn,
+            'kelas'=> $transaction->user->kelas,
+        ];
+        $buku = (object)[
+            'judul' => $transaction->book->judul,
+            'kode'  => $transaction->book->kode_buku,
+        ];
+        $peminjaman = (object)[
+            'tgl_pinjam'   => $transaction->tanggal_peminjaman?->format('d F Y'),
+            'tgl_kembali'  => $transaction->tanggal_jatuh_tempo?->format('d F Y'),
+            'batas_pinjam' => '8/5/2028', // sesuaikan logika kamu
+        ];
+    } else {
+        $pengembalian = (object)[
+            'nama_peminjam' => $transaction->user->name,
+            'nis'           => $transaction->user->nis_nisn,
+            'kelas'         => $transaction->user->kelas,
+            'judul_buku'    => $transaction->book->judul,
+            'kode_buku'     => $transaction->book->kode_buku,
+            'tanggal_pinjam'=> $transaction->tanggal_peminjaman?->format('d F Y'),
+            'batas_lama'    => $transaction->tanggal_jatuh_tempo?->format('d F Y'),
+            'batas_baru'    => $transaction->tanggal_pengembalian?->format('d F Y') ?? $transaction->tanggal_jatuh_tempo?->format('d F Y'),
+            'jumlah_hari'   => '0 Hari', // hitung selisih kalau perpanjangan
+        ];
     }
 
-    public function transactionPdf($id)
-    {
-        $transaction = Transaction::with('user', 'book')->findOrFail($id);
-        return Pdf::loadView('pdf.transaction-id', compact('transaction'))
-            ->setPaper('A5')
-            ->stream("transaksi-$id.pdf");
-    }
+    return Pdf::loadView('cetak.nota.cetak-transaksi', compact(
+        $jenis === 'peminjaman' ? ['peminjam', 'buku', 'peminjaman', 'jenis'] 
+                                : ['pengembalian', 'jenis']
+    ))
+    ->setPaper('A5', 'portrait')
+    ->stream("nota-{$jenis}-{$id}.pdf");
+}
 
     // =====================================================
     // 🔹 LAPORAN KESELURUHAN + EXPORT
     // =====================================================
-    public function transactionReport(Request $request)
-    {
-        $transactions = Transaction::with('user', 'book')
-            ->when($request->type, fn($q) => $q->where('type', $request->type))
-            ->get();
-        return view('print.transaction-report', compact('transactions'));
-    }
 
     public function transaksiExportPdf(Request $request)
     {
@@ -123,25 +144,15 @@ class CetakController extends Controller
     // =====================================================
     // 🔹 KEHILANGAN
     // =====================================================
-    public function reportPrintById($id)
-    {
-        $report = Report::with(['user', 'transaction.book'])->findOrFail($id);
-        return view('print.report-id', compact('report'));
-    }
 
-    public function reportPdfById($id)
-    {
-        $report = Report::with(['user', 'transaction.book'])->findOrFail($id);
-        return Pdf::loadView('report-id', compact('report'))
-            ->setPaper('A5')
-            ->stream("kehilangan-$id.pdf");
-    }
+    public function pengembalianHilangPdf($id)
+{
+    $report = Report::with(['user', 'transaction.book'])->findOrFail($id);
 
-    public function reportPrint()
-    {
-        $reports = Report::with(['user', 'transaction.book'])->get();
-        return view('print.report', compact('reports'));
-    }
+    return Pdf::loadView('cetak.nota.cetak-buku-hilang', compact('report'))
+              ->setPaper('A5', 'portrait')
+              ->stream("pengembalian-buku-hilang-{$id}.pdf");
+}
 
     public function kehilanganExportPdf(Request $request)
     {
@@ -170,11 +181,6 @@ class CetakController extends Controller
     // =====================================================
     // 🔹 KUNJUNGAN
     // =====================================================
-    public function visitPrint()
-    {
-        $visits = Visit::with('user')->get();
-        return view('print.visit', compact('visits'));
-    }
 
     public function kunjunganExportPdf(Request $request)
     {

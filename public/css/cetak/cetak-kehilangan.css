@@ -54,6 +54,7 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
+    margin: 30px;
 }
 
 /* DATE BOX */
@@ -113,9 +114,16 @@ body {
 
 /* ================= KOP ================= */
 .kop {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+    width: 100%;
+}
+
+.logo {
+    width: 80px;
+    float: left;
+}
+
+.kop-text {
+    text-align: center;
 }
 
 .logo {

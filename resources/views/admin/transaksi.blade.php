@@ -90,22 +90,21 @@
     <td>{{ optional($trx->tanggal_jatuh_tempo)->format('d/m/Y') }}</td>
     <td>
     @if($trx->status == 'belum_dikembalikan')
-        <span class="status danger">Belum Dikembalikan</span>
+        <span class="status blue">Belum Dikembalikan</span>
     @elseif($trx->status == 'buku_hilang')
-        <span class="status warning">Buku Hilang</span>
-    @elseif($trx->status == 'sudah_dikembalikan')
-        <span class="status success">Sudah Dikembalikan</span>
+        <span class="status danger">Buku Hilang</span>
     @elseif($trx->status == 'terlambat')
-        <span class="status danger">Terlambat</span>
-    @elseif($trx->status == 'menunggu_konfirmasi')
-        <span class="status warning">Menunggu Konfirmasi</span>
+        <span class="status warning">Terlambat</span>
     @endif
     </td>
 <td class="aksi">
-@if($trx->status == 'buku_hilang')
+@if($trx->status == 'belum_dikembalikan')
+<span class="btn-filter btn-nota"
+      onclick="window.open('{{ route('cetak.nota', [$trx->id, 'peminjaman']) }}', '_blank')">
+    <i class="fa-solid fa-print"></i>
+</span>
+@elseif(in_array($trx->status, ['terlambat', 'buku_hilang']))
     <span>-</span>
-@elseif(in_array($trx->status, ['belum_dikembalikan', 'terlambat', 'sudah_dikembalikan']))
-    <span class="btn-filter btn-nota" data-nama="{{ $trx->user->name }}"><i class="fa-solid fa-print"></i></span>
 @endif
 </td>
 </tr>
@@ -212,8 +211,10 @@
         <button type="submit" class="btn-red" title="Tolak" style="border:none; border-radius:4px; padding: 2px 8px; cursor:pointer;">✖</button>
     </form>
 @elseif($trx->status == 'sudah_dikembalikan')
-    <span class="btn-filter btn-nota" data-nama="{{ $trx->user->name }}"><i class="fa-solid fa-print"></i></span>
-@endif
+<span class="btn-filter btn-nota"
+      onclick="window.open('{{ route('cetak.nota', [$trx->id, 'pengembalian']) }}', '_blank')">
+    <i class="fa-solid fa-print"></i>
+</span>@endif
 </td>
 </tr>
 @empty

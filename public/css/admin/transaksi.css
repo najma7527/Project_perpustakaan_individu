@@ -208,6 +208,7 @@ td {
 .success { background: #22c55e; color: #fff; }
 .warning { background: #facc15; color: #000; }
 .danger  { background: #ef4444; color: #fff; }
+.blue    { background: #2196f3; color: #fff; }
 
 /* AKSI */
 .aksi {

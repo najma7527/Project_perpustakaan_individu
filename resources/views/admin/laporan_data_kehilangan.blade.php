@@ -50,7 +50,7 @@
         <i class="fa-solid fa-print"></i>
         Cetak Laporan
     </a>
-
+    @endauth
 </div>
 
 {{-- TABLE --}}
@@ -87,6 +87,18 @@
             case 'sudah_dikembalikan':
                 $status = 'Sudah Dikembalikan';
                 $statusClass = 'status-green';
+                break;
+            case 'buku_hilang':
+                $status = 'Belum Dikembalikan';
+                $statusClass = 'status-red';
+                break;
+            case 'approved':
+                $status = 'Disetujui';
+                $statusClass = 'status-green';
+                break;
+            case 'rejected':
+                $status = 'Ditolak';
+                $statusClass = 'status-red';
                 break;
 
             default:
@@ -136,8 +148,10 @@
                         </button>
                     </form>
                 @elseif($report->status === 'sudah_dikembalikan')
-                    <span class="btn-filter btn-nota" data-nama="{{ $report->transaction->user->name }}"><i class="fa-solid fa-print"></i></span>
-                @else
+<span class="btn-filter btn-nota"
+      onclick="window.open('{{ route('cetak.nota', [$report->id, 'hilang']) }}', '_blank')">
+    <i class="fa-solid fa-print"></i>
+</span>                @else
                     <span class="no-action">-</span>
                 @endif
             </td>

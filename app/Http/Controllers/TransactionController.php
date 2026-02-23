@@ -31,7 +31,7 @@ class TransactionController extends Controller
 
         $transactions = Transaction::with(['user', 'book'])
             ->when($mode === 'peminjaman', function($q) {
-                $q->whereIn('status', ['buku_hilang', 'belum_dikembalikan', 'terlambat', 'sudah_dikembalikan', 'menunggu_konfirmasi']);
+                $q->whereIn('status', ['buku_hilang', 'belum_dikembalikan', 'terlambat']);
             })
             ->when($mode === 'pengembalian', function($q) {
                 $q->whereIn('status', ['menunggu_konfirmasi', 'sudah_dikembalikan']);

@@ -16,7 +16,7 @@ body {
     padding: 20px;
 }
 
-/* TOPBAR */
+/* ================= TOPBAR ================= */
 .topbar {
     background: linear-gradient(90deg, #0b4db8, #1fa2ff);
     color: #fff;
@@ -26,77 +26,109 @@ body {
     align-items: center;
 }
 
-
 .top-left {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.top-icon {
-    background: rgba(255,255,255,.25);
-    padding: 12px;
-    border-radius: 8px;
-}
-
-.top-text h4 { font-size: 16px; }
-.top-text span { font-size: 12px; opacity: .9; }
-
-.top-right { font-size: 28px; }
-
-/* FILTER (KANAN) */
-.filter {
-    margin: 20px 0;
-    display: flex;
-    justify-content: flex-end;
-}
-
-.filter-right {
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
+.top-icon {
+    background: rgba(255,255,255,.25);
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.top-text h4 { font-size: 15px; }
+.top-text span { font-size: 12px; opacity: .9; }
+
+.top-right { font-size: 26px; }
+
+/* ================= FILTER ================= */
+.filter {
+    margin: 18px 0;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.filter-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 30px;
+}
+
+/* DATE BOX */
 .date-box {
     display: flex;
     align-items: center;
-    gap: 6px;
-    border: 1px solid #d0d0d0;
-    padding: 6px 10px;
-    border-radius: 8px;
+    border: 1px solid #1fa2ff;
+    border-radius: 7px;  
+    overflow: hidden;
+    height: 34px;         
+}
+
+.date-box i {
+    background: #1fa2ff;
+    color: #fff;
+    padding: 0 10px;      
+    font-size: 13px;      
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
 
 .date-box input {
     border: none;
     outline: none;
+    padding: 0 10px;      
+    font-size: 13px;     
+    width: 95px;          
+    height: 100%;
 }
 
+/* PANAH */
+.filter-right .fa-arrows-left-right {
+    font-size: 15px;
+    color: #1fa2ff;
+    margin: 0 2px;
+}
+
+/* BUTTON FILTER */
 .btn-filter {
+    height: 34px;
+    padding: 0 14px;
+    font-size: 12px;
     background: #1fa2ff;
     color: #fff;
     border: none;
-    padding: 7px 16px;
     border-radius: 8px;
     cursor: pointer;
 }
 
-/* PAPER */
+/* ================= PAPER ================= */
 .paper {
     background: white;
     border: 1px solid #cfcfcf;
-    width: 1450px;
-    margin: 20px auto;
     padding: 20px;
 }
 
-/* KOP */
+/* ================= KOP ================= */
 .kop {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+    width: 100%;
 }
 
-.logo { width: 70px; }
+.logo {
+    width: 80px;
+    float: left;
+}
+
+.kop-text {
+    text-align: center;
+}
+
+.logo {
+    width: 70px;
+}
 
 .kop-text {
     text-align: center;
@@ -109,13 +141,13 @@ body {
 
 hr { margin: 15px 0; }
 
-/* INFO */
+/* ================= INFO ================= */
 .info {
     font-size: 13px;
     margin-bottom: 10px;
 }
 
-/* TABLE */
+/* ================= TABLE ================= */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -138,11 +170,7 @@ td:nth-child(3) {
     text-align: left;
 }
 
-.done { color: green; }
-.pending { color: #ff9800; }
-.lost { color: red; }
-
-/* FOOTER */
+/* ================= FOOTER ================= */
 .paper-footer {
     display: flex;
     justify-content: space-between;
@@ -150,12 +178,21 @@ td:nth-child(3) {
     margin-top: 10px;
 }
 
-/* BUTTON (KANAN) */
+/* ================= ACTION BUTTON ================= */
 .actions {
     display: flex;
-    justify-content: flex-end;
-    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
     margin-top: 25px;
+}
+
+.actions-left {
+    display: flex;
+    gap: 12px;
+}
+
+.actions-right {
+    display: flex;
 }
 
 .actions .btn {
@@ -176,9 +213,14 @@ td:nth-child(3) {
     background: #148ae6;
 }
 
-/* PRINT */
+/* ================= PRINT ================= */
 @media print {
-    .topbar, .filter, .actions { display: none; }
+    .topbar,
+    .filter,
+    .actions {
+        display: none;
+    }
+
     .wrap {
         width: 100%;
         margin: 0;

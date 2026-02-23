@@ -23,8 +23,16 @@
 }
 
 .kop {
-    display: flex;
-    align-items: center;
+    width: 100%;
+}
+
+.logo {
+    width: 80px;
+    float: left;
+}
+
+.kop-text {
+    text-align: center;
 }
 
 .logo {

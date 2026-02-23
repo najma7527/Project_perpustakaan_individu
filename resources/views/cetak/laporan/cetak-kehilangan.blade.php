@@ -117,9 +117,6 @@
 <div class="actions">
     <!-- KIRI -->
     <div class="actions-left">
-        <button class="btn" id="btnPrint">
-            <i class="fa-solid fa-print"></i> Print
-        </button>
     <a href="{{ route('cetak.kehilangan.pdf', request()->all()) }}" class="btn" id="btnPdf"><i class="fa-solid fa-file-pdf"></i> Export PDF</a>
     <a href="{{ route('cetak.kehilangan.excel', request()->all()) }}" class="btn" id="btnExcel"><i class="fa-solid fa-file-excel"></i> Export Excel</a>
 </div>

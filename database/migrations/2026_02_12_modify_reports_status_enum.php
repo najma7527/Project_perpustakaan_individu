@@ -15,7 +15,6 @@ return new class extends Migration
         Schema::table('reports', function (Blueprint $table) {
             $table->enum('status', [
                 'pending',
-                'buku_hilang',
                 'sudah_dikembalikan',
                 'belum_dikembalikan',
                 'approved',

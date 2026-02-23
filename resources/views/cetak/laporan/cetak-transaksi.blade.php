@@ -54,7 +54,7 @@
 
         <!-- KOP -->
         <div class="kop">
-            <img src="{{ asset('img/logo-smk4.png') }}" class="logo">
+            <img src="{{ asset('img/logo_smk4.png') }}" class="logo">
             <div class="kop-text">
                 <h2>SMK NEGERI 4 BOJONEGORO</h2>
                 <h3>PERPUSTAKAAN</h3>
@@ -122,17 +122,18 @@
 
     <!-- BUTTON (KANAN) -->
    <div class="actions">
-    
-    <button class="btn" id="btnPrint">
-        <i class="fa-solid fa-print"></i> Print
-    </button>
-
+    <!-- KIRI -->
+    <div class="actions-left">
     <a href="{{ route('cetak.transaksi.pdf', request()->all()) }}" class="btn" id="btnPdf"><i class="fa-solid fa-file-pdf"></i> Export PDF</a>
     <a href="{{ route('cetak.transaksi.excel', request()->all()) }}" class="btn" id="btnExcel"><i class="fa-solid fa-file-excel"></i> Export Excel</a>
+</div>
 
+    <!-- KANAN -->
+    <div class="actions-right">
     <button class="btn" id="btnBack">
         <i class="fa-solid fa-arrow-left"></i> Kembali
     </button>
+    </div>
 </div>
 
 </div>
