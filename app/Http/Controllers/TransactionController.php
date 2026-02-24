@@ -31,7 +31,7 @@ class TransactionController extends Controller
 
         $transactions = Transaction::with(['user', 'book'])
             ->when($mode === 'peminjaman', function($q) {
-                $q->whereIn('status', ['buku_hilang', 'belum_dikembalikan', 'terlambat', 'sudah_dikembalikan', 'menunggu_konfirmasi']);
+                $q->whereIn('status', ['buku_hilang', 'belum_dikembalikan', 'terlambat']);
             })
             ->when($mode === 'pengembalian', function($q) {
                 $q->whereIn('status', ['menunggu_konfirmasi', 'sudah_dikembalikan']);
@@ -52,7 +52,12 @@ class TransactionController extends Controller
         }
         
         $books = Book::where('stok', '>', 0)->with('row')->get();
-        return view('siswa.pinjam-buku', compact('books'));
+
+        $hasActiveLoan = Transaction::where('user_id', Auth::id())
+            ->whereIn('status', ['belum_dikembalikan', 'menunggu_konfirmasi', 'terlambat'])
+            ->exists();
+
+        return view('siswa.pinjam-buku', compact('books', 'hasActiveLoan'));
     }
 
     /**
@@ -73,6 +78,15 @@ class TransactionController extends Controller
         // Cek apakah buku tersedia
         if ($buku->status !== 'tersedia') {
             return back()->with('error', 'Buku tidak tersedia untuk dipinjam');
+        }
+
+        // Cek apakah siswa sudah memiliki pinjaman aktif
+        $hasActiveLoan = Transaction::where('user_id', Auth::id())
+            ->whereIn('status', ['belum_dikembalikan', 'menunggu_konfirmasi', 'terlambat'])
+            ->exists();
+
+        if ($hasActiveLoan) {
+            return back()->with('error', 'Anda masih memiliki buku yang belum dikembalikan. Kembalikan terlebih dahulu sebelum meminjam buku lain.');
         }
 
          $transaction = Transaction::create([
@@ -220,16 +234,15 @@ class TransactionController extends Controller
     {
         $transaksi = Transaction::where('id', $id)
             ->where('user_id', Auth::id())
-            ->where('status', 'belum_dikembalikan')
+            ->whereIn('status', ['belum_dikembalikan', 'terlambat'])
             ->firstOrFail();
 
-        // Cek sudah lewat jatuh tempo atau belum
-        if (now()->greaterThan($transaksi->tanggal_jatuh_tempo)) {
-            return back()->with('error', 'Tidak bisa perpanjang, sudah melewati jatuh tempo');
+        $transaksi->tanggal_jatuh_tempo = Carbon::parse($transaksi->tanggal_jatuh_tempo)->addDays(3);
+        
+        if ($transaksi->status === 'terlambat' && now()->lessThanOrEqualTo($transaksi->tanggal_jatuh_tempo)) {
+            $transaksi->status = 'belum_dikembalikan';
         }
 
-        // Tambah 3 hari
-        $transaksi->tanggal_jatuh_tempo = $transaksi->tanggal_jatuh_tempo->addDays(3);
         $transaksi->save();
 
         return back()->with('success', 'Perpanjangan berhasil! Buku dapat dikembalikan dalam 3 hari lagi');

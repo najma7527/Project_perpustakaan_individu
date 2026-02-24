@@ -173,16 +173,6 @@
                 <p>Pilih peran Anda untuk mengakses layanan perpustakaan digital kami</p>
             </div>
             <div class="register-cards">
-                <div class="register-card admin-card">
-                    <div class="card-icon">
-                        <i class="fas fa-user-shield"></i>
-                    </div>
-                    <h3>Register Admin Perpustakaan</h3>
-                    <p>Layanan khusus bagi petugas perpustakaan untuk mengelola data buku, anggota, peminjaman, pengembalian, serta laporan perpustakaan.</p>
-                    <a href="{{ route('register-admin.show') }}" class="btn-card">
-                        <i class="fas fa-key"></i> Daftar sebagai Admin
-                    </a>
-                </div>
                 <div class="register-card member-card">
                     <div class="card-icon">
                         <i class="fas fa-user-graduate"></i>

@@ -47,7 +47,6 @@
             <div class="table-card">
                 <table>
                     <thead>
-                    <thead>
                         <tr>
                             <th>No</th>
                             <th>Judul Buku</th>
@@ -61,7 +60,7 @@
                     <tbody>
                         @forelse($reports as $item)
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $reports->firstItem() + $loop->index }}</td>
                             <td>{{ $item->transaction->book->judul ?? '-' }}</td>
                             <td>{{ $item->keterangan }}</td>
                             <td>{{ optional($item->transaction->tanggal_peminjaman)->format('d/m/Y') ?? '-' }}</td>
@@ -69,12 +68,12 @@
                             <td>
                                 @if($item->status === 'pending')
                                     <span class="status-yellow">Menunggu Konfirmasi</span>
-                                @elseif($item->status === 'approved')
-                                    <span class="status-green">Disetujui</span>
+                                @elseif($item->status === 'sudah_dikembalikan')
+                                    <span class="status-green">Sudah Dikembalikan</span>
                                 @elseif($item->status === 'belum_dikembalikan')
                                     <span class="status-red">Belum Dikembalikan</span>
                                 @else
-                                    <span class="status-gray">{{ ucfirst($item->status) }}</span>
+                                    <span class="status-gray">{{ ucfirst(str_replace('_', ' ', $item->status)) }}</span>
                                 @endif
                             </td>
                             <td>
@@ -100,47 +99,7 @@
                 
     {{-- PAGINATION --}}
 <div style="margin-top:20px;">
-    <div class="table-pagination">
-        <span class="page-info">Menampilkan {{ $reports->firstItem() }}–{{ $reports->lastItem() }} dari {{ $reports->total() }} data</span>
-
-        <div class="pagination">
-            @if ($reports->onFirstPage())
-                <span class="page-btn disabled"><i class="fa fa-chevron-left"></i></span>
-            @else
-                <a href="{{ $reports->previousPageUrl() }}" class="page-btn"><i class="fa fa-chevron-left"></i></a>
-            @endif
-
-            @php $current = $reports->currentPage(); $last = $reports->lastPage(); @endphp
-
-            @if ($current == 1)
-                <span class="page-btn active">1</span>
-            @else
-                <a href="{{ $reports->url(1) }}" class="page-btn">1</a>
-            @endif
-
-            @if ($current > 1)
-                <span class="page-btn active">{{ $current }}</span>
-            @endif
-
-            @if ($current + 1 <= $last)
-                <a href="{{ $reports->url($current + 1) }}" class="page-btn">{{ $current + 1 }}</a>
-            @endif
-
-            @if ($current + 1 < $last)
-                <span class="page-dots">…</span>
-            @endif
-
-            @if ($last > 1)
-                <a href="{{ $reports->url($last) }}" class="page-btn">{{ $last }}</a>
-            @endif
-
-            @if ($reports->hasMorePages())
-                <a href="{{ $reports->nextPageUrl() }}" class="page-btn"><i class="fa fa-chevron-right"></i></a>
-            @else
-                <span class="page-btn disabled"><i class="fa fa-chevron-right"></i></span>
-            @endif
-        </div>
-    </div>
+    @include('components.pagination', ['paginator' => $reports])
 </div>
 </div>
             </div>
@@ -168,26 +127,25 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    let currentStatus = null;
+    let currentForm = null;
 
     document.querySelectorAll('.btn-pengembalian').forEach(btn => {
-        btn.addEventListener('click', function () {
-            // status span is in the 6th cell
-            currentStatus = this.closest('tr').querySelector('td:nth-child(6) span');
+        btn.addEventListener('click', function (e) {
+            e.preventDefault(); // Prevent immediate submission
+            currentForm = this.closest('form');
             document.getElementById('modalPengembalian').style.display = 'flex';
         });
     });
 
-    document.querySelector('.btn-batal').addEventListener('click', function () {
+    document.getElementById('btnBatal').addEventListener('click', function () {
         document.getElementById('modalPengembalian').style.display = 'none';
+        currentForm = null;
     });
 
-    document.querySelector('.btn-ya').addEventListener('click', function () {
-        if (currentStatus) {
-            currentStatus.className = 'status-green';
-            currentStatus.innerText = 'Sudah dikembalikan';
+    document.getElementById('btnYa').addEventListener('click', function () {
+        if (currentForm) {
+            currentForm.submit();
         }
-        document.getElementById('modalPengembalian').style.display = 'none';
     });
 
 });

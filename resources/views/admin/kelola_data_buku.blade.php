@@ -23,7 +23,6 @@
 
             <div class="table-header">
                 <form method="GET" action="{{ route('books.index') }}">
-    <form method="GET" action="{{ route('books.index') }}">
 
 <div class="filter">
 
@@ -65,10 +64,16 @@
 </form>
 
                 @auth
-                <a href="{{ route('books.create') }}" class="btn-add">
-                    <i class="fa-solid fa-plus"></i>
-                    Tambah Data Buku
-                </a>
+                <div class="btn-group-actions">
+                    <a href="{{ route('books.exportExcel') }}" class="btn-export-excel">
+                        <i class="fa fa-file-excel"></i>
+                        Export Excel
+                    </a>
+                    <a href="{{ route('books.create') }}" class="btn-add">
+                        <i class="fa-solid fa-plus"></i>
+                        Tambah Data Buku
+                    </a>
+                </div>
                 @endauth
             </div>
             
@@ -90,7 +95,7 @@
                     @foreach($books as $book)
                     @if (Auth::user()->role == 'admin')
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $books->firstItem() + $loop->index }}</td>
                         <td>{{ $book->judul }}</td>
                         <td>{{ $book->kode_buku }}</td>
                         <td>{{ $book->pengarang }}</td>
@@ -126,83 +131,14 @@
                     @endforeach
                 </tbody>
 
+                <tfoot>
+                    <tr>
+                        <td colspan="8">
+                            @include('components.pagination', ['paginator' => $books])
+                        </td>
+                    </tr>
+                </tfoot>
             </table>
-        <tfoot>
-            <tr>
-                <td colspan="8">
-                    <div class="table-pagination">
-                        <span class="page-info">
-                            Menampilkan {{ $books->firstItem() }}–{{ $books->lastItem() }} dari {{ $books->total() }} data
-                        </span>
-
-                        <div class="pagination">
-                            {{-- PREV --}}
-                            @if ($books->onFirstPage())
-                                <span class="page-btn disabled">
-                                    <i class="fa fa-chevron-left"></i>
-                                </span>
-                            @else
-                                <a href="{{ $books->previousPageUrl() }}" class="page-btn">
-                                    <i class="fa fa-chevron-left"></i>
-                                </a>
-                            @endif
-@php
-    $current = $books->currentPage();
-    $last = $books->lastPage();
-@endphp
-
-{{-- PAGE 1 --}}
-@if ($current == 1)
-    <span class="page-btn active">1</span>
-@else
-    <a href="{{ $books->url(1) }}" class="page-btn">1</a>
-@endif
-
-{{-- CURRENT PAGE (jika bukan page 1) --}}
-@if ($current > 1)
-    <span class="page-btn active">{{ $current }}</span>
-@endif
-
-{{-- NEXT PAGE --}}
-@if ($current + 1 <= $last)
-    <a href="{{ $books->url($current + 1) }}" class="page-btn">
-        {{ $current + 1 }}
-    </a>
-@endif
-
-{{-- DOTS --}}
-@if ($current + 1 < $last)
-    <span class="page-dots">…</span>
-@endif
-
-{{-- LAST PAGE --}}
-@if ($last > 1)
-    <a href="{{ $books->url($last) }}" class="page-btn">
-        {{ $last }}
-    </a>
-@endif
-
-
-                            {{-- NEXT --}}
-                            @if ($books->hasMorePages())
-                                <a href="{{ $books->nextPageUrl() }}" class="page-btn">
-                                    <i class="fa fa-chevron-right"></i>
-                                </a>
-                            @else
-                                <span class="page-btn disabled">
-                                    <i class="fa fa-chevron-right"></i>
-                                </span>
-                            @endif
-                        </div>
-                    </div>
-                </td>
-            </tr>
-        </tfoot>
-    
-
-    </table>
-
-</div>
         </div>
 
     </main>

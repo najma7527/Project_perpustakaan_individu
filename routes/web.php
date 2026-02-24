@@ -16,11 +16,10 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\CetakController;
 use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Auth;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 /*
 |--------------------------------------------------------------------------
-| Public Routes
+| Public Routes 
 |--------------------------------------------------------------------------
 */
 Route::get('/', function () {
@@ -79,12 +78,13 @@ Route::middleware(['auth'])->group(function () {
         // User Management (Kelola Anggota)
         Route::prefix('anggota')->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('admin.anggota.index');
+            Route::get('/export-excel', [CetakController::class, 'anggotaDiterimaExcel'])->name('admin.anggota.exportExcel');
+            Route::get('/kartu/{id}/export', [CetakController::class, 'exportKartuAdmin'])->name('admin.kartu.export');
             Route::get('/{id}', [UserController::class, 'show'])->name('admin.anggota.show');
             Route::put('/{id}', [UserController::class, 'update'])->name('admin.anggota.update');
             Route::delete('/{id}', [UserController::class, 'destroy'])->name('admin.anggota.destroy');
             Route::post('/{id}/status', [UserController::class, 'updateStatus'])->name('admin.anggota.status');
             Route::put('/{id}/reset-password', [UserController::class, 'resetPassword'])->name('admin.anggota.resetPassword');
-            Route::get('/kartu/{id}/export', [UserController::class, 'exportKartuAdmin'])->name('admin.kartu.export');
         });
 
         // Verification View Routes (Legacy)
@@ -96,10 +96,11 @@ Route::middleware(['auth'])->group(function () {
             if (Auth::user()?->role !== 'admin') abort(403);
             return view('admin.kelola_data_anggota-ditolak');
         });
-
+        
         // Resources (CRUD)
         Route::resource('bookshelves', BookshelfController::class);
         Route::resource('rows', RowController::class);
+        Route::get('/books/export-excel', [CetakController::class, 'bukuExcel'])->name('books.exportExcel');
         Route::resource('books', BookController::class);
         Route::get('/books/search/results', [BookController::class, 'search'])->name('books.search');
         Route::get('/crud_kelola_buku', function () { return view('admin.CRUD_kelola_buku'); });
@@ -112,41 +113,44 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/transactions/{transaction}/reject-return', [TransactionController::class, 'tolakPengembalian'])->name('transactions.tolakPengembalian');
 
         Route::resource('reports', ReportController::class);
+        Route::put('/reports/{report}/approve', [ReportController::class, 'approve'])->name('reports.approve');
+        Route::put('/reports/{report}/reject', [ReportController::class, 'reject'])->name('reports.reject');
         Route::get('/reports/status/{status}', [ReportController::class, 'getByStatus'])->name('reports.by-status');
 
         Route::resource('visits', VisitController::class);
         Route::get('/visits/user/{user}', [VisitController::class, 'getByUser'])->name('visits.by-user');
         Route::get('/visits/date/search', [VisitController::class, 'getByDate'])->name('visits.by-date');
 
-        // Cetak / Exports
+        // Cetak / Exports (SUDAH BERSIH + SEMUA ROUTE NAME DITAMBAHKAN)
         Route::prefix('cetak')->group(function () {
-            // Transaksi
+            // Halaman Preview (dengan data otomatis)
+            Route::get('/cetak-transaksi', [CetakController::class, 'filterTransaksi'])->name('cetak.cetak-transaksi');
+            Route::get('/cetak-kehilangan', [CetakController::class, 'filterKehilangan'])->name('cetak.cetak-kehilangan');
+            Route::get('/cetak-daftar-pengunjung', [CetakController::class, 'filterKunjungan'])->name('cetak.cetak-daftar-pengunjung');
+
+            // Filter (untuk submit tanggal)
+            Route::get('/filter-transaksi', [CetakController::class, 'filterTransaksi'])->name('cetak.filter-transaksi');
+            Route::get('/filter-kehilangan', [CetakController::class, 'filterKehilangan'])->name('cetak.filter-kehilangan');
+            Route::get('/filter-daftar-kunjungan', [CetakController::class, 'filterKunjungan'])->name('cetak.filter-daftar-kunjungan');
+
+            // Export (dengan route name yang benar)
             Route::get('/transaksi/print', [CetakController::class, 'transaksiPrint']);
-            Route::get('/transaksi/pdf', [CetakController::class, 'transaksiPdf']);
-            Route::get('/transaksi/excel', [CetakController::class, 'transaksiExcel']);
-            Route::get('/filter-transaksi', function () { return view('cetak.laporan.cetak-transaksi'); })->name('cetak.filter-transaksi');
+            Route::get('/transaksi/pdf', [CetakController::class, 'transaksiPdf'])->name('cetak.transaksi.pdf');
+            Route::get('/transaksi/excel', [CetakController::class, 'transaksiExportExcel'])->name('cetak.transaksi.excel');
 
-            // Kehilangan
             Route::get('/kehilangan/print', [CetakController::class, 'kehilanganPrint']);
-            Route::get('/kehilangan/pdf', [CetakController::class, 'kehilanganPdf']);
-            Route::get('/kehilangan/excel', [CetakController::class, 'kehilanganExcel']);
-            Route::get('/filter-kehilangan', function () { return view('cetak.laporan.cetak-kehilangan'); })->name('cetak.filter-kehilangan');
+            Route::get('/kehilangan/pdf', [CetakController::class, 'kehilanganPdf'])->name('cetak.kehilangan.pdf');
+            Route::get('/kehilangan/excel', [CetakController::class, 'kehilanganExcel'])->name('cetak.kehilangan.excel');
 
-            // Kunjungan
             Route::get('/kunjungan/print', [CetakController::class, 'kunjunganPrint']);
-            Route::get('/kunjungan/pdf', [CetakController::class, 'kunjunganPdf']);
-            Route::get('/kunjungan/excel', [CetakController::class, 'kunjunganExcel']);
-            Route::get('/filter-daftar-kunjungan', function () { return view('cetak.laporan.cetak-daftar-pengunjung'); })->name('cetak.filter-daftar-kunjungan');
-        });
 
         Route::prefix('profile/notif')->group(function () {
         Route::post('read-all', [NotificationController::class, 'readAll'])->name('notif.readAll');
         Route::get('read/{id}', [NotificationController::class, 'read'])->name('notif.read');
         });
 
-        // External/Legacy Export
-        Route::get('/laporan_data_kehilangan', function () {
-            return view('admin.laporan_data_kehilangan');
+            Route::get('/kunjungan/pdf', [CetakController::class, 'kunjunganPdf'])->name('cetak.kunjungan.pdf');
+            Route::get('/kunjungan/excel', [CetakController::class, 'kunjunganExcel'])->name('cetak.kunjungan.excel');
         });
 
         // Admin Dashboard (Legacy URL)
@@ -165,16 +169,16 @@ Route::middleware(['auth'])->group(function () {
             return view('admin.edit-password');
         });
 
-        // Cetak View Pages
-        Route::get('/cetak-transaksi', function () {
-            return view('cetak.cetak-transaksi');
-        });
-        Route::get('/cetak-daftar-pengunjung', function () {
-            return view('cetak.cetak-daftar-pengunjung');
-        });
-        Route::get('/cetak-kehilangan', function () {
-            return view('cetak.cetak-kehilangan');
-        });
+        // // Cetak View Pages
+        // Route::get('/cetak-transaksi', function () {
+        //     return view('cetak.cetak-transaksi');
+        // });
+        // Route::get('/cetak-daftar-pengunjung', function () {
+        //     return view('cetak.cetak-daftar-pengunjung');
+        // });
+        // Route::get('/cetak-kehilangan', function () {
+        //     return view('cetak.cetak-kehilangan');
+        // });
     });
 
     /*
@@ -191,14 +195,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/my-transactions', [TransactionController::class, 'myTransactions'])->name('transactions.mine');
         Route::get('/my-visits-history', [VisitController::class, 'history'])->name('visit.history');
         Route::get('/kartu/export', [CetakController::class, 'kartuSiswa'])->name('kartu.export');
+        Route::get('/kartu/download', [CetakController::class, 'downloadKartuSiswa'])->name('kartu.download');
 
         // Peminjaman & Pengembalian
         Route::get('/pinjam-buku', [BookController::class, 'browse'])->name('books.browse');
         Route::post('/pinjam-buku/{bookId}', [TransactionController::class, 'pinjam'])->name('transactions.pinjam');
-        Route::get('/pengembalian-buku', function () {
-            if (Auth::user()?->role !== 'anggota') abort(403);
-            return view('siswa.pengembalian-buku');
-        })->name('anggota.pengembalian');
+        Route::get('/pengembalian-buku', [TransactionController::class, 'myTransactions'])->name('anggota.pengembalian');
         
         Route::post('/transactions/{transaction}/ajukan-pengembalian', [TransactionController::class, 'returnBook'])->name('transactions.ajukanPengembalian');
         Route::post('/transactions/{transaction}/perpanjang', [TransactionController::class, 'perpanjang'])->name('transactions.perpanjang');
@@ -211,6 +213,7 @@ Route::middleware(['auth'])->group(function () {
             'edit' => 'laporan-kehilangan.edit',
             'update' => 'laporan-kehilangan.update',
         ]);
+        Route::post('laporan-kehilangan/{id}/kembalikan', [LaporanKehilanganController::class, 'kembalikan'])->name('laporan-kehilangan.kembalikan');
         
         // Additional Loss Report Views (Legacy)
         Route::get('/laporan_kehilangan', function () { 
@@ -253,5 +256,11 @@ Route::middleware(['auth'])->group(function () {
             return back();
         })->name('notif.read');
     });
+
+    Route::get('/cetak/nota/{id}/{jenis?}', [CetakController::class, 'cetakNotaPdf'])
+     ->name('cetak.nota');
+
+    Route::get('/cetak/pengembalian-hilang/{id}', [CetakController::class, 'pengembalianHilangPdf'])
+     ->name('cetak.pengembalian.hilang');
 
 });

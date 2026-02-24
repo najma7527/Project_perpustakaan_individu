@@ -48,15 +48,22 @@
                 <input type="hidden" name="tab" value="{{ $tab }}">
 
                 <div class="filter">
-                    <div class="search">
-                        <i class="fa fa-search"></i>
-                        <input type="text" name="search" value="{{ $search }}" placeholder="Cari sesuatu...">
+                    <div class="filter-left">
+                        <div class="search">
+                            <i class="fa fa-search"></i>
+                            <input type="text" name="search" value="{{ $search }}" placeholder="Cari sesuatu...">
+                        </div>
+                        @if($tab == 'verifikasi')
+                        <div class="date">
+                            <i class="fa fa-calendar"></i>
+                            <input type="date" name="date" value="{{ $date }}">
+                        </div>
+                        @endif
                     </div>
-                    @if($tab == 'verifikasi')
-                    <div class="date">
-                        <i class="fa fa-calendar"></i>
-                        <input type="date" name="date" value="{{ $date }}">
-                    </div>
+                    @if($tab == 'diterima')
+                    <a href="{{ route('admin.anggota.exportExcel') }}" class="btn-export-excel">
+                        <i class="fa fa-file-excel"></i> Export Excel
+                    </a>
                     @endif
                 </div>
             </form>
@@ -82,7 +89,7 @@
                     <tbody>
                         @forelse ($users as $index => $user)
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $users->firstItem() + $index }}</td>
                                 <td class="user-cell">
                                     @if($user->profile_photo && file_exists(public_path($user->profile_photo)))
                                         <img src="{{ asset($user->profile_photo) }}" class="avatar" alt="{{ $user->name }}">
@@ -123,12 +130,15 @@
                                     @elseif($tab == 'diterima')
                                         <button type="button" class="view" title="Lihat Detail"
                                             onclick="openDetailModal({
+                                                id: '{{ $user->id }}',
                                                 name: '{{ addslashes($user->name) }}',
                                                 username: '{{ $user->username }}',
                                                 telephone: '{{ $user->telephone ?? '-' }}',
                                                 nis_nisn: '{{ $user->nis_nisn ?? '-' }}',
                                                 kelas: '{{ $user->kelas ?? '-' }}',
                                                 status: '{{ $user->status }}',
+                                                alamat: '{{ addslashes($user->alamat ?? '-') }}',
+                                                profile_photo: '{{ $user->profile_photo ? asset($user->profile_photo) : '' }}',
                                                 created_at: '{{ $user->created_at }}'
                                             })">
                                             <i class="fa fa-eye"></i>
@@ -160,81 +170,11 @@
                     <tfoot>
                         <tr>
                             <td colspan="7">
-                                <div class="table-pagination">
-                                    <span class="page-info">
-                                        Menampilkan {{ $users->firstItem() }}–{{ $users->lastItem() }} dari {{ $users->total() }} data
-                                    </span>
-
-                                    <div class="pagination">
-                                        @php
-    $current = $users->currentPage();
-    $last = $users->lastPage();
-@endphp
-
-{{-- PREV --}}
-@if ($users->onFirstPage())
-    <span class="page-btn disabled">
-        <i class="fa fa-chevron-left"></i>
-    </span>
-@else
-    <a href="{{ $users->appends(request()->query())->previousPageUrl() }}" class="page-btn">
-        <i class="fa fa-chevron-left"></i>
-    </a>
-@endif
-
-{{-- PAGE 1 --}}
-@if ($current == 1)
-    <span class="page-btn active">1</span>
-@else
-    <a href="{{ $users->appends(request()->query())->url(1) }}" class="page-btn">1</a>
-@endif
-
-{{-- CURRENT PAGE (jika bukan page 1) --}}
-@if ($current > 1)
-    <span class="page-btn active">{{ $current }}</span>
-@endif
-
-{{-- NEXT PAGE NUMBER --}}
-@if ($current + 1 <= $last)
-    <a href="{{ $users->appends(request()->query())->url($current + 1) }}" class="page-btn">
-        {{ $current + 1 }}
-    </a>
-@endif
-
-{{-- DOTS --}}
-@if ($current + 1 < $last)
-    <span class="page-dots">…</span>
-@endif
-
-{{-- LAST PAGE --}}
-@if ($last > 1)
-    <a href="{{ $users->appends(request()->query())->url($last) }}" class="page-btn">
-        {{ $last }}
-    </a>
-@endif
-
-{{-- NEXT --}}
-@if ($users->hasMorePages())
-    <a href="{{ $users->appends(request()->query())->nextPageUrl() }}" class="page-btn">
-        <i class="fa fa-chevron-right"></i>
-    </a>
-@else
-    <span class="page-btn disabled">
-        <i class="fa fa-chevron-right"></i>
-    </span>
-@endif
-
-                                    </div>
-                                </div>
+                                @include('components.pagination', ['paginator' => $users])
                             </td>
                         </tr>
                     </tfoot>
                 </table>
-            
-                </table>
-@if ($users->hasPages())
-@endif
-
 
             </div>
         </div>
@@ -338,70 +278,65 @@
                         </button>
                     </div>
                 </form>
+            </div>
         </div>
     </div>
 </div>
  @endif
 
-<!-- MODAL DETAIL - Hanya muncul di tab Diterima -->
+<!-- MODAL DETAIL SISWA - Redesigned -->
 @if($tab == 'diterima')
 <div class="modal" id="detailModal">
-    <div class="modal-box">
-        <button class="btn-modal-close" onclick="closeDetailModal()">&times;</button>
-        
-        <div class="modal-header">
-            <h3><i class="fa fa-info-circle"></i> Detail Anggota</h3>
+    <div class="detail-modal-box">
+
+        <!-- Header Biru -->
+        <div class="detail-modal-header">
+            <h3>Detail Siswa</h3>
         </div>
 
-        <div class="modal-content-wrapper">
-            <div class="detail-content">
-                <div class="detail-section">
-                    <h4 class="section-title">Informasi Pribadi</h4>
-                    <div class="detail-row">
-                        <label>Nama Lengkap</label>
-                        <p id="detail_name">-</p>
-                    </div>
-                    <div class="detail-row">
-                        <label>Username</label>
-                        <p id="detail_username">-</p>
-                    </div>
-                    <div class="detail-row">
-                        <label>Nomor Telepon</label>
-                        <p id="detail_telephone">-</p>
-                    </div>
-                </div>
+        <!-- Foto Profil Bulat -->
+        <div class="detail-photo-wrapper">
+            <img id="detail_photo" src="{{ asset('img/profile.png') }}" alt="Foto Profil" class="detail-photo">
+        </div>
 
-                <div class="detail-section">
-                    <h4 class="section-title">Informasi Akademik</h4>
-                    <div class="detail-row">
-                        <label>NIS / NISN</label>
-                        <p id="detail_nis">-</p>
-                    </div>
-                    <div class="detail-row">
-                        <label>Kelas</label>
-                        <p id="detail_kelas">-</p>
-                    </div>
-                </div>
+        <!-- Data 2 Kolom -->
+        <div class="detail-grid">
+            <div class="detail-field">
+                <span class="detail-label">Nama:</span>
+                <span class="detail-value" id="detail_name">-</span>
+            </div>
+            <div class="detail-field">
+                <span class="detail-label">Status:</span>
+                <span class="detail-value" id="detail_status">-</span>
+            </div>
 
-                <div class="detail-section">
-                    <h4 class="section-title">Status & Tanggal</h4>
-                    <div class="detail-row">
-                        <label>Status</label>
-                        <p id="detail_status">-</p>
-                    </div>
-                    <div class="detail-row">
-                        <label>Tanggal Pendaftaran</label>
-                        <p id="detail_date">-</p>
-                    </div>
-                </div>
+            <div class="detail-field">
+                <span class="detail-label">Username:</span>
+                <span class="detail-value" id="detail_username">-</span>
+            </div>
+            <div class="detail-field">
+                <span class="detail-label">No. Telp:</span>
+                <span class="detail-value" id="detail_telephone">-</span>
+            </div>
+
+            <div class="detail-field">
+                <span class="detail-label">NIS:</span>
+                <span class="detail-value" id="detail_nis">-</span>
+            </div>
+            <div class="detail-field">
+                <span class="detail-label">Alamat:</span>
+                <span class="detail-value" id="detail_alamat">-</span>
             </div>
         </div>
 
-        <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="closeDetailModal()">
-                <i class="fa fa-times"></i> Tutup
+        <!-- Footer Actions -->
+        <div class="detail-modal-footer">
+            <button type="button" id="detail_cetak_btn" class="btn-cetak-kartu">
+                <i class="fa fa-id-card"></i> Cetak Kartu Anggota
             </button>
+            <button class="btn-tutup" onclick="closeDetailModal()">Tutup</button>
         </div>
+
     </div>
 </div>
 @endif

@@ -63,17 +63,12 @@ body {
 .check {
     width: 90px;
     height: 90px;
-    background: #214f8b;
+    background: #2f5b95;
     border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: auto;
-}
+    margin: 10 auto;
 
-.check svg {
-    width: 40px;
-    fill: #fff;
+    text-align: center;
+    line-height: 70px; 
 }
 
 .success h2 {

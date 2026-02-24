@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\Row;
 use App\Models\Bookshelf;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -242,7 +243,12 @@ class BookController extends Controller
     {
         if (Auth::user()?->role !== 'anggota') abort(403);
         $books = Book::where('status', 'tersedia')->with('row')->get();
-        return view('siswa.pinjam-buku', compact('books'));
-        
+
+        // Cek apakah siswa sudah meminjam buku (masih aktif)
+        $hasActiveLoan = Transaction::where('user_id', Auth::id())
+            ->whereIn('status', ['belum_dikembalikan', 'menunggu_konfirmasi', 'terlambat'])
+            ->exists();
+
+        return view('siswa.pinjam-buku', compact('books', 'hasActiveLoan'));
     }
 }

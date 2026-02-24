@@ -6,7 +6,6 @@
 @endpush
 
 @section('content')
-<div class="main-content"> <!-- jika layout belum menyediakan, tambahkan sendiri -->
     <div class="profile-header" style="background: linear-gradient(135deg, #0d47a1, #1e88e5); color: white; padding: 1.5rem 2rem; border-radius: 12px; margin-bottom: 2rem;">
         <h2 style="margin:0;">Profile Saya</h2>
     </div>
@@ -76,7 +75,7 @@
                 <tr style="border-bottom:1px solid #e9ecef;">
                     <td style="padding:0.75rem 1rem;">{{ $item->transaction->jenis_transaksi ?? '-' }}</td>
                     <td style="padding:0.75rem 1rem;">{{ $item->transaction->book->judul ?? '-' }}</td>
-                    <td style="padding:0.75rem 1rem;">{{ $item->tanggal_datang->format('d M Y') }}</td>
+                    <td style="padding:0.75rem 1rem;">{{ \Carbon\Carbon::parse($item->tanggal_datang)->format('d M Y') }}</td>
                 </tr>
                 @empty
                 <tr>

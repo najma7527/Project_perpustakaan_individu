@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Cetak Laporan Transaksi</title>
+    <style>
+@media print {
+    .wrap, .topbar, .filter-right, .actions, .top-left, .top-right { display: none !important; }
+    .paper { margin: 0; padding: 20px; box-shadow: none; width: 100%; }
+}
+</style>
     <link rel="stylesheet" href="{{ asset('css/cetak/cetak-transaksi.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
@@ -27,30 +33,28 @@
     </div>
 
     <!-- FILTER (KANAN) -->
-    <div class="filter">
-        <div class="filter-right">
-            <div class="date-box">
-                <i class="fa-regular fa-calendar"></i>
-                <input type="text" placeholder="MM-DD-YY">
-            </div>
-
-            <i class="fa-solid fa-arrows-left-right"></i>
-
-            <div class="date-box">
-                <i class="fa-regular fa-calendar"></i>
-                <input type="text" placeholder="MM-DD-YY">
-            </div>
-
-            <button class="btn-filter">Pilih Tanggal</button>
+    <form method="GET" action="{{ route('cetak.filter-transaksi') }}">
+    <div class="filter-right">
+        <div class="date-box">
+            <i class="fa-regular fa-calendar"></i>
+            <input type="date" name="start_date" value="{{ request('start_date') }}">
         </div>
+        <i class="fa-solid fa-arrows-left-right"></i>
+        <div class="date-box">
+            <i class="fa-regular fa-calendar"></i>
+            <input type="date" name="end_date" value="{{ request('end_date') }}">
+        </div>
+        <button type="submit" class="btn-filter">Pilih Tanggal</button>
     </div>
+</form>
+
 
     <!-- KERTAS -->
     <div class="paper">
 
         <!-- KOP -->
         <div class="kop">
-            <img src="{{ asset('img/logo-smkn4.png') }}" class="logo">
+            <img src="{{ asset('img/logo_smk4.png') }}" class="logo">
             <div class="kop-text">
                 <h2>SMK NEGERI 4 BOJONEGORO</h2>
                 <h3>PERPUSTAKAAN</h3>
@@ -65,7 +69,11 @@
 
         <div class="info">
             <p>Hal : Laporan Transaksi Perpustakaan</p>
-            <p>Periode : 01 Januari s/d 31 Januari 2026</p>
+            <p>Periode : 
+        {{ request('start_date') ? \Carbon\Carbon::parse(request('start_date'))->format('d/m/Y') : 'Awal' }} 
+        s/d 
+        {{ request('end_date') ? \Carbon\Carbon::parse(request('end_date'))->format('d/m/Y') : 'Sekarang' }}
+    </p>
         </div>
 
         <!-- TABEL -->
@@ -82,38 +90,27 @@
                     <th>Status</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Erika Putri Himawan</td>
-                    <td>Tahu Bulat Enak</td>
-                    <td>X PH1</td>
-                    <td>20/01/2026</td>
-                    <td>20/01/2026</td>
-                    <td>20/01/2026</td>
-                    <td class="done">Sudah dikembalikan</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Naila Sobyan</td>
-                    <td>Penggembala Kambing</td>
-                    <td>XII RPL 2</td>
-                    <td>20/01/2026</td>
-                    <td>20/01/2026</td>
-                    <td>-</td>
-                    <td class="pending">Belum dikembalikan</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Sahrulman</td>
-                    <td>Teh Jahe Kopi</td>
-                    <td>X ATR 2</td>
-                    <td>20/01/2026</td>
-                    <td>20/01/2026</td>
-                    <td>-</td>
-                    <td class="lost">Buku Hilang</td>
-                </tr>
-            </tbody>
+<tbody>
+    @forelse($transactions as $index => $t)
+    <tr>
+        <td>{{ $index + 1 }}</td>
+        <td>{{ $t->user->name ?? '-' }}</td>
+        <td>{{ $t->book->judul ?? '-' }}</td>
+        <td>{{ $t->user->kelas ?? '-' }}</td>
+        <td>{{ optional($t->tanggal_peminjaman)->format('d/m/Y') }}</td>
+        <td>{{ optional($t->tanggal_jatuh_tempo)->format('d/m/Y') }}</td>
+        <td>{{ optional($t->tanggal_pengembalian)->format('d/m/Y') ?: '-' }}</td>
+        <td class="{{ $t->status == 'sudah_dikembalikan' ? 'done' : ($t->status == 'buku_hilang' ? 'lost' : 'pending') }}">
+            @if($t->status == 'sudah_dikembalikan') Sudah dikembalikan
+            @elseif($t->status == 'buku_hilang') Buku Hilang
+            @else Belum dikembalikan
+            @endif
+        </td>
+    </tr>
+    @empty
+    <tr><td colspan="8" style="text-align:center;">Tidak ada data transaksi</td></tr>
+    @endforelse
+</tbody>
         </table>
 
         <div class="paper-footer">
@@ -125,44 +122,24 @@
 
     <!-- BUTTON (KANAN) -->
    <div class="actions">
-    <button class="btn" id="btnPrint">
-        <i class="fa-solid fa-print"></i> Print
-    </button>
+    <!-- KIRI -->
+    <div class="actions-left">
+    <a href="{{ route('cetak.transaksi.pdf', request()->all()) }}" class="btn" id="btnPdf"><i class="fa-solid fa-file-pdf"></i> Export PDF</a>
+    <a href="{{ route('cetak.transaksi.excel', request()->all()) }}" class="btn" id="btnExcel"><i class="fa-solid fa-file-excel"></i> Export Excel</a>
+</div>
 
-    <button class="btn" id="btnPdf">
-        <i class="fa-solid fa-file-pdf"></i> Export PDF
-    </button>
-
-    <button class="btn" id="btnExcel">
-        <i class="fa-solid fa-file-excel"></i> Export Excel
-    </button>
-
+    <!-- KANAN -->
+    <div class="actions-right">
     <button class="btn" id="btnBack">
         <i class="fa-solid fa-arrow-left"></i> Kembali
     </button>
+    </div>
 </div>
 
 </div>
 
 </body>
 <script>
-    // PRINT
-    document.getElementById('btnPrint').addEventListener('click', function () {
-        window.print();
-    });
-
-    // EXPORT PDF
-    document.getElementById('btnPdf').addEventListener('click', function () {
-        alert('Export PDF sedang diproses...');
-        // arahkan ke route Laravel kalau sudah ada
-        // window.location.href = '/laporan/export-pdf';
-    });
-
-    // EXPORT EXCEL
-    document.getElementById('btnExcel').addEventListener('click', function () {
-        alert('Export Excel sedang diproses...');
-        // window.location.href = '/laporan/export-excel';
-    });
 
     // KEMBALI
     document.getElementById('btnBack').addEventListener('click', function () {

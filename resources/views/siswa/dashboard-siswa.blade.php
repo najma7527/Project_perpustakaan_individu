@@ -129,56 +129,26 @@
             </button>
 
         </div>
+        
+            <!-- BUTTON CETAK KARTU ANGGOTA -->
+            <div class="cetak-card">
+                <div class="cetak-left">
+                    <div class="cetak-icon">
+                        <i class="fa fa-id-card"></i>
+                    </div>
+                    <div class="cetak-text">
+                        <h3>Kartu Anggota</h3>
+                        <p>Unduh kartu anggota perpustakaan kamu</p>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-cetak-action" id="btnCetakKartu" onclick="downloadKartuSiswa()">
+                    <i class="fa fa-download"></i> Unduh Kartu
+                </button>
+            </div>
 
     </section>
 
-    <!-- MENU -->
-    <section class="dashboard-content">
-
-        <div class="card visitor-card">
-            <h4 class="card-title">
-                <i class="fa fa-users"></i> Menu
-            </h4>
-
-            <ul class="visitor-list">
-                <li>
-                    <a href="/cetak-kartu" class="visitor-item">
-                            <span class="icon card">
-                        <i class="fa fa-id-card"></i>
-                        </span>
-                            <span class="text">Cetak Kartu</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="{{ route('laporan-kehilangan.index') }}" class="visitor-item">
-                        <span class="icon warning">
-                            <i class="fa fa-triangle-exclamation"></i>
-                        </span>
-                        <span class="text">Laporan Kehilangan</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="/pengembalian-buku" class="visitor-item">
-                        <span class="icon primary">
-                            <i class="fa fa-book"></i>
-                        </span>
-                        <span class="text">Kembali Buku</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="/pinjam-buku" class="visitor-item">
-                        <span class="icon danger">
-                            <i class="fa fa-flag"></i>
-                        </span>
-                        <span class="text">Pinjam Buku</span>
-                    </a>
-                </li>
-
-            </ul>
-        </div>
 
         <!-- RIWAYAT -->
         <div class="card modern-card">
@@ -261,8 +231,45 @@ if(btnHadir){
 
     });
 }
+<script>
+function downloadKartuSiswa() {
+    const btn = document.getElementById('btnCetakKartu');
+    const originalHTML = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Mengunduh...';
+        btn.disabled = true;
+    }
+
+    fetch("{{ route('kartu.download') }}")
+        .then(response => {
+            if (!response.ok) throw new Error('Gagal mengunduh kartu');
+            const cd = response.headers.get('Content-Disposition');
+            let filename = 'kartu-anggota.pdf';
+            if (cd) {
+                const match = cd.match(/filename[^;=\n]*=(['"]?)([^'"\n]*?)\1(;|$)/);
+                if (match) filename = match[2];
+            }
+            return response.blob().then(blob => ({ blob, filename }));
+        })
+        .then(({ blob, filename }) => {
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
+        })
+        .catch(error => {
+            alert(error.message || 'Terjadi kesalahan saat mengunduh kartu.');
+        })
+        .finally(() => {
+            if (btn) {
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }
+        });
+}
 </script>
-
-
 
 @endsection

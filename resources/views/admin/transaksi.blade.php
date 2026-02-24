@@ -54,7 +54,7 @@
     </button>
 
     @auth
-    <a href="" class="btn-print">
+    <a href="{{ route('cetak.filter-transaksi') }}" class="btn-print">
         <i class="fa-solid fa-print"></i>
         Cetak Laporan
     </a>
@@ -82,7 +82,7 @@
 <tbody>
 @forelse($transactions as $trx)
 <tr>
-    <td>{{ $loop->iteration }}</td>
+    <td>{{ $transactions->firstItem() + $loop->index }}</td>
     <td>{{ $trx->user->name ?? '-' }}</td>
     <td>{{ $trx->book->judul ?? '-' }}</td>
     <td>{{ $trx->user->kelas ?? '-' }}</td>
@@ -90,22 +90,21 @@
     <td>{{ optional($trx->tanggal_jatuh_tempo)->format('d/m/Y') }}</td>
     <td>
     @if($trx->status == 'belum_dikembalikan')
-        <span class="status danger">Belum Dikembalikan</span>
+        <span class="status blue">Belum Dikembalikan</span>
     @elseif($trx->status == 'buku_hilang')
-        <span class="status warning">Buku Hilang</span>
-    @elseif($trx->status == 'sudah_dikembalikan')
-        <span class="status success">Sudah Dikembalikan</span>
+        <span class="status danger">Buku Hilang</span>
     @elseif($trx->status == 'terlambat')
-        <span class="status danger">Terlambat</span>
-    @elseif($trx->status == 'menunggu_konfirmasi')
-        <span class="status warning">Menunggu Konfirmasi</span>
+        <span class="status warning">Terlambat</span>
     @endif
     </td>
 <td class="aksi">
-@if($trx->status == 'buku_hilang')
+@if($trx->status == 'belum_dikembalikan')
+<span class="btn-filter btn-nota"
+      onclick="window.open('{{ route('cetak.nota', [$trx->id, 'peminjaman']) }}', '_blank')">
+    <i class="fa-solid fa-print"></i>
+</span>
+@elseif(in_array($trx->status, ['terlambat', 'buku_hilang']))
     <span>-</span>
-@elseif(in_array($trx->status, ['belum_dikembalikan', 'terlambat', 'sudah_dikembalikan']))
-    <span class="btn-filter btn-nota" data-nama="{{ $trx->user->name }}"><i class="fa-solid fa-print"></i></span>
 @endif
 </td>
 </tr>
@@ -118,46 +117,7 @@
                 <tfoot>
                     <tr>
                         <td colspan="8">
-                            <div class="table-pagination">
-                                <span class="page-info">Menampilkan {{ $transactions->firstItem() }}–{{ $transactions->lastItem() }} dari {{ $transactions->total() }} data</span>
-                                <div class="pagination">
-                                    @if ($transactions->onFirstPage())
-                                        <span class="page-btn disabled"><i class="fa fa-chevron-left"></i></span>
-                                    @else
-                                        <a href="{{ $transactions->previousPageUrl() }}" class="page-btn"><i class="fa fa-chevron-left"></i></a>
-                                    @endif
-
-                                    @php $current = $transactions->currentPage(); $last = $transactions->lastPage(); @endphp
-
-                                    @if ($current == 1)
-                                        <span class="page-btn active">1</span>
-                                    @else
-                                        <a href="{{ $transactions->url(1) }}" class="page-btn">1</a>
-                                    @endif
-
-                                    @if ($current > 1)
-                                        <span class="page-btn active">{{ $current }}</span>
-                                    @endif
-
-                                    @if ($current + 1 <= $last)
-                                        <a href="{{ $transactions->url($current + 1) }}" class="page-btn">{{ $current + 1 }}</a>
-                                    @endif
-
-                                    @if ($current + 1 < $last)
-                                        <span class="page-dots">…</span>
-                                    @endif
-
-                                    @if ($last > 1)
-                                        <a href="{{ $transactions->url($last) }}" class="page-btn">{{ $last }}</a>
-                                    @endif
-
-                                    @if ($transactions->hasMorePages())
-                                        <a href="{{ $transactions->nextPageUrl() }}" class="page-btn"><i class="fa fa-chevron-right"></i></a>
-                                    @else
-                                        <span class="page-btn disabled"><i class="fa fa-chevron-right"></i></span>
-                                    @endif
-                                </div>
-                            </div>
+                            @include('components.pagination', ['paginator' => $transactions])
                         </td>
                     </tr>
                 </tfoot>
@@ -186,7 +146,7 @@
 <tbody>
 @forelse($transactions as $trx)
 <tr>
-    <td>{{ $loop->iteration }}</td>
+    <td>{{ $transactions->firstItem() + $loop->index }}</td>
     <td>{{ $trx->user->name ?? '-' }}</td>
     <td>{{ $trx->book->judul ?? '-' }}</td>
     <td>{{ $trx->user->kelas ?? '-' }}</td>
@@ -212,8 +172,10 @@
         <button type="submit" class="btn-red" title="Tolak" style="border:none; border-radius:4px; padding: 2px 8px; cursor:pointer;">✖</button>
     </form>
 @elseif($trx->status == 'sudah_dikembalikan')
-    <span class="btn-filter btn-nota" data-nama="{{ $trx->user->name }}"><i class="fa-solid fa-print"></i></span>
-@endif
+<span class="btn-filter btn-nota"
+      onclick="window.open('{{ route('cetak.nota', [$trx->id, 'pengembalian']) }}', '_blank')">
+    <i class="fa-solid fa-print"></i>
+</span>@endif
 </td>
 </tr>
 @empty
@@ -225,46 +187,7 @@
                 <tfoot>
                     <tr>
                         <td colspan="8">
-                            <div class="table-pagination">
-                                <span class="page-info">Menampilkan {{ $transactions->firstItem() }}–{{ $transactions->lastItem() }} dari {{ $transactions->total() }} data</span>
-                                <div class="pagination">
-                                    @if ($transactions->onFirstPage())
-                                        <span class="page-btn disabled"><i class="fa fa-chevron-left"></i></span>
-                                    @else
-                                        <a href="{{ $transactions->previousPageUrl() }}" class="page-btn"><i class="fa fa-chevron-left"></i></a>
-                                    @endif
-
-                                    @php $current = $transactions->currentPage(); $last = $transactions->lastPage(); @endphp
-
-                                    @if ($current == 1)
-                                        <span class="page-btn active">1</span>
-                                    @else
-                                        <a href="{{ $transactions->url(1) }}" class="page-btn">1</a>
-                                    @endif
-
-                                    @if ($current > 1)
-                                        <span class="page-btn active">{{ $current }}</span>
-                                    @endif
-
-                                    @if ($current + 1 <= $last)
-                                        <a href="{{ $transactions->url($current + 1) }}" class="page-btn">{{ $current + 1 }}</a>
-                                    @endif
-
-                                    @if ($current + 1 < $last)
-                                        <span class="page-dots">…</span>
-                                    @endif
-
-                                    @if ($last > 1)
-                                        <a href="{{ $transactions->url($last) }}" class="page-btn">{{ $last }}</a>
-                                    @endif
-
-                                    @if ($transactions->hasMorePages())
-                                        <a href="{{ $transactions->nextPageUrl() }}" class="page-btn"><i class="fa fa-chevron-right"></i></a>
-                                    @else
-                                        <span class="page-btn disabled"><i class="fa fa-chevron-right"></i></span>
-                                    @endif
-                                </div>
-                            </div>
+                            @include('components.pagination', ['paginator' => $transactions])
                         </td>
                     </tr>
                 </tfoot>
