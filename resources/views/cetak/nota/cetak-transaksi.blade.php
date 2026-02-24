@@ -35,11 +35,9 @@
 
         <!-- SUCCESS -->
         <div class="success">
-            <div class="check">
-                <svg viewBox="0 0 24 24">
-                    <path d="M9 16.2l-3.5-3.5-1.4 1.4L9 19 20.3 7.7l-1.4-1.4z"/>
-                </svg>
-            </div>
+        <div class="check" style="font-family: DejaVu Sans; font-size:70px; color:#fff;">
+            &#10004;
+        </div>
             <h2>Selamat! Peminjaman Buku Berhasil</h2>
             <p>Anda telah berhasil meminjam buku</p>
         </div>

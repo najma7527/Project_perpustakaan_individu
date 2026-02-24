@@ -76,39 +76,10 @@ class CetakController extends Controller
 {
     $transaction = Transaction::with('user', 'book')->findOrFail($id);
 
-    if ($jenis === 'peminjaman') {
-        $peminjam = (object)[
-            'nama' => $transaction->user->name,
-            'nis'  => $transaction->user->nis_nisn,
-            'kelas'=> $transaction->user->kelas,
-        ];
-        $buku = (object)[
-            'judul' => $transaction->book->judul,
-            'kode'  => $transaction->book->kode_buku,
-        ];
-        $peminjaman = (object)[
-            'tgl_pinjam'   => $transaction->tanggal_peminjaman?->format('d F Y'),
-            'tgl_kembali'  => $transaction->tanggal_jatuh_tempo?->format('d F Y'),
-            'batas_pinjam' => '8/5/2028', // sesuaikan logika kamu
-        ];
-    } else {
-        $pengembalian = (object)[
-            'nama_peminjam' => $transaction->user->name,
-            'nis'           => $transaction->user->nis_nisn,
-            'kelas'         => $transaction->user->kelas,
-            'judul_buku'    => $transaction->book->judul,
-            'kode_buku'     => $transaction->book->kode_buku,
-            'tanggal_pinjam'=> $transaction->tanggal_peminjaman?->format('d F Y'),
-            'batas_lama'    => $transaction->tanggal_jatuh_tempo?->format('d F Y'),
-            'batas_baru'    => $transaction->tanggal_pengembalian?->format('d F Y') ?? $transaction->tanggal_jatuh_tempo?->format('d F Y'),
-            'jumlah_hari'   => '0 Hari', // hitung selisih kalau perpanjangan
-        ];
-    }
-
-    return Pdf::loadView('cetak.nota.cetak-transaksi', compact(
-        $jenis === 'peminjaman' ? ['peminjam', 'buku', 'peminjaman', 'jenis'] 
-                                : ['pengembalian', 'jenis']
-    ))
+    return Pdf::loadView('cetak.nota.cetak-transaksi', [
+        'transaction' => $transaction,
+        'jenis'       => $jenis
+    ])
     ->setPaper('A5', 'portrait')
     ->stream("nota-{$jenis}-{$id}.pdf");
 }
