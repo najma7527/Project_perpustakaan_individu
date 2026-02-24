@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Transaction;
 use App\Models\Visit;
 use App\Models\Report;
+use App\Models\Notification;
 use Carbon\Carbon;
 use App\Models\Book;
 
@@ -59,18 +60,30 @@ class SiswaDashboardController extends Controller
                     ->whereDate('tanggal_datang', Carbon::today())
                     ->exists();
 
+        // Ambil notifikasi terbaru
+        $notifications = Notification::where('user_id', auth()->id())
+            ->latest()
+            ->take(5)
+            ->get();
+
+        $unreadCount = Notification::where('user_id', auth()->id())
+           ->where('is_read', false)
+           ->count();
+
+
 
         /* =======================
          * KIRIM KE VIEW
          * ======================= */
 
         return view('siswa.dashboard-siswa', compact(
-    'totalDipinjam',
-    'totalTerlambat',
-    'totalPengembalian',
-    'totalBukuHilang',
-    'kunjunganHariIni',
-    'riwayatPeminjaman'
-));
+            'totalDipinjam',
+            'totalTerlambat',
+            'totalPengembalian',
+            'totalBukuHilang',
+            'kunjunganHariIni',
+            'riwayatPeminjaman',
+            'notifications'
+        ));
     }
 }

@@ -14,6 +14,7 @@ use App\Http\Controllers\LaporanKehilanganController;
 use App\Http\Controllers\SiswaDashboardController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\CetakController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -138,6 +139,11 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/filter-daftar-kunjungan', function () { return view('cetak.laporan.cetak-daftar-pengunjung'); })->name('cetak.filter-daftar-kunjungan');
         });
 
+        Route::prefix('profile/notif')->group(function () {
+        Route::post('read-all', [NotificationController::class, 'readAll'])->name('notif.readAll');
+        Route::get('read/{id}', [NotificationController::class, 'read'])->name('notif.read');
+        });
+
         // External/Legacy Export
         Route::get('/laporan_data_kehilangan', function () {
             return view('admin.laporan_data_kehilangan');
@@ -240,6 +246,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/edit-foto-profil', function () {
             return view('siswa.edit-foto-profil');
         });
+
+        Route::get('/notif/{id}', function($id){
+            $notif = Notification::findOrFail($id);
+            $notif->update(['is_read' => true]);
+            return back();
+        })->name('notif.read');
     });
 
 });

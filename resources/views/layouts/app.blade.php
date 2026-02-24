@@ -22,7 +22,61 @@
 
     {{-- TOPBAR --}}
 <div class="topbar">
-    <i class="fa fa-bars"></i>
+
+    <!-- 🔔 NOTIFIKASI -->
+<div class="notification-wrapper">
+    <div class="dropdown">
+        <button class="notif-btn" onclick="toggleNotif(event)">
+            <i class="fas fa-bell"></i>
+
+            @if(isset($unreadCount) && $unreadCount > 0)
+                <span class="notif-badge">{{ $unreadCount }}</span>
+            @endif
+        </button>
+
+        <div class="notif-dropdown" id="notifDropdown">
+            <!-- Daftar Notifikasi -->
+            @forelse($notifications ?? [] as $notif)
+                <a href="{{ route('notif.read', $notif->id) }}" 
+                   class="notif-item {{ $notif->is_read ? '' : 'fw-bold' }}">
+
+                    @if($notif->type == 'danger')
+                        🔴
+                    @elseif($notif->type == 'warning')
+                        ⚠️
+                    @elseif($notif->type == 'success')
+                        ✅
+                    @else
+                        ℹ️
+                    @endif
+
+                    {{ $notif->message }}
+                    <small>{{ $notif->created_at->diffForHumans() }}</small>
+                </a>
+            @empty
+                <div class="notif-empty">
+                    Tidak ada notifikasi
+                </div>
+            @endforelse
+
+            <!-- Tombol Tandai Semua Dibaca -->
+            <form action="{{ route('notif.readAll') }}" method="POST">
+                @csrf
+                <button type="submit" class="notif-readall" 
+                    {{ (($notifications ?? collect())->count() == 0) ? 'disabled' : '' }}>
+                    Tandai Semua Dibaca
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .notif-readall:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+</style>
 
     <div class="user">
         <div class="user-info">
@@ -138,6 +192,21 @@ document.addEventListener("DOMContentLoaded", function () {
         setTimeout(() => {
             toast.classList.remove("show");
         }, 4000);
+    }
+});
+
+function toggleNotif(event) {
+    event.stopPropagation();
+    const dropdown = document.getElementById('notifDropdown');
+    dropdown.classList.toggle('show');
+}
+
+document.addEventListener('click', function(e) {
+    const dropdown = document.getElementById('notifDropdown');
+    const wrapper = document.querySelector('.notification-wrapper');
+
+    if (wrapper && !wrapper.contains(e.target)) {
+        dropdown.classList.remove('show');
     }
 });
 

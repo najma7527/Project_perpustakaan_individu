@@ -25,6 +25,43 @@
         <img src="{{ asset('img/book.png') }}" class="header-img">
     </div>
 
+    @if(isset($notifications) && $notifications->count() > 0)
+    <section class="notification-section">
+        <div class="card modern-card" style="margin-bottom:20px;">
+            <div class="card-header">
+                <i class="fa fa-bell"></i>
+                <h4>Notifikasi</h4>
+            </div>
+
+            <ul style="list-style:none; padding:15px; margin:0;">
+            @foreach($notifications as $notif)
+
+            @php
+                $warna = 'info';
+                if(str_contains(strtolower($notif->pesan), 'terlambat')) {
+                    $warna = 'danger';
+                } elseif(str_contains(strtolower($notif->pesan), 'besok')) {
+                    $warna = 'warning';
+                }
+            @endphp
+
+            <li class="notif-{{ $warna }}">
+                🔔 {{ $notif->pesan }}
+                <br>
+                <small>
+                    {{ $notif->created_at->diffForHumans() }}
+                </small>
+            </li>
+
+            @endforeach
+            </ul>
+
+        </div>
+    </section>
+    @endif
+
+    
+
     <!-- STATS -->
     <section class="stats-modern">
 
@@ -187,6 +224,7 @@
             </div>
 
         </div>
+        
 
     </section>
 
@@ -224,5 +262,7 @@ if(btnHadir){
     });
 }
 </script>
+
+
 
 @endsection

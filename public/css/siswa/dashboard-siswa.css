@@ -450,3 +450,14 @@
     border-radius:8px;
     margin-bottom:8px;
 }
+
+.notif-danger { background:#ffe5e5; }
+.notif-warning { background:#fff8e1; }
+.notif-info { background:#e3f2fd; }
+
+.notification-section li {
+    padding:10px;
+    border-radius:8px;
+    margin-bottom:8px;
+}
+
