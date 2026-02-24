@@ -13,7 +13,7 @@ class UserFactory extends Factory
             'username' => fake()->unique()->userName(),
             'nis_nisn' => fake()->numerify('########'),
             'telephone' => fake()->phoneNumber(),
-            'role' => fake()->randomElement(['admin','anggota']),
+            'role' => fake()->randomElement(['anggota']),
             'status' => fake()->randomElement(['aktif','nonaktif','menunggu','ditolak']),
             'password' => bcrypt('password'),
             'kelas' => fake()->randomElement(['XI RPL 1','XI RPL 2','XI RPL 3']),

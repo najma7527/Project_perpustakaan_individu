@@ -17,9 +17,11 @@ class ReportFactory extends Factory
             'tanggal_ganti' => fake()->date(),
             'jenis_transaksi' => fake()->randomElement(['dipinjam','dikembalikan']),
             'status' => fake()->randomElement([
-                'buku_hilang',
+                'pending',
                 'sudah_dikembalikan',
-                'belum_dikembalikan'
+                'belum_dikembalikan',
+                'approved',
+                'rejected'
             ]),
             'keterangan' => fake()->sentence(),
             'created_at' => now(),
