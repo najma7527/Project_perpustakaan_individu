@@ -28,5 +28,8 @@ class DatabaseSeeder extends Seeder
         Transaction::factory(20)->create();
         Visit::factory(20)->create();
         Report::factory(20)->create();
+
+        // Seed admin user
+        $this->call(AdminUserSeeder::class);
     }
 }

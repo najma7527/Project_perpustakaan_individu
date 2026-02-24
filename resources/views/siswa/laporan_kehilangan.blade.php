@@ -72,12 +72,14 @@
                                     <span class="status-green">Sudah Dikembalikan</span>
                                 @elseif($item->status === 'belum_dikembalikan')
                                     <span class="status-red">Belum Dikembalikan</span>
+                                @elseif($item->status === 'rejected')
+                                    <span class="status-red">Ditolak</span>
                                 @else
                                     <span class="status-gray">{{ ucfirst(str_replace('_', ' ', $item->status)) }}</span>
                                 @endif
                             </td>
                             <td>
-                                @if($item->status === 'belum_dikembalikan')
+                                @if(in_array($item->status, ['belum_dikembalikan', 'rejected']))
                                     <form action="{{ route('laporan-kehilangan.kembalikan', $item->id) }}" method="POST" style="display: inline;">
                                         @csrf
                                         <button type="submit" class="btn-pengembalian" title="Kembalikan">

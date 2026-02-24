@@ -233,7 +233,7 @@ class ReportController extends Controller
 
         // Update status transaksi
         if ($report->transaction) {
-            $report->transaction->update(['status' => 'sudah_dikembalikan']);
+            $report->transaction->update(['status' => 'sudah_dikembalikan', 'tanggal_pengembalian' => now()]);
         }
 
         return back()->with('success', 'Laporan berhasil disetujui. Buku ditandai sudah dikembalikan.');
@@ -250,7 +250,7 @@ class ReportController extends Controller
             return back()->with('error', 'Hanya laporan dengan status menunggu konfirmasi yang bisa ditolak');
         }
 
-        $report->update(['status' => 'belum_dikembalikan']);
+        $report->update(['status' => 'rejected']);
 
         return back()->with('success', 'Laporan ditolak. Status dikembalikan ke belum dikembalikan.');
     }

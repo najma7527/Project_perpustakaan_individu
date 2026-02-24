@@ -119,7 +119,7 @@ class LaporanKehilanganController extends Controller
             ->with('transaction.book')
             ->firstOrFail();
 
-        if ($laporan->status !== 'belum_dikembalikan') {
+        if (!in_array($laporan->status, ['belum_dikembalikan', 'rejected'])) {
             return back()->with('error', 'Laporan tidak dapat diproses');
         }
 
