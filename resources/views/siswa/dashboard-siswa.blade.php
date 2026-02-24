@@ -112,53 +112,6 @@
 
     </section>
 
-    <!-- MENU -->
-    <section class="dashboard-content">
-
-        <div class="card visitor-card">
-            <h4 class="card-title">
-                <i class="fa fa-users"></i> Menu
-            </h4>
-
-            <ul class="visitor-list">
-                <li>
-                    <a href="#" class="visitor-item" onclick="event.preventDefault(); downloadKartuSiswa()">
-                            <span class="icon card">
-                        <i class="fa fa-id-card"></i>
-                        </span>
-                            <span class="text">Cetak Kartu</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="{{ route('laporan-kehilangan.index') }}" class="visitor-item">
-                        <span class="icon warning">
-                            <i class="fa fa-triangle-exclamation"></i>
-                        </span>
-                        <span class="text">Laporan Kehilangan</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="/pengembalian-buku" class="visitor-item">
-                        <span class="icon primary">
-                            <i class="fa fa-book"></i>
-                        </span>
-                        <span class="text">Kembali Buku</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="/pinjam-buku" class="visitor-item">
-                        <span class="icon danger">
-                            <i class="fa fa-flag"></i>
-                        </span>
-                        <span class="text">Pinjam Buku</span>
-                    </a>
-                </li>
-
-            </ul>
-        </div>
 
         <!-- RIWAYAT -->
         <div class="card modern-card">
