@@ -242,3 +242,57 @@ table tfoot,
 table tfoot td {
     border-top: none !important;
 }
+/* ================= MODAL HAPUS ================= */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-box {
+    background: #fff;
+    width: 420px;
+    border-radius: 12px;
+    overflow: hidden;
+    animation: fade .3s ease;
+}
+
+.modal-header {
+    background: #2196f3;
+    color: #fff;
+    padding: 14px;
+    text-align: center;
+}
+
+.modal-body {
+    padding: 30px;
+    text-align: center;
+    font-size: 15px;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding-bottom: 20px;
+}
+
+.btn-modal {
+    border: none;
+    padding: 8px 18px;
+    border-radius: 20px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.btn-modal.batal {
+    background: #e53935;
+}
+
+.btn-modal.yakin {
+    background: #1e88e5;
+}

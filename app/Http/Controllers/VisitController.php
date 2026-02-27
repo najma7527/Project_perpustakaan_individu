@@ -24,7 +24,13 @@ class VisitController extends Controller
     // 🔎 Search nama user
     if ($request->filled('search')) {
         $query->whereHas('user', function ($q) use ($request) {
-            $q->where('name', 'like', '%' . $request->search . '%');
+            $q->where('name', 'like', '%' . $request->search . '%')
+            ->orWhere('kelas', 'like', '%' . $request->search . '%');
+        });
+    }
+    if ($request->filled('filter')) {
+        $query->whereHas('transaction', function ($q) use ($request) {
+            $q->where('jenis_transaksi', 'like', '%' . $request->filter . '%');
         });
     }
 
@@ -33,7 +39,7 @@ class VisitController extends Controller
         $query->whereDate('tanggal_datang', $request->date);
     }
 
-    $visits = $query->orderBy('tanggal_datang', 'desc')->paginate(10);
+    $visits = $query->orderBy('tanggal_datang')->paginate(10);
 
     return view('admin.daftar_pengunjung', compact('visits'));
 }
@@ -84,7 +90,7 @@ class VisitController extends Controller
 
     Visit::create([
         'user_id' => $user->id,
-        'transaction_id' => $activeTransaction?->id,
+        'transactions_id' => $activeTransaction?->id,
         'tanggal_datang' => today(),
     ]);
 

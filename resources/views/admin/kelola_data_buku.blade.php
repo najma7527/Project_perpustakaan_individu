@@ -211,7 +211,7 @@ function toggleFilterKategori(){
     }
 
     function hapusData() {
-        fetch(`/books/${selectedId}`, {
+        fetch(`{{ url('admin/books') }}/${selectedId}`, {
             method: 'DELETE',
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',

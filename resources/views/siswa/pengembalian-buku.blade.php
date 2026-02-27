@@ -39,19 +39,6 @@
 
         {{-- TABLE --}}
         <div class="table-card">
-            @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
-
-            @if (session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
 
             <table>
                 <thead>
@@ -95,6 +82,11 @@
                                         title="Kembalikan Buku">
                                         <i class="bi bi-arrow-return-left"></i>
                                     </button>
+                                @elseif($trx->status == 'sudah_dikembalikan')
+<span class="btn-filter btn-nota"
+      onclick="window.open('{{ route('cetak.nota', [$trx->id, 'pengembalian']) }}', '_blank')">
+    <i class="fa-solid fa-print"></i>
+</span>
                                 @endif
 
                                 {{-- Perpanjang (hanya jika belum dikembalikan/terlambat) --}}

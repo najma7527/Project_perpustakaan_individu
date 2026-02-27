@@ -27,6 +27,33 @@ class TransactionController extends Controller
             abort(403);
         }
 
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            $transactions = Transaction::whereHas('user', function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                  ->orWhere('kelas', 'like', "%$search%");
+            })
+            ->orWhereHas('book', function ($q) use ($search) {
+                $q->where('judul', 'like', "%$search%");
+            })
+            ->with(['user', 'book'])
+            ->latest()
+            ->paginate(10);
+
+            return view('admin.transaksi', compact('transactions'));
+        }
+
+        if ($request->filled('filter')) {
+            $filter = $request->filter;
+
+            $transactions = Transaction::where('status', $filter)
+                ->with(['user', 'book'])
+                ->latest()
+                ->paginate(10);
+            return view('admin.transaksi', compact('transactions'));
+        }
+
         $mode = $request->get('mode', 'peminjaman');
 
         $transactions = Transaction::with(['user', 'book'])
@@ -103,11 +130,13 @@ class TransactionController extends Controller
         // Update visit jika ada
     if ($visit) {
         $visit->update([
-            'transaction_id' => $transaction->id
+            'd' => $transaction->id
         ]);
     }
 
-        return back()->with('success', 'Buku "' . $buku->judul . '" berhasil dipinjam!');
+        return back()
+        ->with('success', 'Buku "' . $buku->judul . '" berhasil dipinjam!')
+        ->with('cetak.nota', $transaction->id);
     }
 
     /**
@@ -122,6 +151,8 @@ class TransactionController extends Controller
 
         $transaction->update([
             'status' => 'menunggu_konfirmasi',
+            'tanggal_pengembalian' => now(),
+            'jenis_transaksi' => 'dikembalikan',
         ]);
 
         return back()->with('success', 'Pengajuan pengembalian berhasil, menunggu persetujuan admin');

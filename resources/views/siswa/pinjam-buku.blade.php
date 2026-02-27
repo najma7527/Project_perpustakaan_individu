@@ -6,23 +6,6 @@
 @endpush    
 @section('content')
 
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    @if (session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
-    @if (session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
 
     @if($hasActiveLoan)
     <div class="alert alert-warning" style="background: #fff3cd; color: #856404; border: 1px solid #ffc107; border-radius: 8px; padding: 14px 18px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
@@ -112,6 +95,26 @@
     </div>
 </div>
 
+<!-- MODAL CETAK -->
+<div class="modal" id="modalCetak">
+    <div class="modal-box">
+        <div class="modal-title">
+            Cetak Nota Peminjaman
+        </div>
+
+        <div class="modal-body">
+            Apakah Anda ingin mencetak nota peminjaman buku ini?
+        </div>
+
+        <div class="modal-action">
+            <button type="button" class="btn-cancel" onclick="closeModalCetak()">Batal</button>
+            <button type="button" class="btn-save" id="btnCetakNota">
+                Cetak
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
 // format yyyy-mm-dd
 function formatDate(date) {
@@ -185,6 +188,40 @@ document.addEventListener('click', function(event) {
         closeModal();
     }
 });
-</script>
 
+let currentTrxId = null;
+
+function openModalCetak(trxId) {
+    currentTrxId = trxId;
+    document.getElementById('modalCetak').classList.add('show');
+}
+
+function closeModalCetak() {
+    document.getElementById('modalCetak').classList.remove('show');
+    currentTrxId = null;
+}
+
+document.getElementById('btnCetakNota')?.addEventListener('click', function () {
+    if (currentTrxId) {
+        window.open("{{ url('cetak/nota') }}/" + currentTrxId + "/peminjaman", "_blank");
+        closeModalCetak();
+    }
+});
+
+// Tutup jika klik luar modal
+document.addEventListener('click', function(event) {
+    const modal = document.getElementById('modalCetak');
+    if (event.target === modal) {
+        closeModalCetak();
+    }
+});
+</script>
+@if(session('cetak.nota'))
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    currentTrxId = "{{ session('cetak.nota') }}";
+    document.getElementById('modalCetak').classList.add('show');
+});
+</script>
+@endif
 @endsection

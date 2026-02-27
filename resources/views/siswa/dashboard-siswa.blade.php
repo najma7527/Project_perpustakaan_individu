@@ -231,7 +231,6 @@ if(btnHadir){
 
     });
 }
-<script>
 function downloadKartuSiswa() {
     const btn = document.getElementById('btnCetakKartu');
     const originalHTML = btn ? btn.innerHTML : '';

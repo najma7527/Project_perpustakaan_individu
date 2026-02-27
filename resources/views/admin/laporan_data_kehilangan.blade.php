@@ -39,10 +39,26 @@
 
         <div class="date">
             <i class="fa fa-calendar"></i>
-            <input type="date" name="date" value="{{ request('date') }}">
-        </div>
+        <input type="date"
+            name="date"
+            value="{{ request('date') }}"
+            onchange="this.form.submit()">
+            </div>
 
-        <button type="submit" style="display:none;"></button>
+        <button type="button" class="btn-filter" onclick="toggleFilterKategori()">
+            <i class="fa fa-sliders"></i>
+        </button>
+
+        <div id="filterKategori" style="display:none;" class="search">
+            <select name="filter" onchange="this.form.submit()">
+                <option value="">Semua transaksi</option>
+                <option value="pending" {{ request('filter') == 'pending' ? 'selected' : '' }}>Menunggu Konfirmasi</option>
+                <option value="[belum_dikembalikan, buku_hilang]" {{ request('filter') == 'belum_dikembalikan' ? 'selected' : '' }}>Belum Dikembalikan</option>
+                <option value="sudah_dikembalikan" {{ request('filter') == 'sudah_dikembalikan' ? 'selected' : '' }}>Sudah Dikembalikan</option>
+                <option value="approved" {{ request('filter') == 'approved' ? 'selected' : '' }}>Disetujui</option>
+                <option value="rejected" {{ request('filter') == 'rejected' ? 'selected' : '' }}>Ditolak</option>
+            </select>
+        </div>
     </form>
 
     @auth
@@ -170,14 +186,18 @@
     @include('components.pagination', ['paginator' => $reports])
 </div>
 </div>
-
-@endsection
-
-{{-- JS --}}
-@push('scripts')
 <script>
+    function toggleFilterKategori(){
+    let el = document.getElementById("filterKategori");
+
+    if (window.getComputedStyle(el).display === "none") {
+        el.style.display = "block";
+    } else {
+        el.style.display = "none";
+    }
+}
 document.getElementById('toggleSidebar')?.addEventListener('click', function () {
     document.querySelector('.sidebar')?.classList.toggle('active');
 });
 </script>
-@endpush
+@endsection

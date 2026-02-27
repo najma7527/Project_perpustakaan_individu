@@ -47,9 +47,18 @@
                 >
             </div>
 
-            <button type="submit" class="btn-filter">
-                <i class="fa fa-sliders"></i>
-            </button>
+                <button type="button" class="btn-filter" onclick="toggleFilterKategori()">
+                    <i class="fa fa-sliders"></i>
+                </button>
+
+                <div id="filterKategori" style="display:none;" class="search">
+                <select name="filter" onchange="this.form.submit()">
+                    <option value="">Semua transaksi</option>
+                    <option value="dipinjam">peminjaman</option>
+                    <option value="dikembalikan">pengembalian</option>
+                </select>
+            </div>
+
             @auth
                 <a href="{{ route('cetak.filter-daftar-kunjungan') }}" class="btn-print">
                     <i class="fa-solid fa-print"></i>
@@ -94,11 +103,10 @@
     </td>
 
     <td>
-        <button 
-            class="btn-delete" 
-            data-id="{{ $visit->id }}"
-        >
-            <i class="fa fa-trash"></i>
+        <button class="btn-delete"
+            onclick="openModal(this)"
+            data-id="{{ $visit->id }}">
+            <i class="fa-solid fa-trash"></i>
         </button>
     </td>
 </tr>
@@ -120,31 +128,77 @@
             </table>
         </div>
 
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.btn-delete').forEach(btn => {
-        btn.addEventListener('click', function () {
-            if (!confirm('Yakin ingin menghapus data kunjungan ini?')) return;
+        <!-- ================= MODAL HAPUS ================= -->
+<div class="modal-overlay" id="modalHapus" style="display:none;">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>Hapus Data Kunjungan</h3>
+        </div>
 
-            fetch(`{{ route('visits.destroy', ':id') }}`.replace(':id', this.dataset.id), {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json'
-                }
-            })
-            .then(res => {
-                if (!res.ok) throw new Error('Gagal menghapus data');
-                return res.json();
-            })
-            .then(() => location.reload())
-            .catch(err => alert(err.message));
-        });
-    });
-});
-</script>
-@endpush
+        <div class="modal-body">
+            <p>Apakah kamu yakin ingin menghapus data kunjungan ini?</p>
+        </div>
 
+        <div class="modal-footer">
+            <button class="btn-modal batal" onclick="closeModal()">Batal</button>
+            <button class="btn-modal yakin" onclick="hapusData()">Iya, saya yakin</button>
+        </div>
     </div>
+</div>
+
+<script>
+    function toggleFilterKategori(){
+    let el = document.getElementById("filterKategori");
+
+    if (el.style.display === "none" || el.style.display === "") {
+        el.style.display = "block";
+    } else {
+        el.style.display = "none";
+    }
+}
+
+let selectedRow = null;
+let selectedId = null;
+
+function openModal(button) {
+    selectedRow = button.closest('tr');
+    selectedId = button.getAttribute('data-id');
+    document.getElementById('modalHapus').style.display = 'flex';
+}
+
+function closeModal() {
+    document.getElementById('modalHapus').style.display = 'none';
+}
+
+function hapusData() {
+    fetch(`{{ url('admin/visits') }}/${selectedId}`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            selectedRow.remove();
+            closeModal();
+            alert('Data kunjungan berhasil dihapus');
+        } else {
+            alert('Error: ' + (data.message || 'Gagal menghapus data'));
+        }
+    })
+    .catch(err => {
+        console.error('Error:', err);
+        alert('Gagal menghapus data');
+    });
+}
+
+document.getElementById('modalHapus').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
+
+</script>
+
 @endsection

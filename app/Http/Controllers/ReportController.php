@@ -21,20 +21,21 @@ class ReportController extends Controller
 {
     if (Auth::user()?->role !== 'admin') abort(403);
 
-    $query = Report::with(['transaction.user', 'transaction.book', 'user']);
+    $query = Report::with(['transaction.user', 'transaction.book']);
 
     // Filter status
-    if ($request->status !== null && $request->status !== '') {
-        $query->where('status', $request->status);
+    if ($request->filled('filter')) {
+        $query->where('status', $request->filter);
     }
 
     // Search
-    if ($request->search) {
+    if ($request->filled('search')) {
         $search = $request->search;
 
         $query->where(function($q) use ($search) {
             $q->whereHas('transaction.user', function ($qq) use ($search) {
-                $qq->where('name', 'like', "%$search%");
+                $qq->where('name', 'like', "%$search%")
+                   ->orWhere('kelas', 'like', "%$search%");
             })
             ->orWhereHas('transaction.book', function ($qq) use ($search) {
                 $qq->where('judul', 'like', "%$search%");
@@ -42,10 +43,25 @@ class ReportController extends Controller
         });
     }
 
-    $reports = $query->latest()->paginate();
-    $statuses = ['pending', 'belum_dikembalikan', 'sudah_dikembalikan', 'buku_hilang', 'approved', 'rejected'];
+    // Filter tanggal
+    if ($request->filled('date')) {
+    $date = $request->date;
 
-    return view('admin.laporan_data_kehilangan', compact('reports', 'statuses'));
+    $query->where(function ($q) use ($date) {
+
+        // tanggal pinjam dari transactions
+        $q->whereHas('transaction', function ($qq) use ($date) {
+            $qq->whereDate('tanggal_peminjaman', $date);
+        });
+
+        // tanggal ganti dari reports
+        $q->orWhereDate('tanggal_ganti', $date);
+    });
+}
+
+    $reports = $query->latest()->paginate()->withQueryString();
+
+    return view('admin.laporan_data_kehilangan', compact('reports'));
 }
 
     /**

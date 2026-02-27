@@ -13,7 +13,7 @@ class Visit extends Model
 
     protected $fillable = [
         'user_id',
-        'transactios_id',
+        'transactions_id',
         'tanggal_datang',
     ];
 
@@ -24,6 +24,6 @@ class Visit extends Model
 
     public function transaction()
     {
-        return $this->belongsTo(Transaction::class, 'transactios_id');
+        return $this->belongsTo(Transaction::class, 'transactions_id');
     }
 }
