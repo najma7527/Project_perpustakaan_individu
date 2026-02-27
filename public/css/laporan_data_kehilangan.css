@@ -1,0 +1,237 @@
+/* ================= LAYOUT ================= */
+.layout {
+    display: flex;
+}
+
+
+/* ================= HEADER CARD ================= */
+.header-card {
+    background: linear-gradient(90deg, #0d47a1, #2196f3);
+    color: #fff;
+    padding: 24px;
+    border-radius: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* KIRI */
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* ICON */
+.header-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+/* TEXT */
+.header-text h3 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.header-text p {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+/* GAMBAR */
+.header-image {
+    width: 80px;
+}
+
+/* FILTER */
+.filter {
+    background: #fff;
+    padding: 14px;
+    border-radius: 14px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+/* PEMBUNGKUS SEARCH DAN DATE */
+.search, .date {
+    display: flex;
+    align-items: center;
+    background: #fff; /* Latar belakang putih */
+    border: 1.5px solid #ccc; /* Garis tepi abu-abu */
+    border-radius: 10px;
+    overflow: hidden; /* Agar sudut ikon ikut melengkung */
+    height: 45px;
+    min-width: 250px;
+}
+
+/* KOTAK IKON BIRU (Kiri) */
+.search i, .date i {
+    background-color: #2196f3; /* Warna biru sesuai app.css */
+    color: #fff;
+    height: 100%;
+    width: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+/* AREA INPUT TEKS */
+.search input, .date input {
+    border: none;
+    background: transparent;
+    outline: none;
+    padding: 0 15px;
+    width: 100%;
+    font-size: 14px;
+    color: #333;
+}
+
+/* TOMBOL FILTER (IKON SETTING) */
+.btn-filter {
+    background-color: #2196f3;
+    color: #fff;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: background 0.3s;
+}
+
+.btn-filter:hover {
+    background-color: #1976d2;
+}
+
+/* BUTTON */
+.btn-print {
+    background: #1e88e5;
+    color: #fff;
+    border: none;
+    padding: 9px 18px;
+    height: 42px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    margin-left: auto; /* ⬅️ dorong ke kanan */
+}
+
+/* ================= TABLE ================= */
+.table-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    min-width: 1000px;
+    border-collapse: collapse;
+}
+
+thead {
+    background: #1e88e5;
+    color: #fff;
+}
+
+th {
+    padding: 14px;
+    font-size: 13px;
+}
+
+td {
+    padding: 12px;
+    font-size: 13px;
+}
+
+tbody tr {
+    border-bottom: 1px solid #eee;
+}
+
+/* ================= STATUS ================= */
+.status-green {
+    background: #2ecc71;
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.status-red {
+    background: #e74c3c;
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+/* ================= AKSI ================= */
+.aksi {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+}
+
+.aksi .btn {
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.aksi .ok {
+    background: #2ecc71;
+}
+
+.aksi .del {
+    background: #e74c3c;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+    .sidebar {
+        left: -240px;
+        transition: 0.3s;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .topbar {
+        left: 0;
+    }
+
+    .header-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .btn-print {
+        width: 100%;
+    }
+}

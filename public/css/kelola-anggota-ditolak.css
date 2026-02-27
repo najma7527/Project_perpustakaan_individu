@@ -1,0 +1,193 @@
+/* HEADER CARD */
+.header-card {
+    background: linear-gradient(90deg, #0d47a1, #1e88e5);
+    color: #fff;
+    padding: 22px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.header-left {
+    display: flex;
+    gap: 15px;
+}
+
+.header-icon {
+    width: 45px;
+    height: 45px;
+    background: rgba(255,255,255,.3);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* TAB */
+.tab-wrapper {
+    background: #fff;
+    border-radius: 12px;
+    padding: 6px;
+    display: flex;
+    gap: 6px;
+    margin-bottom: 15px;
+}
+
+.tab-item {
+    padding: 12px 26px;
+    border-radius: 8px;
+    color: #333;
+    text-decoration: none;
+}
+
+.tab-item.active,
+.tab-item:hover {
+    background: #1e88e5;
+    color: #fff;
+}
+
+/* TABLE */
+.table-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+/* CONTAINER FILTER UTAMA */
+.filter {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+/* PEMBUNGKUS SEARCH DAN DATE */
+.search, .date {
+    display: flex;
+    align-items: center;
+    background: #fff; /* Latar belakang putih */
+    border: 1.5px solid #ccc; /* Garis tepi abu-abu */
+    border-radius: 10px;
+    overflow: hidden; /* Agar sudut ikon ikut melengkung */
+    height: 45px;
+    min-width: 250px;
+}
+
+/* KOTAK IKON BIRU (Kiri) */
+.search i, .date i {
+    background-color: #2196f3; /* Warna biru sesuai app.css */
+    color: #fff;
+    height: 100%;
+    width: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+/* AREA INPUT TEKS */
+.search input, .date input {
+    border: none;
+    background: transparent;
+    outline: none;
+    padding: 0 15px;
+    width: 100%;
+    font-size: 14px;
+    color: #333;
+}
+
+/* TOMBOL FILTER (IKON SETTING) */
+.btn-filter {
+    background-color: #2196f3;
+    color: #fff;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: background 0.3s;
+}
+
+.btn-filter:hover {
+    background-color: #1976d2;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+}
+
+thead {
+    background: #1e88e5;
+}
+
+th, td {
+    padding: 12px;
+    font-size: 14px;
+    text-align: left;
+}
+
+th {
+    color: #fff;
+}
+
+tbody tr {
+    border-bottom: 1px solid #eee;
+}
+
+tbody tr:hover {
+    background: #f9fafc;
+}
+
+/* ✅ USER CELL — EMAIL DI BAWAH (FIX UTAMA) */
+.user-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-info small {
+    font-size: 12px;
+    color: #777;
+    margin-top: 2px;
+}
+
+.avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+}
+
+/* AKSI */
+.aksi {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-accept,
+.btn-reject {
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.btn-accept { background: #2ecc71; }
+.btn-reject { background: #e74c3c; }
