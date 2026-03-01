@@ -114,7 +114,7 @@
 
 /* WRAPPER LOGO */
 .logo img {
-    width: 70px;
+    width: 210px;
     height: auto;
     display: block;
 }
@@ -162,7 +162,7 @@
     }
  .menu li.active,
  .menu li:hover { 
-    background: #2196f3; 
+    background: #34C759; 
 } 
 .menu li.active a,
 .menu li:hover a {
@@ -252,7 +252,7 @@
     display: block;
     width: 100%;
     padding: 12px;
-    background: #2196f3;
+    background: #34C759;
     color: #fff;
     border-radius: 10px;
     text-align: center;
@@ -266,7 +266,7 @@
 }
 
 .btn-profile:hover {
-    background: #1976d2;
+    background: #34C759;
 }
 
 /* LOGOUT BUTTON */
@@ -327,7 +327,7 @@
     padding: 0 8px;
     border-radius: 6px;
     border: 1px solid #ddd;
-    color: #1e88e5;
+    color: #34C759;
     text-decoration: none;
     font-size: 13px;
     background: #fff;
@@ -339,9 +339,9 @@
 }
 
 .pagination-links .active .page-link {
-    background: #1e88e5;
+    background: #34C759;
     color: #fff;
-    border-color: #1e88e5;
+    border-color: #34C759;
 }
 
 .pagination-links .disabled .page-link {

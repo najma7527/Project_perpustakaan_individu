@@ -7,7 +7,7 @@
 
 /* HEADER CARD */
 .header-card {
-    background: linear-gradient(90deg, #0d47a1, #1e88e5);
+    background: linear-gradient(90deg, #004D40, #81C784);
     border-radius: 12px;
     padding: 22px;
     display: flex;
@@ -95,12 +95,12 @@
 
 /* COLOR THEMES */
 .blue {
-    border-color: #2563eb;
+    border-color: #004D40;
 }
 
 .blue .stat-icon {
     background: #e0e7ff;
-    color: #2563eb;
+    color: #004D40;
 }
 
 .green {
@@ -117,8 +117,8 @@
 }
 
 .red .stat-icon {
-    background: #f3e8ff;
-    color: #eb2525;
+    background: #fee2e2;
+    color: #dc2626;
 }
 
 .orange {
@@ -272,7 +272,7 @@
 
 /* THEAD */
 .modern-table thead {
-    background: #2563eb;
+    background: #004D40;
 }
 
 .modern-table thead th {

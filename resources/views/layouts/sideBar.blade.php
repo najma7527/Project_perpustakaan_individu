@@ -1,9 +1,7 @@
 <aside class="sidebar">
     <div class="logo">
-        <img src="{{ asset('img/logo.png') }}">
+        <img src="{{ asset('img/logo_aksapusta1.png') }}">
         <div class="logo-text-horizontal">
-        <span class="edutech">EduTech</span>
-        <span class="library">Library</span>
     </div>
     </div>
 

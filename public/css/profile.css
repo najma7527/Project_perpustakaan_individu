@@ -30,14 +30,14 @@ body {
 }
 
 .menu-profile:hover a {
-    background: #1e90ff;
+    background: #004D40;
     color: #ffffff;
 }
 
 
 /* ================= HEADER ================= */
 .profile-header {
-    background: linear-gradient(to right, #0b3b91, #1e90ff);
+    background: linear-gradient(to right, #004D40, #81C784);
     border-radius: 10px;
     padding: 16px 20px;
     display: flex;
@@ -104,7 +104,7 @@ body {
 }
 
 .tab-btn.active {
-    background: #1e90ff;
+    background: #004D40;
     color: #ffffff;
 }
 
@@ -146,14 +146,14 @@ input {
     padding: 9px 18px;
     border: none;
     border-radius: 8px;
-    background: #1e90ff;
+    background: #004D40;
     color: #ffffff;
     cursor: pointer;
     transition: 0.3s;
 }
 
 .action-btn:hover {
-    background: #0b63d1;
+    background: #004D40;
 }
 
 /* ================= UTIL ================= */
@@ -255,7 +255,7 @@ input {
 }
 
 .tab-btn.active {
-    background: #1e90ff;
+    background: #004D40;
     color: #ffffff;
 }
 
@@ -284,16 +284,16 @@ input {
 
 .form-group input:focus {
     outline: none;
-    border-color: #1e90ff;
+    border-color: #004D40;
     background: #ffffff;
-    box-shadow: 0 0 0 3px rgba(30,144,255,0.15);
+    box-shadow: 0 0 0 3px rgba(0,77,64,0.15);
 }
 
 /* ================= BUTTON SIMPAN ================= */
 .btn-save {
     margin-top: 15px;
     padding: 10px 20px;
-    background: #1e90ff;
+    background: #004D40;
     color: #ffffff;
     border: none;
     border-radius: 8px;
@@ -304,7 +304,7 @@ input {
 }
 
 .btn-save:hover {
-    background: #0b63d1;
+    background: #002e26;
 }
 
 /* ================= TAB CONTENT ================= */
