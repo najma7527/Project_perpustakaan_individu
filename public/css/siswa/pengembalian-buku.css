@@ -1,7 +1,7 @@
 
 /* HEADER */
 .header-card {
-    background: linear-gradient(90deg, #1d4ed8, #38bdf8);
+    background: linear-gradient(90deg, #004D40, #81C784);
     color: #fff;
     border-radius: 14px;
     padding: 20px 25px;
@@ -35,15 +35,39 @@
     width: 220px;
 }
 
-.filter-item input {
+.search,
+.date {
+    display: flex;
+    align-items: center;
+    border: 1.5px solid #ddd;
+    border-radius: 10px;
+    height: 42px;
+    overflow: hidden;
+    min-width: 220px;
+}
+
+.search i,
+.date i {
+    width: 42px;
+    height: 100%;
+    background: #004D40;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search input,
+.date input {
     border: none;
     outline: none;
-    background: transparent;
+    padding: 0 12px;
+    font-size: 13px;
     width: 100%;
 }
 
 .btn-filter {
-    background: #2563eb;
+    background: #004D40;
     color: #fff;
     border: none;
     padding: 10px 12px;
@@ -65,7 +89,7 @@ table {
 }
 
 thead {
-    background: #2196f3;
+    background: #004D40;
     color: #fff;
 }
 
@@ -169,7 +193,7 @@ tbody tr {
 
 /* HEADER BIRU */
 .modal-header.custom-header {
-    background: linear-gradient(90deg, #1d4ed8, #38bdf8);
+    background: linear-gradient(90deg, #004D40, #81C784);
     color: #fff;
     justify-content: center;
     border-bottom: none;

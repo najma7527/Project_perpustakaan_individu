@@ -14,33 +14,26 @@
             <div class="header-card">
 
                 <div class="header-left">
-                    <div class="header-icon">
-                        <i class="fa fa-book"></i>
-                    </div>
                     <div class="header-text">
                         <h3>Laporan Kehilangan Buku</h3>
                         <p>Kehilangan buku</p>
                     </div>
                 </div>
-
-                <img src="{{ asset('img/book.png') }}" class="header-image">
             </div>
 
             <!-- FILTER -->
             <div class="filter">
-                <div class="search">
-                    <i class="fa fa-search"></i>
-                    <input type="text" placeholder="Cari sesuatu...">
-                </div>
+                <form method="GET" action="{{ route('laporan-kehilangan.index') }}" id="filterLaporanKehilangan" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; width:100%;">
+                    <div class="search">
+                        <i class="fa fa-search"></i>
+                        <input type="text" name="search" placeholder="Cari sesuatu..." value="{{ request('search') }}" onkeyup="document.getElementById('filterLaporanKehilangan').submit();" style="width:200px;">
+                    </div>
 
-                <div class="date">
-                    <i class="fa fa-calendar"></i>
-                    <input type="date">
-                </div>
-
-                <button class="btn-filter">
-                    <i class="fa fa-sliders"></i>
-                </button>
+                    <div class="date">
+                        <i class="fa fa-calendar"></i>
+                        <input type="date" name="date" value="{{ request('date') }}" onchange="document.getElementById('filterLaporanKehilangan').submit();">
+                    </div>
+                </form>
             </div>
 
             <!-- TABLE -->

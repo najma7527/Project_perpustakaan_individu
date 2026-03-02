@@ -80,7 +80,7 @@
                 <div class="user-wrapper">
                     <div class="user-trigger" onclick="toggleUserPopup(event)">
                         @if(Auth::user()->profile_photo)
-                            <img src="{{ asset(Auth::user()->profile_photo) }}" class="avatar">
+                            <img src="{{ Storage::url(Auth::user()->profile_photo) }}" class="avatar">
                         @else
                             <div class="avatar-default">
                                 <i class="fa fa-user"></i>
@@ -90,8 +90,9 @@
 
                     <div class="user-popup" id="userPopup">
                         <div class="popup-header">
+
                             @if(Auth::user()->profile_photo)
-                                <img src="{{ asset(Auth::user()->profile_photo) }}" class="avatar">
+                                <img src="{{ Storage::url(Auth::user()->profile_photo) }}" class="avatar">
                             @else
                                 <div class="avatar-default">
                                     <i class="fa fa-user"></i>

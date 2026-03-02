@@ -76,11 +76,20 @@ class CetakController extends Controller
 {
     $transaction = Transaction::with('user', 'book')->findOrFail($id);
 
+    // Atur panjang kertas sesuai jenis
+    if ($jenis === 'peminjaman') {
+        // Misal tinggi lebih pendek untuk peminjaman
+        $paperSize = [0,0, 390, 700]; 
+    } else{
+        // Lebih panjang untuk pengembalian
+        $paperSize = [0, 0, 340, 500]; 
+    } 
+
     return Pdf::loadView('cetak.nota.cetak-transaksi', [
         'transaction' => $transaction,
         'jenis'       => $jenis
     ])
-    ->setPaper('A5', 'portrait')
+    ->setPaper($paperSize) // bisa array atau string
     ->stream("nota-{$jenis}-{$id}.pdf");
 }
 
@@ -121,7 +130,7 @@ class CetakController extends Controller
     $report = Report::with(['user', 'transaction.book'])->findOrFail($id);
 
     return Pdf::loadView('cetak.nota.cetak-buku-hilang', compact('report'))
-              ->setPaper('A5', 'portrait')
+              ->setPaper([0, 0, 340, 500])
               ->stream("pengembalian-buku-hilang-{$id}.pdf");
 }
 
@@ -214,7 +223,7 @@ class CetakController extends Controller
 
         $user = \App\Models\User::findOrFail($id);
         $pdf = Pdf::loadView('cetak.cetak-kartu', compact('user'))
-            ->setPaper('A4', 'portrait');
+            ->setPaper([0, 0, 520, 330]);
 
         return $pdf->download("kartu-anggota-{$user->nis_nisn}.pdf");
     }

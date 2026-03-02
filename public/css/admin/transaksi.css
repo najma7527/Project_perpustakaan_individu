@@ -19,7 +19,7 @@ body {
 
 /* HEADER CARD */
 .header-card {
-    background: linear-gradient(90deg, #0d47a1, #1e88e5);
+    background: linear-gradient(90deg, #004D40, #81C784);
     border-radius: 12px;
     height: 90px;
     padding: 0 22px;
@@ -81,7 +81,7 @@ body {
 
 .tab-item.active,
 .tab-item:hover {
-    background: #1e88e5;
+    background: #004D40;
     color: #fff;
 }
 
@@ -118,7 +118,7 @@ body {
 
 /* KOTAK IKON BIRU (Kiri) */
 .search i, .date i {
-    background-color: #2196f3; /* Warna biru sesuai app.css */
+    background-color: #004D40; /* Warna biru sesuai app.css */
     color: #fff;
     height: 100%;
     width: 45px;
@@ -141,7 +141,7 @@ body {
 
 /* TOMBOL FILTER (IKON SETTING) */
 .btn-filter {
-    background-color: #2196f3;
+    background-color: #004D40;
     color: #fff;
     border: none;
     width: 45px;
@@ -156,7 +156,7 @@ body {
 }
 
 .btn-print {
-    background: #1e88e5;
+    background: #004D40;
     color: #fff;
     border: none;
     padding: 9px 18px;
@@ -182,7 +182,7 @@ table {
 }
 
 thead {
-    background: #1e90e5;
+    background: #004D40;
     color: #fff;
 }
 
@@ -208,7 +208,7 @@ td {
 .success { background: #22c55e; color: #fff; }
 .warning { background: #facc15; color: #000; }
 .danger  { background: #ef4444; color: #fff; }
-.blue    { background: #2196f3; color: #fff; }
+.blue    { background: #004D40; color: #fff; }
 
 /* AKSI */
 .aksi {
@@ -264,7 +264,7 @@ td {
   
 /* HEADER CARD */
 .header-card {
-    background: linear-gradient(90deg, #0d47a1, #1e88e5);
+    background: linear-gradient(90deg, #004D40, #81C784);
     border-radius: 12px;
     padding: 22px;
     display: flex;
@@ -336,7 +336,7 @@ td {
 }
 
 .tab.active {
-    background: #2196f3;
+    background: #004D40;
     color: #fff;
 }
 
@@ -377,7 +377,7 @@ td {
     height: 38px;
     border-radius: 10px;
     border: none;
-    background: #2196f3;
+    background: #004D40;
     color: #fff;
     cursor: pointer;
     font-size: 15px;

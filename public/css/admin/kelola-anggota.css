@@ -63,7 +63,7 @@ body {
 
 .menu li.active a,
 .menu a:hover {
-    background: #1e88e5;
+    background: #004D40;
     color: #fff;
 }
 
@@ -116,7 +116,7 @@ body {
 
 /* HEADER CARD */
 .header-card {
-    background: linear-gradient(90deg, #0d47a1, #1e88e5);
+    background: linear-gradient(90deg, #004D40, #81C784);
     border-radius: 12px;
     padding: 22px;
     display: flex;
@@ -198,7 +198,7 @@ table {
 }
 
 thead {
-    background: #1e88e5;
+    background: #004D40;
     color: #fff;
 }
 
@@ -271,12 +271,12 @@ tbody tr {
 }
 
 .tab-item.active {
-    background: #1e88e5;
+    background: #004D40;
     color: #fff;
 }
 
 .tab-item:hover {
-    background: #1e88e5;
+    background: #004D40;
     color: #fff;
 }
 

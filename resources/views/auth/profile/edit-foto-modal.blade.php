@@ -19,7 +19,7 @@
             </div>
 
             <div class="btn-wrapper" style="text-align:right;">
-                <button type="submit" class="btn-save" style="background:#1e88e5; color:white; border:none; padding:0.6rem 1.8rem; border-radius:30px; cursor:pointer;">Simpan</button>
+                <button type="submit" class="btn-save" style="background:#004D40; color:white; border:none; padding:0.6rem 1.8rem; border-radius:30px; cursor:pointer;">Simpan</button>
             </div>
         </form>
     </div>

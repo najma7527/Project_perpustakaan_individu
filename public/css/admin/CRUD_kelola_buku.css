@@ -1,127 +1,10 @@
-/* =========================
-   RESET & GLOBAL
-========================= */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
-}
 
-body {
-    background: #f4f6f9;
-}
-
-
-/* =========================
-   LAYOUT UTAMA
-========================= */
-.app {
-    display: flex;
-    min-height: 100vh;
-}
-
-.content {
-    flex: 1;
-}
-
-
-/* =========================
-   SIDEBAR
-========================= */
-.sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 230px;
-    height: 100vh;
-    background: #fff;
-    padding: 20px;
-    border-right: 1px solid #e5e7eb;
-}
-
-.logo img {
-    width: 50px;
-    margin-bottom: 30px;
-}
-
-.menu li {
-    list-style: none;
-    margin-bottom: 6px;
-    border-radius: 8px;
-}
-
-.menu li a {
-    display: flex;
-    gap: 10px;
-    padding: 12px;
-    color: #555;
-    text-decoration: none;
-    align-items: center;
-}
-
-.menu li.active,
-.menu li:hover {
-    background: #2196f3;
-}
-
-.menu li.active a,
-.menu li:hover a {
-    color: #fff;
-}
-
-
-/* ================= CONTENT ================= */
-.content {
-    margin-left: 230px;
-    width: calc(100% - 230px);
-    padding: 24px;
-    padding-top: 88px;
-}
-
-
-
-/* =========================
-   TOPBAR
-========================= */
-.topbar {
-    position: fixed;
-    top: 0;
-    left: 230px;
-    right: 0;
-    height: 64px;
-    background: #ffffff;
-    border-bottom: 1px solid #e5e7eb;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 24px;
-    z-index: 1000;
-}
-
-.topbar i {
-    font-size: 20px;
-    color: #4b5563;
-    cursor: pointer;
-}
-
-.user {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.user img {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-}
 
 /* =========================
    HEADER CARD
 ========================= */
 .header-card {
-    background: linear-gradient(90deg, #0d47a1, #1e88e5);
+    background: linear-gradient(90deg, #004D40, #81C784);
     border-radius: 12px;
     padding: 22px 26px;
     display: flex;
@@ -345,7 +228,7 @@ body {
 .modal-header{
     padding: 18px 22px;
     border-bottom: 1px solid #eee;
-    background: #1e88e5;
+    background: #004D40;
 }
 
 .modal-header h3{
@@ -377,9 +260,9 @@ body {
 }
 
 .modal-body input:focus{
-    border-color: #1e88e5;
+    border-color: #004D40;
     outline: none;
-    box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
+    box-shadow: 0 0 0 3px rgba(0,77,64,0.15);
 }
 
 /* FOOTER */
@@ -415,12 +298,12 @@ body {
 
 /* SIMPAN */
 .btn-modal.yakin{
-    background: #1e88e5;
+    background: #004D40;
     color: white;
 }
 
 .btn-modal.yakin:hover{
-    background: #1e88e5;
+    background: #004D40;
 }
 
 /* ANIMATION */

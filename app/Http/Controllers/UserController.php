@@ -41,7 +41,7 @@ if ($tab == 'verifikasi') {
 }
 
 
-        // Search: Nama, Username, NIS/NISN
+        // Search: Nama, Username, NIS/NISN atau kelas
         if ($search) {
             $query->where(function($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
@@ -49,6 +49,11 @@ if ($tab == 'verifikasi') {
                   ->orWhere('nis_nisn', 'like', "%{$search}%")
                   ->orWhere('kelas', 'like', "%{$search}%");
             });
+        }
+
+        // Filter kelas (separate from search)
+        if ($kelas) {
+            $query->where('kelas', $kelas);
         }
 
         // Filter Tanggal (berdasarkan created_at)

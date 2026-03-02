@@ -18,7 +18,7 @@ body {
 
 /* ================= TOPBAR ================= */
 .topbar {
-    background: linear-gradient(90deg, #0b4db8, #1fa2ff);
+    background: linear-gradient(90deg, #004D40, #81C784);
     color: #fff;
     padding: 20px 30px;
     display: flex;

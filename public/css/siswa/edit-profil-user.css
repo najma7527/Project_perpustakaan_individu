@@ -14,7 +14,7 @@ body {
     margin: 40px auto;
     padding: 30px 40px;
     border-radius: 8px;
-    border: 2px solid #1e88e5;
+    border: 2px solid #004D40;
 }
 
 .title {
@@ -58,7 +58,7 @@ body {
 }
 
 .btn-save {
-    background: #1e88e5;
+    background: #004D40;
     color: #fff;
     border: none;
     padding: 12px 35px;

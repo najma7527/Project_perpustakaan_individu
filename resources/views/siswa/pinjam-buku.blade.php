@@ -19,11 +19,21 @@
             <h3>Pinjam Buku</h3>
             <p>Daftar buku yang tersedia untuk dipinjam</p>
         </div>
-        <span>📚</span>
     </div>
 
     <div class="search">
-        <input type="text" id="searchInput" placeholder="Cari buku..." onkeyup="filterBooks()">
+        <form method="GET" action="" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; width:100%; padding:15px;">
+            <div style="flex:1; min-width:200px;">
+                <i class="fa fa-search" style="position:absolute; padding:10px; color:#999;"></i>
+                <input type="text" name="search" id="searchInput" placeholder="Cari buku..." value="{{ $search ?? '' }}" style="padding:10px 10px 10px 40px; border:1px solid #ddd; border-radius:4px; width:100%;">
+            </div>
+
+            <select name="category" onchange="this.form.submit()" style="padding:10px; border:1px solid #ddd; border-radius:4px; min-width:150px;">
+                <option value="">Semua Kategori</option>
+                <option value="fiksi" {{ $category == 'fiksi' ? 'selected' : '' }}>Fiksi</option>
+                <option value="nonfiksi" {{ $category == 'nonfiksi' ? 'selected' : '' }}>Non Fiksi</option>
+            </select>
+        </form>
     </div>
 
     <!-- GRID -->

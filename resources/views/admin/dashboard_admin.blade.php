@@ -20,7 +20,6 @@
             <p>Selamat datang diperpustakaan</p>
         </div>
     </div>
-    <img src="{{ asset('img/book.png') }}" class="header-img">
 </div>
 
 <!-- STATS -->

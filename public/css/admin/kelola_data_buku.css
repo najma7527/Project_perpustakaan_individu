@@ -7,7 +7,7 @@
 
 /* ================= HEADER CARD ================= */
 .header-card {
-    background: linear-gradient(90deg, #0d47a1, #1e88e5);
+    background: linear-gradient(90deg, #004D40, #81C784);
     border-radius: 12px;
     padding: 22px 26px;
     display: flex;
@@ -66,7 +66,7 @@
 /* KOTAK IKON BIRU (Kiri) */
 .search i,
 .date i {
-    background-color: #2196f3;
+    background-color: #004D40;
     /* Warna biru sesuai app.css */
     color: #fff;
     height: 100%;
@@ -91,7 +91,7 @@
 
 /* TOMBOL FILTER (IKON SETTING) */
 .btn-filter {
-    background-color: #2196f3;
+    background-color: #004D40;
     color: #fff;
     border: none;
     width: 45px;
@@ -136,7 +136,7 @@
 }
 
 .btn-add {
-    background: #2d7df6;
+    background: #004D40;
     color: #ffffff;
     border: none;
     padding: 10px 18px;
@@ -154,7 +154,7 @@
 }
 
 .btn-add:hover {
-    background: #1a6ae0;
+    background: #004D40;
     box-shadow: 0 4px 14px rgba(45, 125, 246, 0.4);
     transform: translateY(-1px);
 }
@@ -167,7 +167,7 @@ table {
 }
 
 thead {
-    background: #1e88e5;
+    background: #004D40;
     color: #fff;
 }
 
@@ -207,7 +207,7 @@ tbody tr {
 }
 
 .btn.view {
-    background: #1e88e5;
+    background: #004D40;
 }
 
 /* ================= RESPONSIVE ================= */
@@ -284,7 +284,7 @@ tbody tr {
 }
 
 .modal-header {
-    background: #2196f3;
+    background: #004D40;
     color: #fff;
     padding: 14px;
     text-align: center;
@@ -316,7 +316,7 @@ tbody tr {
 }
 
 .btn-modal.yakin {
-    background: #1e88e5;
+    background: #004D40;
 }
 
 @keyframes fade {
@@ -363,7 +363,7 @@ tbody tr {
 }
 
 .badge {
-    background: #2196f3;
+    background: #004D40;
     color: #fff;
     padding: 4px 10px;
     border-radius: 6px;
@@ -383,7 +383,7 @@ tbody tr {
 }
 
 .btn-tutup {
-    background: #2196f3;
+    background: #004D40;
     color: #fff;
     border: none;
     padding: 8px 18px;

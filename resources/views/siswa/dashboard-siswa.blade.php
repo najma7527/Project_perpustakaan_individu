@@ -22,7 +22,6 @@
                 <p>Selamat datang di perpustakaan</p>
             </div>
         </div>
-        <img src="{{ asset('img/book.png') }}" class="header-img">
     </div>
 
     @if(isset($notifications) && $notifications->count() > 0)
@@ -38,15 +37,15 @@
 
             @php
                 $warna = 'info';
-                if(str_contains(strtolower($notif->pesan), 'terlambat')) {
+                if(str_contains(strtolower($notif->message), 'terlambat')) {
                     $warna = 'danger';
-                } elseif(str_contains(strtolower($notif->pesan), 'besok')) {
+                } elseif(str_contains(strtolower($notif->message), 'besok')) {
                     $warna = 'warning';
                 }
             @endphp
 
             <li class="notif-{{ $warna }}">
-                🔔 {{ $notif->pesan }}
+                🔔 {{ $notif->message }}
                 <br>
                 <small>
                     {{ $notif->created_at->diffForHumans() }}

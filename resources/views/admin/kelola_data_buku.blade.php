@@ -15,29 +15,28 @@
                 <h3>Kelola Data Buku</h3>
                 <p>Mengelola data buku perpustakaan</p>
             </div>
-            <img src="{{ asset('img/book.png') }}" alt="Buku">
         </div>
 
         <!-- TABLE CARD -->
         <div class="table-card">
 
             <div class="table-header">
-                <form method="GET" action="{{ route('books.index') }}">
+                <form method="GET" action="{{ route('books.index') }}" id="filterBooks">
 
 <div class="filter">
 
     <!-- SEARCH -->
     <div class="search">
         <i class="fa fa-search"></i>
-        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari sesuatu...">
+        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari sesuatu..." onkeyup="document.getElementById('filterBooks').submit();">
     </div>
 
     <!-- FILTER TAHUN -->
     <div class="date">
         <i class="fa fa-calendar"></i>
-        <select name="date" class="date" onchange="this.form.submit()">
+        <select name="date" class="date" onchange="document.getElementById('filterBooks').submit();">
         <option value="">Semua Tahun</option>
-        @for($year = date('Y'); $year >= 2000; $year--)
+        @for($year = date('Y'); $year >= 1900; $year--)
             <option value="{{ $year }}" {{ request('date') == $year ? 'selected' : '' }}>
                 {{ $year }}
             </option>
@@ -45,14 +44,9 @@
     </select>
     </div>
 
-    <!-- BUTTON FILTER -->
-    <button type="button" class="btn-filter" onclick="toggleFilterKategori()">
-        <i class="fa fa-sliders"></i>
-    </button>
-
     <!-- DROPDOWN KATEGORI -->
     <div id="filterKategori" style="display:none;" class="search">
-        <select name="filter" onchange="this.form.submit()">
+        <select name="filter" onchange="document.getElementById('filterBooks').submit();">
             <option value="">Semua Kategori</option>
             <option value="fiksi">Fiksi</option>
             <option value="nonfiksi">Non Fiksi</option>
@@ -61,7 +55,7 @@
 
 </div>
 
-</form>
+                </form>
 
                 @auth
                 <div class="btn-group-actions">

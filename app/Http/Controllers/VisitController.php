@@ -84,9 +84,10 @@ class VisitController extends Controller
     }
 
     $activeTransaction = Transaction::where('user_id', $user->id)
-        ->where('status', 'belum_dikembalikan')
-        ->latest('tanggal_peminjaman')
-        ->first();
+    ->where('status', 'belum_dikembalikan')
+    ->whereDate('tanggal_peminjaman', today())
+    ->latest('tanggal_peminjaman')
+    ->first();
 
     Visit::create([
         'user_id' => $user->id,

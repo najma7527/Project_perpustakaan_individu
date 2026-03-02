@@ -21,7 +21,7 @@ body {
 
 /* BANNER */
 .banner {
-    background: linear-gradient(90deg,#1e3c72,#2a8fdc);
+    background: linear-gradient(90deg,#004D40, #81C784);
     color: #fff;
     padding: 25px;
     border-radius: 14px;
@@ -93,7 +93,7 @@ body {
 
 .badge span {
     background: #e3f2fd;
-    color: #1e88e5;
+    color: #004D40;
     padding: 4px 10px;
     border-radius: 20px;
     font-size: 11px;

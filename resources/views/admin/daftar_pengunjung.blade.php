@@ -19,14 +19,13 @@
                 <p>Mencatat data pengunjung perpustakaan</p>
             </div>
         </div>
-        <img src="{{ asset('img/book.png') }}" class="header-img">
     </div>
 
     <!-- TABLE CARD -->
     <div class="table-card">
 
         <div class="table-header">
-    <form method="GET" action="{{ route('visits.index') }}">
+    <form method="GET" action="{{ route('visits.index') }}" id="filterVisits">
         <div class="filter">
             <div class="search">
                 <i class="fa fa-search"></i>
@@ -35,6 +34,7 @@
                     name="search" 
                     value="{{ request('search') }}"
                     placeholder="Cari nama pengunjung..."
+                    onkeyup="document.getElementById('filterVisits').submit();"
                 >
             </div>
 
@@ -44,27 +44,24 @@
                     type="date" 
                     name="date"
                     value="{{ request('date') }}"
+                    onchange="document.getElementById('filterVisits').submit();"
                 >
             </div>
 
-                <button type="button" class="btn-filter" onclick="toggleFilterKategori()">
-                    <i class="fa fa-sliders"></i>
-                </button>
-
                 <div id="filterKategori" style="display:none;" class="search">
-                <select name="filter" onchange="this.form.submit()">
+                <select name="filter" onchange="document.getElementById('filterVisits').submit();">
                     <option value="">Semua transaksi</option>
                     <option value="dipinjam">peminjaman</option>
                     <option value="dikembalikan">pengembalian</option>
                 </select>
             </div>
 
-            @auth
-                <a href="{{ route('cetak.filter-daftar-kunjungan') }}" class="btn-print">
-                    <i class="fa-solid fa-print"></i>
-                    Cetak Laporan
-                </a>
-                @endauth
+    @auth
+        <a href="{{ route('cetak.filter-daftar-kunjungan') }}" class="btn-print">
+            <i class="fa-solid fa-print"></i>
+            Cetak Laporan
+        </a>
+    @endauth
         </div>
         </div>
     </form>

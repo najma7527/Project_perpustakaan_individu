@@ -14,27 +14,37 @@
         {{-- HEADER --}}
         <div class="header-card">
             <div>
+                
                 <h5>Pengembalian Buku</h5>
                 <p>Pengelolaan pengembalian buku</p>
             </div>
-            <img src="https://cdn-icons-png.flaticon.com/512/29/29302.png">
         </div>
 
         {{-- FILTER --}}
         <div class="filter-card">
-            <div class="filter-item">
-                <i class="bi bi-search"></i>
-                <input type="text" placeholder="Cari sesuatu...">
-            </div>
+            <form method="GET" action="" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;" id="filterFormKembali">
+                <div class="search">
+                    <i class="bi bi-search"></i>
+                    <input type="text" name="search" placeholder="Cari buku..." value="{{ request('search') }}" onkeyup="document.getElementById('filterFormKembali').submit();">
+                </div>
 
-            <div class="filter-item">
-                <i class="bi bi-calendar"></i>
-                <input type="date">
-            </div>
+                <div class="date">
+                    <i class="bi bi-calendar"></i>
+                    <input type="date" name="date" value="{{ request('date') }}" onchange="document.getElementById('filterFormKembali').submit();">
+                </div>
 
-            <button class="btn-filter">
-                <i class="bi bi-sliders"></i>
-            </button>
+                <div class="search" style="min-width:180px;">
+                    <i class="bi bi-funnel"></i>
+                    <select name="status" style="padding:8px; border:none; background:transparent; flex:1;" onchange="document.getElementById('filterFormKembali').submit();">
+                        <option value="">Semua Status</option>
+                        <option value="belum_dikembalikan" {{ request('status') == 'belum_dikembalikan' ? 'selected' : '' }}>Belum Dikembalikan</option>
+                        <option value="menunggu_konfirmasi" {{ request('status') == 'menunggu_konfirmasi' ? 'selected' : '' }}>Menunggu Persetujuan</option>
+                        <option value="sudah_dikembalikan" {{ request('status') == 'sudah_dikembalikan' ? 'selected' : '' }}>Sudah Dikembalikan</option>
+                        <option value="terlambat" {{ request('status') == 'terlambat' ? 'selected' : '' }}>Terlambat</option>
+                        <option value="buku_hilang" {{ request('status') == 'buku_hilang' ? 'selected' : '' }}>Buku Hilang</option>
+                    </select>
+                </div>
+            </form>
         </div>
 
         {{-- TABLE --}}

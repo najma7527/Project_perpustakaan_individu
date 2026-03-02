@@ -23,50 +23,45 @@ class TransactionController extends Controller
      */
     public function index(Request $request)
     {
-        if (Auth::user()?->role !== 'admin') {
-            abort(403);
-        }
+        $mode = $request->mode ?? 'peminjaman'; // default peminjaman
 
+        $query = Transaction::with(['user','book']);
+
+        // Search
         if ($request->filled('search')) {
             $search = $request->search;
-
-            $transactions = Transaction::whereHas('user', function ($q) use ($search) {
-                $q->where('name', 'like', "%$search%")
-                  ->orWhere('kelas', 'like', "%$search%");
-            })
-            ->orWhereHas('book', function ($q) use ($search) {
-                $q->where('judul', 'like', "%$search%");
-            })
-            ->with(['user', 'book'])
-            ->latest()
-            ->paginate(10);
-
-            return view('admin.transaksi', compact('transactions'));
+            $query->where(function($q) use ($search){
+                $q->whereHas('user', fn($qq) => $qq->where('name','like',"%$search%")
+                                                    ->orWhere('kelas','like',"%$search%"))
+                  ->orWhereHas('book', fn($qq) => $qq->where('judul','like',"%$search%"));
+            });
         }
 
-        if ($request->filled('filter')) {
-            $filter = $request->filter;
-
-            $transactions = Transaction::where('status', $filter)
-                ->with(['user', 'book'])
-                ->latest()
-                ->paginate(10);
-            return view('admin.transaksi', compact('transactions'));
+        // Filter tanggal (tanggal pinjam)
+        if ($request->filled('date')) {
+            $query->whereDate('tanggal_peminjaman', $request->date);
         }
 
-        $mode = $request->get('mode', 'peminjaman');
+        // Filter status berdasarkan mode tab
+        if ($mode === 'peminjaman') {
+            // Apply filter jika ada, atau default ke peminjaman
+            if ($request->filled('filter')) {
+                $query->whereIn('status', (array)$request->filter);
+            } else {
+                $query->whereIn('status', ['buku_hilang', 'belum_dikembalikan', 'terlambat']);
+            }
+        } elseif ($mode === 'pengembalian') {
+            // Apply filter jika ada, atau default ke pengembalian
+            if ($request->filled('filter')) {
+                $query->whereIn('status', (array)$request->filter);
+            } else {
+                $query->whereIn('status', ['menunggu_konfirmasi', 'sudah_dikembalikan']);
+            }
+        }
 
-        $transactions = Transaction::with(['user', 'book'])
-            ->when($mode === 'peminjaman', function($q) {
-                $q->whereIn('status', ['buku_hilang', 'belum_dikembalikan', 'terlambat']);
-            })
-            ->when($mode === 'pengembalian', function($q) {
-                $q->whereIn('status', ['menunggu_konfirmasi', 'sudah_dikembalikan']);
-            })
-            ->latest()
-            ->paginate(10);
+        $transactions = $query->latest()->paginate(10)->withQueryString();
 
-        return view('admin.transaksi', compact('transactions', 'mode'));
+        return view('admin.transaksi', compact('transactions','mode'));
     }
 
     /**
@@ -128,11 +123,15 @@ class TransactionController extends Controller
         // Ubah status buku menjadi dipinjam
         $buku->update(['status' => 'dipinjam']);
         // Update visit jika ada
-    if ($visit) {
-        $visit->update([
-            'd' => $transaction->id
-        ]);
-    }
+    $visitToday = Visit::where('user_id', Auth::id())
+    ->whereDate('tanggal_datang', today())
+    ->first();
+
+if ($visitToday) {
+    $visitToday->update([
+        'transactions_id' => $transaction->id
+    ]);
+}
 
         return back()
         ->with('success', 'Buku "' . $buku->judul . '" berhasil dipinjam!')
@@ -154,6 +153,15 @@ class TransactionController extends Controller
             'tanggal_pengembalian' => now(),
             'jenis_transaksi' => 'dikembalikan',
         ]);
+        $visitToday = Visit::where('user_id', Auth::id())
+    ->whereDate('tanggal_datang', today())
+    ->first();
+
+if ($visitToday) {
+    $visitToday->update([
+        'transactions_id' => $transaction->id
+    ]);
+}
 
         return back()->with('success', 'Pengajuan pengembalian berhasil, menunggu persetujuan admin');
     }
@@ -227,6 +235,15 @@ class TransactionController extends Controller
         $transaksi->update([
             'status' => 'menunggu_konfirmasi'
         ]);
+        $visitToday = Visit::where('user_id', Auth::id())
+            ->whereDate('tanggal_datang', today())
+            ->first();
+
+        if ($visitToday) {
+            $visitToday->update([
+                'transactions_id' => $transaksi->id
+            ]);
+        }
 
         return back()->with('success', 'Pengajuan pengembalian ulang berhasil');
     }
@@ -251,6 +268,15 @@ class TransactionController extends Controller
             'status' => 'buku_hilang',
             'tanggal_pengembalian' => now(),
         ]);
+
+            $visitToday = Visit::where('user_id', Auth::id())
+                ->whereDate('tanggal_datang', today())
+                ->first();
+        if ($visitToday) {
+            $visitToday->update([
+                'transactions_id' => $transaksi->id
+            ]);
+        }
 
         // Tetap tandai buku sebagai tersedia untuk bisa dipinjam lagi
         $transaksi->book->update(['status' => 'tersedia']);
@@ -282,14 +308,31 @@ class TransactionController extends Controller
     /**
      * Get user's own transactions
      */
-    public function myTransactions()
+    public function myTransactions(Request $request)
     {
         $user = Auth::user();
-        // paginate user's transactions so view pagination works
-        $transactions = Transaction::where('user_id', $user->id)
-            ->with('book')
-            ->latest()
-            ->paginate(10);
+        $query = Transaction::where('user_id', $user->id)
+            ->with('book');
+
+        if ($request->filled('search')) {
+            $q = $request->search;
+            $query->where(function($qq) use ($q) {
+                $qq->whereHas('book', fn($b) => $b->where('judul', 'like', "%$q%"))
+                   ->orWhere('tanggal_peminjaman', 'like', "%$q%")
+                   ->orWhere('tanggal_jatuh_tempo', 'like', "%$q%")
+                   ->orWhere('tanggal_pengembalian', 'like', "%$q%");
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('date')) {
+            $query->whereDate('tanggal_peminjaman', $request->date);
+        }
+
+        $transactions = $query->latest()->paginate(10)->withQueryString();
 
         return view('siswa.pengembalian-buku', compact('transactions'));
     }
@@ -373,60 +416,25 @@ class TransactionController extends Controller
      */
     public function search(Request $request)
     {
-        $q = $request->q;
-
-        $transactions = Transaction::where('user_id', Auth::id())
-            ->where(function ($query) use ($q) {
-                $query->where('tanggal_peminjaman', 'like', "%$q%")
-                    ->orWhere('tanggal_pengembalian', 'like', "%$q%")
-                    ->orWhere('tanggal_jatuh_tempo', 'like', "%$q%");
-            })
-            ->with('book')
-            ->get();
-
-        return view('siswa.pengembalian-buku', compact('transactions'));
+        // redirect to myTransactions with query string parameters
+        return redirect()->route('anggota.pengembalian', $request->only('q','search','status','date'));
     }
 
     public function cekJatuhTempo()
     {
-        $today = Carbon::today();
-
-        $transactions = Transaction::where('status', 'belum_dikembalikan')->get();
-
-        $updated = 0;
-        foreach ($transactions as $trx) {
-            // Sudah lewat jatuh tempo
-            if ($today->greaterThan($trx->tanggal_jatuh_tempo)) {
-                $trx->update([
-                    'status' => 'terlambat'
-                ]);
-                $updated++;
-            }
-        }
+        // reuse command which also sends notifications
+        \Artisan::call('app:cek-keterlambatan');
+        $output = trim(\Artisan::output());
 
         return response()->json([
             'message' => 'Pengecekan jatuh tempo selesai',
-            'jumlah_terlambat' => $updated
+            'detail' => $output
         ]);
     }
 
     public function cekKeterlambatan()
     {
-        $today = Carbon::today();
-
-        $terlambat = Transaction::where('status', 'belum_dikembalikan')
-            ->whereDate('tanggal_jatuh_tempo', '<', $today)
-            ->get();
-
-        foreach ($terlambat as $trx) {
-            $trx->update([
-                'status' => 'terlambat'
-            ]);
-        }
-
-        return response()->json([
-            'message' => 'Status keterlambatan berhasil diperbarui',
-            'jumlah' => $terlambat->count()
-        ]);
+        // simply reuse same command so behaviour stays consistent
+        return $this->cekJatuhTempo();
     }
 }

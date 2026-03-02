@@ -45,7 +45,7 @@ body {
     margin-top: 20px;
     width: 100%;
     padding: 10px;
-    background: #2196f3;
+    background: #004D40;
     color: #fff;
     border: none;
     border-radius: 6px;
@@ -117,7 +117,7 @@ body {
 }
 
 .dropdown-link.active {
-    background: #2196f3;
+    background: #004D40;
     color: #fff;
 }
 
@@ -127,7 +127,7 @@ body {
 
 /* ================= HEADER ================= */
 .header {
-    background: linear-gradient(to right, #0d47a1, #2196f3);
+    background: linear-gradient(to right, #004D40, #81C784);
     padding: 20px;
     color: #fff;
     border-radius: 8px;
@@ -167,7 +167,7 @@ body {
     position: absolute;
     bottom: 5px;
     right: 5px;
-    background: #2196f3;
+    background: #004D40;
     color: #fff;
     padding: 6px;
     border-radius: 50%;
@@ -175,7 +175,7 @@ body {
 }
 
 .role {
-    color: #2196f3;
+    color: #004D40;
     font-weight: bold;
 }
 
@@ -210,7 +210,7 @@ td {
     margin-top: 15px;
     float: right;
     padding: 10px 15px;
-    background: #2196f3;
+    background: #004D40;
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -235,7 +235,7 @@ td {
 .btn-profile {
     display: block;
     text-align: center;
-    background: #2196f3;
+    background: #004D40;
     color: #fff;
     padding: 10px;
     border-radius: 8px;

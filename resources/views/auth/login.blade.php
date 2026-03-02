@@ -68,7 +68,7 @@
 
                 <p class="register">
                     Belum Memiliki Akun?
-                    <a href="{{ route('home') }}#register">Daftar</a>
+                    <a href="{{ route('registerAnggota.show') }}">Daftar</a>
                 </p>
 
             </form>

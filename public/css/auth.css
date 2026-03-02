@@ -25,7 +25,7 @@ body {
 .card {
   width: 1100px;
   min-height: 620px;
-  background: #209eeb;
+  background: #004D40;
   border-radius: 28px;
   display: flex;
   overflow: hidden;
@@ -81,7 +81,7 @@ input[type="email"],
 input[type="password"] {
   width: 100%;
   height: 40px;
-  border: 1.6px solid #2196f3;
+  border: 1.6px solid #004D40;
   border-radius: 4px;
   padding: 0 12px;
   font-size: 13px;
@@ -138,7 +138,7 @@ input[type="password"] {
 button {
   width: 100%;
   height: 44px;
-  background: #2196f3;
+  background: #004D40;
   border: none;
   border-radius: 6px;
   color: #fff;
@@ -242,7 +242,7 @@ button {
   margin-top: 29px;
   font-family: "Nunito Sans-Bold", Helvetica;
   font-weight: 700;
-  color: #209eeb;
+  color: #004D40;
   font-size: 64px;
   text-align: center;
   letter-spacing: 0;
@@ -255,7 +255,7 @@ button {
   height: 53px;
   font-family: "Nunito Sans-Bold", Helvetica;
   font-weight: 700;
-  color: #209eeb;
+  color: #004D40;
   font-size: 32px;
   text-align: center;
   letter-spacing: 0;
@@ -268,7 +268,7 @@ button {
   height: 40px;
   position: relative;
   margin-top: 41px;
-  background-color: #209eeb;
+  background-color: #004D40;
   border-radius: 9px;
 }
 
@@ -324,7 +324,7 @@ form {
 .photo-circle {
   width: 82px;
   height: 82px;
-  border: 2px solid #2196f3;
+  border: 2px solid #004D40;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -360,7 +360,7 @@ form {
 button {
   width: 100%;
   height: 42px;
-  background: #2d8fd6;
+  background: #004D40;
   border: none;
   border-radius: 6px;
   color: #fff;

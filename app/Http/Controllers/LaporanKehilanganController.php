@@ -42,13 +42,29 @@ class LaporanKehilanganController extends Controller
             ->with('success', 'Laporan kehilangan berhasil dibuat. Buku ditandai sebagai hilang.');
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        $query = Report::where('user_id', Auth::id())
+            ->with('transaction.book');
+
+        // Search by book title or keterangan
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->whereHas('transaction.book', fn($b) => $b->where('judul', 'like', "%$search%"))
+                  ->orWhere('keterangan', 'like', "%$search%");
+            });
+        }
+
+        // Filter by date (tanggal pinjam)
+        if ($request->filled('date')) {
+            $query->whereHas('transaction', fn($t) => $t->whereDate('tanggal_peminjaman', $request->date));
+        }
+
         // use pagination so large result sets won't time out and to match view
-        $reports = Report::where('user_id', Auth::id())
-            ->with('transaction.book')
-            ->latest()
-            ->paginate(10);
+        $reports = $query->latest()
+            ->paginate(10)
+            ->withQueryString();
 
         return view('siswa.laporan_kehilangan', compact('reports'));
     }

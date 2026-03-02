@@ -1,6 +1,6 @@
 /* HEADER CARD */
 .header-card {
-    background: linear-gradient(90deg, #0d47a1, #1e88e5);
+    background: linear-gradient(90deg, #004D40, #81C784);
     color: #fff;
     padding: 22px;
     border-radius: 12px;
@@ -43,7 +43,7 @@
 
 .tab-item.active,
 .tab-item:hover {
-    background: #1e88e5;
+    background: #004D40;
     color: #fff;
 }
 
@@ -117,7 +117,7 @@
 /* KOTAK IKON BIRU (Kiri) */
 .search i,
 .date i {
-    background-color: #2196f3;
+    background-color: #004D40;
     /* Warna biru sesuai app.css */
     color: #fff;
     height: 100%;
@@ -142,7 +142,7 @@
 
 /* TOMBOL FILTER (IKON SETTING) */
 .btn-filter {
-    background-color: #2196f3;
+    background-color: #004D40;
     color: #fff;
     border: none;
     width: 45px;
@@ -171,7 +171,7 @@ table {
 }
 
 thead {
-    background: #1e88e5;
+    background: #004D40;
 }
 
 th,
@@ -342,12 +342,12 @@ tbody tr:hover {
 }
 
 .modal-tab-btn:hover {
-    color: #1e88e5;
+    color: #004D40;
 }
 
 .modal-tab-btn.active {
-    color: #1e88e5;
-    border-bottom-color: #1e88e5;
+    color: #004D40;
+    border-bottom-color: #004D40;
 }
 
 .modal-content-wrapper {
@@ -403,7 +403,7 @@ tbody tr:hover {
 
 .form-control:focus {
     outline: none;
-    border-color: #1e88e5;
+    border-color: #004D40;
     box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
 }
 
@@ -457,7 +457,7 @@ tbody tr:hover {
 }
 
 .btn-primary {
-    background: #1e88e5;
+    background: #004D40;
     color: #fff;
 }
 
@@ -502,7 +502,7 @@ tbody tr:hover {
 .section-title {
     font-size: 14px;
     font-weight: 600;
-    color: #1e88e5;
+    color: #004D40;
     margin-bottom: 15px;
     padding-bottom: 10px;
     border-bottom: 2px solid #f0f0f0;
@@ -531,7 +531,7 @@ tbody tr:hover {
     padding: 8px 12px;
     background-color: #f9f9f9;
     border-radius: 4px;
-    border-left: 3px solid #1e88e5;
+    border-left: 3px solid #004D40;
 }
 
 /* Badge Styles */
@@ -810,7 +810,7 @@ table tfoot td {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: #1e88e5;
+    background: #004D40;
     color: #fff;
     padding: 12px 24px;
     border-radius: 25px;

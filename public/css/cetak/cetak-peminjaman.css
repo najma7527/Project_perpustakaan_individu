@@ -130,11 +130,22 @@ hr.dashed {
 
 /* PRINT */
 @media print {
+    /* Hilangkan background dan padding default */
     body {
         background: none;
         padding: 0;
+        margin: 0; /* penting! */
     }
+
+    /* Hilangkan jarak box shadow */
     .card {
         box-shadow: none;
+        margin: 0; /* pastikan card menempel tepi */
+        border-radius: 0; /* opsional, kalau mau bener-bener full ke tepi */
+    }
+
+    /* Agar halaman print tidak menambahkan margin sendiri */
+    @page {
+        margin: 0; /* menghapus margin default printer */
     }
 }

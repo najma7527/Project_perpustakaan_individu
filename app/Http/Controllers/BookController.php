@@ -239,16 +239,35 @@ class BookController extends Controller
         }
     }
 
-    public function browse()
+    public function browse(Request $request)
     {
         if (Auth::user()?->role !== 'anggota') abort(403);
-        $books = Book::where('status', 'tersedia')->with('row')->get();
+
+        // build query with optional filters
+        $query = Book::where('status', 'tersedia')->with('row');
+
+        $search = $request->input('search', '');
+        $category = $request->input('category', '');
+
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('judul', 'like', "%{$search}%")
+                  ->orWhere('pengarang', 'like', "%{$search}%")
+                  ->orWhere('kode_buku', 'like', "%{$search}%");
+            });
+        }
+
+        if ($category) {
+            $query->where('kategori_buku', $category);
+        }
+
+        $books = $query->get();
 
         // Cek apakah siswa sudah meminjam buku (masih aktif)
         $hasActiveLoan = Transaction::where('user_id', Auth::id())
             ->whereIn('status', ['belum_dikembalikan', 'menunggu_konfirmasi', 'terlambat'])
             ->exists();
 
-        return view('siswa.pinjam-buku', compact('books', 'hasActiveLoan'));
+        return view('siswa.pinjam-buku', compact('books', 'hasActiveLoan', 'search', 'category'));
     }
 }

@@ -71,11 +71,11 @@
       </label>
     </div>
 
-    <button type="submit">Masuk</button>
+    <button type="submit">Daftar</button>
 
     <p class="register">
-      Belum Memiliki Akun ?
-      <a href="#">Daftar</a>
+      Sudah Memiliki Akun ?
+      <a href="{{ route('login') }}">Masuk</a>
     </p>
 
   </form>

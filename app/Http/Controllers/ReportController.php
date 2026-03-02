@@ -25,8 +25,11 @@ class ReportController extends Controller
 
     // Filter status
     if ($request->filled('filter')) {
-        $query->where('status', $request->filter);
-    }
+    // Hilangkan spasi di string dan ubah menjadi array
+    $statuses = array_map('trim', explode(',', $request->filter));
+
+    $query->whereIn('status', $statuses);
+}
 
     // Search
     if ($request->filled('search')) {
