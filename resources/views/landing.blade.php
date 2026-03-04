@@ -9,10 +9,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-    <!-- Header & Navigation -->
+    <!-- Header -->
     <header class="header">
         <div class="container">
             <nav class="navbar">
@@ -27,82 +27,92 @@
                     <li><a href="{{ route('login') }}" class="btn-nav">Login</a></li>
                 </ul>
                 <div class="hamburger">
-                    <i class="fas fa-bars"></i>
+                    <span></span><span></span><span></span>
                 </div>
             </nav>
         </div>
     </header>
 
-    <!-- Hero Section -->
+    <!-- Hero -->
     <section class="hero" id="home">
         <div class="container">
             <div class="hero-content">
                 <div class="hero-text">
-                    <h2 class="hero-title">
-                        <span class="highlight">Perpustakaan SMKN 4 Bojonegoro</span><br>
-                        <span class="school-name">AksaPusta</span>
-                    </h2>
-                    <p class="hero-subtitle">Pusat literasi dan sumber belajar untuk membentuk generasi cerdas, terampil, dan berwawasan luas.</p>
-                    <p class="hero-description">Perpustakaan SMKN 4 Bojonegoro menyediakan berbagai koleksi buku dan layanan perpustakaan yang mendukung kegiatan belajar mengajar serta meningkatkan minat baca warga sekolah.</p>
-                    <div class="hero-buttons">
-                        <a href="{{ route('login') }}" class="btn-primary">
-                            <i class="fas fa-sign-in-alt"></i> Login Perpustakaan
+                    <span class="hero-badge">Perpustakaan Digital</span>
+                    <h1 class="hero-title">
+                        AksaPusta
+                        <br>
+                        <!-- <span>SMKN 4 Bojonegoro</span> -->
+                    </h1>
+                    <p class="hero-subtitle">Membangun Generasi Cerdas melalui Literasi Modern</p>
+                    <p class="hero-desc">Akses ribuan koleksi buku, kelola peminjaman, dan tingkatkan minat baca hanya dalam genggaman.</p>
+                    
+                    <div class="hero-cta">
+                        <a href="{{ route('login') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-sign-in-alt"></i> Masuk Sekarang
                         </a>
-                        <a href="{{ route('registerAnggota.show') }}" class="btn-secondary">
-                            <i class="fas fa-user-plus"></i> Daftar Anggota Sekarang
+                        <a href="{{ route('registerAnggota.show') }}" class="btn btn-outline">
+                            <i class="fas fa-user-plus"></i> Daftar Anggota
                         </a>
                     </div>
                 </div>
-                <div class="hero-image">
-                    <div class="image-container">
-                        <img src="{{ asset('img/landing1.png') }}" alt="Siswa membaca di perpustakaan SMKN 4 Bojonegoro" class="hero-img">
+
+                <div class="hero-visual">
+                    <div class="hero-image-wrapper">
+                        <img src="{{ asset('img/landing1.png') }}" alt="Siswa membaca" class="hero-main-img">
                     </div>
                 </div>
             </div>
         </div>
-
+        <div class="wave-bottom"></div>
     </section>
 
-    <!-- Tentang Perpustakaan -->
-    <section class="about" id="about">
+    <!-- About -->
+    <section class="section about" id="about">
         <div class="container">
-            <div class="section-header">
-                <h2><i class="fas fa-star"></i> Tentang AksaPusta</h2>
-                <p>Mengenal lebih dekat peran perpustakaan dalam meningkatkan budaya literasi</p>
+            <div class="section-title-wrapper">
+                <h2 class="section-title">Tentang AksaPusta</h2>
+                <p class="section-subtitle">Pusat literasi digital SMKN 4 Bojonegoro</p>
             </div>
-            <div class="about-content">
+
+            <div class="about-grid">
                 <div class="about-image">
-                    <img src="{{ asset('img/landing2.png') }}" alt="Interior perpustakaan SMKN 4 Bojonegoro">
-                    <div class="about-stats">
-                        <div class="stat">
-                            <h3>5000+</h3>
-                            <p>Koleksi Buku</p>
+                    <img src="{{ asset('img/landing2.png') }}" alt="Suasana perpustakaan">
+                    <div class="stats-overlay">
+                        <div class="stat-item">
+                            <div class="stat-number">5.000+</div>
+                            <div class="stat-label">Koleksi Buku</div>
                         </div>
-                        <div class="stat">
-                            <h3>1000+</h3>
-                            <p>Anggota Aktif</p>
+                        <div class="stat-item">
+                            <div class="stat-number">1.000+</div>
+                            <div class="stat-label">Anggota Aktif</div>
                         </div>
                     </div>
                 </div>
-                <div class="about-text">
-                    <p>AksaPusta merupakan sistem manajemen perpustakaan digital yang dirancang untuk membantu pengelolaan data buku, anggota, serta transaksi peminjaman dan pengembalian secara terstruktur.
-Sistem ini mendukung peningkatan budaya literasi di SMKN 4 Bojonegoro dengan pendekatan teknologi yang modern dan mudah digunakan.</p>
-                    <div class="about-features">
-                        <div class="feature">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Akses informasi yang mudah dan cepat</span>
+
+                <div class="about-content">
+                    <p class="lead-text">AksaPusta adalah sistem perpustakaan digital modern yang membantu SMKN 4 Bojonegoro meningkatkan budaya literasi dengan teknologi terkini.</p>
+                    
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <i class="fas fa-rocket"></i>
+                            <h4>Akses Cepat</h4>
+                            <p>Cari & pinjam buku kapan saja</p>
                         </div>
-                        <div class="feature">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Koleksi Buku Terlengkap dan Terkini</span>
+                        <div class="feature-card">
+                            <i class="fas fa-book-open-reader"></i>
+                            <h4>Koleksi Lengkap</h4>
+                            <p>Buku terbaru & referensi berkualitas</p>
                         </div>
-                        <div class="feature">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Pengelolaan sistematis dan profesional</span>
+                        <div class="feature-card">
+                            <i class="fas fa-shield-halved"></i>
+                            <h4>Pengelolaan Aman</h4>
+                            <p>Data terstruktur & terlindungi</p>
                         </div>
-                        <div class="feature">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Lingkungan nyaman untuk membaca</span>
+                        <div class="feature-card">
+                            <i class="fas fa-heart"></i>
+                            <h4>Ruang Nyaman</h4>
+                            <p>Tempat baca yang mendukung fokus</p>
                         </div>
                     </div>
                 </div>
@@ -110,143 +120,139 @@ Sistem ini mendukung peningkatan budaya literasi di SMKN 4 Bojonegoro dengan pen
         </div>
     </section>
 
-    <!-- Layanan Perpustakaan -->
-    <section class="services" id="services">
+    <!-- Services -->
+    <section class="section services" id="services">
         <div class="container">
-            <div class="section-header">
-                <h2><i class="fas fa-book"></i> Layanan AksaPusta</h2>
-                <p>Berbagai layanan unggulan untuk mendukung kegiatan literasi dan pembelajaran</p>
+            <div class="section-title-wrapper">
+                <h2 class="section-title">Layanan Kami</h2>
+                <p class="section-subtitle">Fasilitas unggulan untuk mendukung literasi & pembelajaran</p>
             </div>
+
             <div class="services-grid">
                 <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-exchange-alt"></i>
-                    </div>
+                    <div class="service-icon"><i class="fas fa-exchange-alt"></i></div>
                     <h3>Peminjaman Buku</h3>
-                    <p>Layanan peminjaman buku bagi anggota perpustakaan untuk mendukung kegiatan belajar, tugas sekolah, dan pengembangan wawasan sesuai dengan peraturan yang berlaku.</p>
+                    <p>Pinjam buku secara mudah & cepat sesuai aturan sekolah</p>
                 </div>
                 <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-undo-alt"></i>
-                    </div>
-                    <h3>Pengembalian Buku</h3>
-                    <p>Layanan pengembalian buku yang dilakukan secara tertib dan tepat waktu guna menjaga ketersediaan koleksi serta kedisiplinan anggota perpustakaan.</p>
+                    <div class="service-icon"><i class="fas fa-undo-alt"></i></div>
+                    <h3>Pengembalian</h3>
+                    <p>Kembalikan buku tepat waktu, jaga koleksi tetap lengkap</p>
                 </div>
                 <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-tasks"></i>
-                    </div>
-                    <h3>Pengelolaan Buku</h3>
-                    <p>Pengelolaan koleksi buku oleh petugas perpustakaan meliputi pendataan buku, pengelompokan, pemeliharaan, serta pembaruan data buku secara berkala.</p>
+                    <div class="service-icon"><i class="fas fa-tasks"></i></div>
+                    <h3>Pengelolaan Koleksi</h3>
+                    <p>Pendataan, klasifikasi, & pemeliharaan buku rutin</p>
                 </div>
                 <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-school"></i>
-                    </div>
-                    <h3>Kunjungan Perpustakaan</h3>
-                    <p>Layanan kunjungan perpustakaan bagi siswa dan guru sebagai sarana membaca, belajar mandiri, diskusi, dan meningkatkan minat literasi di lingkungan sekolah.</p>
+                    <div class="service-icon"><i class="fas fa-school"></i></div>
+                    <h3>Kunjungan & Belajar</h3>
+                    <p>Ruang baca, diskusi, & belajar mandiri yang nyaman</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Tentang Sekolah -->
-    <section class="school" id="school">
+    <!-- School -->
+    <section class="section school" id="school">
         <div class="container">
-            <div class="section-header">
-                <h2><img src="{{ asset('img/logo_smk4.png') }}" alt="Logo SMKN 4 Bojonegoro" class="school-logo"> ||Tentang SMKN 4 Bojonegoro</h2>
-                <p>Sekolah berfokus pada pengembangan kompetensi siswa untuk masa depan</p>
+            <div class="section-title-wrapper">
+                <h2 class="section-title">
+                    <img src="{{ asset('img/logo_smk4.png') }}" alt="Logo SMKN 4" class="inline-logo">
+                    SMKN 4 Bojonegoro
+                </h2>
+                <p class="section-subtitle">Mencetak lulusan kompeten, siap kerja & berwirausaha</p>
             </div>
-            <div class="school-content">
-                <div class="school-text">
-                    <p>SMKN 4 Bojonegoro adalah sekolah menengah kejuruan yang berfokus pada pengembangan kompetensi siswa agar siap memasuki dunia kerja, berwirausaha, dan melanjutkan pendidikan ke jenjang yang lebih tinggi. Perpustakaan sekolah menjadi salah satu sarana pendukung utama dalam proses pembelajaran dan peningkatan literasi.</p>
-                    <div class="school-features">
-                        <div class="school-feature">
+
+            <div class="school-grid">
+                <div class="school-info">
+                    <p>SMKN 4 Bojonegoro fokus mengembangkan kompetensi siswa agar siap menghadapi dunia kerja, berwirausaha, atau melanjutkan studi lebih tinggi. Perpustakaan menjadi salah satu pilar utama dalam mendukung proses tersebut.</p>
+                    
+                    <div class="highlight-list">
+                        <div class="highlight-item">
                             <i class="fas fa-briefcase"></i>
                             <div>
-                                <h4>Fokus Dunia Kerja</h4>
-                                <p>Menyiapkan siswa dengan keterampilan yang dibutuhkan industri</p>
+                                <h4>Siap Kerja</h4>
+                                <p>Keterampilan sesuai kebutuhan industri</p>
                             </div>
                         </div>
-                        <div class="school-feature">
+                        <div class="highlight-item">
                             <i class="fas fa-lightbulb"></i>
                             <div>
-                                <h4>Pengembangan Wirausaha</h4>
-                                <p>Mendorong jiwa kewirausahaan sejak dini</p>
+                                <h4>Berwirausaha</h4>
+                                <p>Membangun jiwa entrepreneur sejak dini</p>
                             </div>
                         </div>
-                        <div class="school-feature">
+                        <div class="highlight-item">
                             <i class="fas fa-graduation-cap"></i>
                             <div>
-                                <h4>Kesempatan Melanjutkan Studi</h4>
-                                <p>Membuka peluang pendidikan ke jenjang lebih tinggi</p>
+                                <h4>Lanjut Studi</h4>
+                                <p>Jalur mudah ke perguruan tinggi</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="school-image">
-                    <img src="{{ asset('img/sekolah.jpeg') }}" alt="SMKN 4 Bojonegoro">
-                    <div class="school-badge">
-                        <i class="fas fa-award"></i>
-                        <span>Sekolah Literasi</span>
+
+                <div class="school-visual">
+                    <img src="{{ asset('img/sekolah.jpeg') }}" alt="Gedung SMKN 4 Bojonegoro">
+                    <div class="badge-literasi">
+                        <i class="fas fa-award"></i> Sekolah Literasi Unggulan
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- CTA Penutup -->
+    <!-- CTA Final -->
     <section class="cta-final">
         <div class="container">
-            <div class="cta-content">
-                <h2><i class="fas fa-rocket"></i> Ayo Manfaatkan Perpustakaan Sekolah!</h2>
-                <p>Tingkatkan minat baca, perluas wawasan, dan dukung prestasi belajar dengan memanfaatkan layanan Perpustakaan SMKN 4 Bojonegoro.</p>
-                <div class="cta-buttons">
-                    <a href="{{ route('login') }}" class="btn-primary btn-large">
-                        <i class="fas fa-sign-in-alt"></i> Login Sekarang
-                    </a>
-                    <a href="{{ route('registerAnggota.show') }}" class="btn-secondary btn-large">
-                        <i class="fas fa-users"></i> Gabung Menjadi Anggota
-                    </a>
-                </div>
+            <h2><i class="fas fa-rocket"></i> Mulai Petualangan Literasimu Sekarang!</h2>
+            <p>Tingkatkan wawasan, dukung prestasi, dan jadilah bagian dari generasi literat SMKN 4 Bojonegoro</p>
+            
+            <div class="cta-buttons">
+                <a href="{{ route('login') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-sign-in-alt"></i> Login AksaPusta
+                </a>
+                <a href="{{ route('registerAnggota.show') }}" class="btn btn-outline btn-lg">
+                    <i class="fas fa-users"></i> Daftar Anggota Baru
+                </a>
             </div>
         </div>
-        <div class="wave-divider-bottom">
-            <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="#ffffff"></path>
-            </svg>
-        </div>
+        
+        <div class="wave-top"></div>
     </section>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
+            <div class="footer-grid">
+                <div class="footer-brand">
                     <img src="{{ asset('img/logo_aksapusta.png') }}" alt="Logo AksaPusta">
                     <div>
                         <h3>AksaPusta</h3>
-                        <p>PerpustakaanSMKN 4 Bojonegoro</p>
+                        <p>Perpustakaan Digital SMKN 4 Bojonegoro</p>
                     </div>
                 </div>
-                <div class="footer-info">
-                    <p><i class="fas fa-map-marker-alt"></i> JL. RAYA SURABAYA BOJONEGORO, Sukowati, Kec. Kapas, Kab. Bojonegoro, Jawa Timur.</p>
-                    <p><i class="fas fa-clock"></i> Senin - Jumat: 07.30 - 15.00 WIB</p>
+                
+                <div class="footer-contact">
+                    <p><i class="fas fa-map-marker-alt"></i> JL. Raya Surabaya – Bojonegoro, Sukowati, Kec. Kapas, Kab. Bojonegoro, Jawa Timur</p>
+                    <p><i class="fas fa-clock"></i> Senin – Jumat: 07.30 – 15.00 WIB</p>
                 </div>
+
+                
+            </div>
                 <div class="footer-social">
                     <a href="https://www.bing.com/ck/a?!&&p=d204843fab92c681205cfb6969743b6a311b47a8ee1dee1c1f6ac825426f9931JmltdHM9MTc2OTI5OTIwMA&ptn=3&ver=2&hsh=4&fclid=02f5638b-b516-6ced-07ed-7742b4746d8a&psq=facebook+smkn+4+bojonegoro&u=a1aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL29mZmljaWFsc21rbjRiam4vZm9sbG93aW5nLw"><i class="fab fa-facebook"></i></a>
                     <a href="https://www.bing.com/ck/a?!&&p=e249a79ec1f8eaeae0a6d4fd538155ecf0e479764460f15c1af8d0104a6858e3JmltdHM9MTc2OTI5OTIwMA&ptn=3&ver=2&hsh=4&fclid=02f5638b-b516-6ced-07ed-7742b4746d8a&psq=facebook+smkn+4+bojonegoro&u=a1aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9vZmZpY2lhbF9zbWtuNGJvam9uZWdvcm8v"><i class="fab fa-instagram"></i></a>
                     <a href="https://www.bing.com/ck/a?!&&p=b26bc920ce71554e239c947b90c0574310878f9bae02cc8d51745610420bda75JmltdHM9MTc2OTI5OTIwMA&ptn=3&ver=2&hsh=4&fclid=02f5638b-b516-6ced-07ed-7742b4746d8a&psq=tiktok+smkn+4+bojonegoro&u=a1aHR0cHM6Ly93d3cudGlrdG9rLmNvbS9Ab2ZmaWNpYWxfc21rbjRib2pvbmVnb3Jv"><i class="fab fa-tiktok"></i></a>
                     <a href="https://www.bing.com/ck/a?!&&p=a0c41d55a34e07441c6054a0cfad7f7506d55ad161d9dd7afddbc978b21cb2a5JmltdHM9MTc2OTI5OTIwMA&ptn=3&ver=2&hsh=4&fclid=02f5638b-b516-6ced-07ed-7742b4746d8a&psq=youtube+smkn+4+bojonegoro&u=a1aHR0cHM6Ly93d3cueW91dHViZS5jb20vQHNta25lZ2VyaTRib2pvbmVnb3JvMTg5L3ZpZGVvcw"><i class="fab fa-youtube"></i></a>
                 </div>
-            </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 AksaPusta || Perpustakaan SMKN 4 Bojonegoro - Membangun Generasi Cerdas dan Literat</p>
+                <p>© 2026 AksaPusta • Perpustakaan SMKN 4 Bojonegoro • Membangun Generasi Literat</p>
             </div>
         </div>
     </footer>
 
-    <!-- Back to Top Button -->
     <a href="#home" class="back-to-top">
         <i class="fas fa-arrow-up"></i>
     </a>

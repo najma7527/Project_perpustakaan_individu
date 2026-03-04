@@ -112,7 +112,7 @@ body {
     padding: 9px;
     border-radius: 20px;
     border: none;
-    background: #2d9cdb;
+    background: #004D40;
     color: #fff;
     cursor: pointer;
 }
@@ -138,7 +138,7 @@ body {
 }
 
 .modal-title {
-    background: #2d9cdb;
+    background: #004D40;
     color: #fff;
     padding: 14px;
     text-align: center;
@@ -170,7 +170,7 @@ body {
 }
 
 .btn-save {
-    background: #2d9cdb;
+    background: #004D40;
     color: #fff;
     border: none;
     padding: 8px 18px;
@@ -225,7 +225,7 @@ body {
     justify-content: center;
     border-radius: 8px;
     background: transparent;
-    color: #1e7cff;
+    color: #004D40;
     font-size: 14px;
     font-weight: 500;
     text-decoration: none;
@@ -304,7 +304,7 @@ table tfoot td {
    ACTIVE (BIRU)
 =================================*/
 .nav-btn.active {
-    background: #4c6ef5; /* biru lembut seperti desain */
+    background: #004D40; /* biru lembut seperti desain */
     color: #ffffff;
     box-shadow: 0 8px 20px rgba(76, 110, 245, 0.35);
 }

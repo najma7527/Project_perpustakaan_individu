@@ -223,6 +223,10 @@ tbody tr:hover {
     background: #2ecc71;
 }
 
+.status.nonaktif {
+    background: #e74c3c;
+}
+
 /* AKSI */
 .aksi {
     display: flex;
@@ -254,7 +258,7 @@ tbody tr:hover {
 }
 
 .view {
-    background: #3498db;
+    background: #004D40;
 }
 
 .delete {
@@ -743,7 +747,7 @@ table tfoot td {
 }
 
 .detail-modal-header {
-    background: linear-gradient(135deg, #42a5f5, #29b6f6);
+    background: linear-gradient(135deg, #004D40, #81C784);
     padding: 18px 25px;
     text-align: center;
 }

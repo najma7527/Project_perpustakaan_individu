@@ -22,7 +22,6 @@ return new class extends Migration
             $table->foreignId('id_baris')->constrained('row')->onDelete('cascade');
             $table->string('cover');
             $table->text('deskripsi');
-            $table->enum('status', ['tersedia', 'dipinjam'])->default('tersedia');
             $table->timestamps();
         });
     }

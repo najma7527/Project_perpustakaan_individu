@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('bookshelf', function (Blueprint $table) {
             $table->id();
-            $table->integer('no_rak');
-            $table->string('keterangan');
+            $table->string('no_rak', 100);
+            $table->string('keterangan')->nullable();
             $table->timestamps();
         });
     }

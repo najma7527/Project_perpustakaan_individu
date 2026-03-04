@@ -52,25 +52,40 @@
 
         <div class="search" style="min-width:180px;">
             <i class="icon fa fa-filter"></i>
-            @if(($mode ?? 'peminjaman') == 'peminjaman')
-                <select name="filter[]" multiple onchange="document.getElementById('filterForm').submit();" style="padding:8px; border:none; background:transparent; width:100%;">
-                    <option value="belum_dikembalikan" {{ in_array('belum_dikembalikan', (array)request('filter')) ? 'selected' : '' }}>Belum Dikembalikan</option>
-                    <option value="terlambat" {{ in_array('terlambat', (array)request('filter')) ? 'selected' : '' }}>Terlambat</option>
-                    <option value="buku_hilang" {{ in_array('buku_hilang', (array)request('filter')) ? 'selected' : '' }}>Buku Hilang</option>
-                </select>
-            @else
-                <select name="filter[]" multiple onchange="document.getElementById('filterForm').submit();" style="padding:8px; border:none; background:transparent; width:100%;">
-                    <option value="menunggu_konfirmasi" {{ in_array('menunggu_konfirmasi', (array)request('filter')) ? 'selected' : '' }}>Menunggu Konfirmasi</option>
-                    <option value="sudah_dikembalikan" {{ in_array('sudah_dikembalikan', (array)request('filter')) ? 'selected' : '' }}>Sudah Dikembalikan</option>
-                </select>
-            @endif
+           @if(($mode ?? 'peminjaman') == 'peminjaman')
+    <select name="filter" onchange="document.getElementById('filterForm').submit();" 
+        style="padding:8px; border:none; background:transparent; width:100%;">
+        
+        <option value="">-- Semua Status --</option>
+        <option value="belum_dikembalikan" {{ request('filter') == 'belum_dikembalikan' ? 'selected' : '' }}>
+            Belum Dikembalikan
+        </option>
+        <option value="terlambat" {{ request('filter') == 'terlambat' ? 'selected' : '' }}>
+            Terlambat
+        </option>
+        <option value="buku_hilang" {{ request('filter') == 'buku_hilang' ? 'selected' : '' }}>
+            Buku Hilang
+        </option>
+    </select>
+@else
+    <select name="filter" onchange="document.getElementById('filterForm').submit();" 
+        style="padding:8px; border:none; background:transparent; width:100%;">
+        
+        <option value="">-- Semua Status --</option>
+        <option value="menunggu_konfirmasi" {{ request('filter') == 'menunggu_konfirmasi' ? 'selected' : '' }}>
+            Menunggu Konfirmasi
+        </option>
+        <option value="sudah_dikembalikan" {{ request('filter') == 'sudah_dikembalikan' ? 'selected' : '' }}>
+            Sudah Dikembalikan
+        </option>
+    </select>
+@endif
         </div>
     </form>
 
     @auth
     <a href="{{ route('cetak.filter-transaksi') }}" class="btn-print">
         <i class="fa-solid fa-print"></i>
-        Cetak Laporan
     </a>
     @endauth
 </div>
@@ -168,6 +183,8 @@
             <span class="status warning">Menunggu Persetujuan</span>
         @elseif($trx->status == 'sudah_dikembalikan')
             <span class="status success">Sudah Dikembalikan</span>
+        @elseif($trx->status == 'ditolak')
+            <span class="status danger">Pengembalian Ditolak</span>
         @endif
     </td>
     <td>{{ $trx->tanggal_pengembalian ? $trx->tanggal_pengembalian->format('d/m/Y') : '-' }}</td>

@@ -59,9 +59,8 @@
 
                 @auth
                 <div class="btn-group-actions">
-                    <a href="{{ route('books.exportExcel') }}" class="btn-export-excel">
-                        <i class="fa fa-file-excel"></i>
-                        Export Excel
+                    <a href="{{ route('cetak.cetak-buku') }}" class="btn-filter">
+                        <i class="fa-solid fa-print"></i>
                     </a>
                     <a href="{{ route('books.create') }}" class="btn-add">
                         <i class="fa-solid fa-plus"></i>

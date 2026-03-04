@@ -12,7 +12,8 @@ return new class extends Migration
             'sudah_dikembalikan',
             'belum_dikembalikan',
             'menunggu_konfirmasi',
-            'terlambat'
+            'terlambat',
+            'ditolak'
         ) NOT NULL");
     }
 

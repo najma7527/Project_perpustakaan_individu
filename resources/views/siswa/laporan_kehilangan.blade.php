@@ -82,7 +82,7 @@
                                 @elseif($item->status === 'sudah_dikembalikan')
                                     <button type="button"
                                         class="btn-print"
-                                        onclick="window.open('{{ route('cetak.nota', [$item->id, 'hilang']) }}', '_blank')">
+                                        onclick="window.open('{{ route('cetak.pengembalian.hilang', $item->id) }}', '_blank')">
                                         <i class="fa fa-print"></i>
                                     </button>
                                 @else

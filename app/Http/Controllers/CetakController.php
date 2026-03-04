@@ -31,11 +31,11 @@ class CetakController extends Controller
     public function filterTransaksi(Request $request)
     {
         $start = $request->get('start_date');
-        $end   = $request->get('end_date');
+        $end   = $request->get('end_dateenis');
         
         $transactions = Transaction::with('user', 'book')
             ->when($start && $end, fn($q) => $q->whereBetween('tanggal_peminjaman', [$start, $end]))
-            ->when($request->type, fn($q) => $q->where('type', $request->type))
+            ->when($request->type, fn($q) => $q->where('jenis_transaksi', $request->type))
             ->orderBy('tanggal_peminjaman', 'desc')
             ->get();
 
@@ -69,6 +69,40 @@ class CetakController extends Controller
     }
 
     // =====================================================
+    // 🔹 BUKU (PREVIEW + EXPORT)
+    // =====================================================
+    public function filterBuku(Request $request)
+    {
+        $books = $this->getBooks($request);
+        return view('cetak.laporan.cetak-buku', compact('books'));
+    }
+
+    public function bukuExportPdf(Request $request)
+    {
+        $books = $this->getBooks($request);
+        $pdf = Pdf::loadView('cetak.pdf.book-report', compact('books'))
+                  ->setPaper('A4', 'landscape');
+        return $pdf->download('laporan_buku.pdf');
+    }
+
+    // =====================================================
+    // 🔹 ANGGOTA (PREVIEW + EXPORT)
+    // =====================================================
+    public function filterAnggota(Request $request)
+    {
+        $users = $this->getAnggotas($request);
+        return view('cetak.laporan.cetak-anggota', compact('users'));
+    }
+
+    public function anggotaExportPdf(Request $request)
+    {
+        $users = $this->getAnggotas($request);
+        $pdf = Pdf::loadView('cetak.pdf.anggota-report', compact('users'))
+                  ->setPaper('A4', 'landscape');
+        return $pdf->download('laporan_anggota.pdf');
+    }
+
+    // =====================================================
     // 🔹 TRANSAKSI - CETAK PER ID (tetap seperti lama)
     // =====================================================
 
@@ -76,14 +110,14 @@ class CetakController extends Controller
 {
     $transaction = Transaction::with('user', 'book')->findOrFail($id);
 
-    // Atur panjang kertas sesuai jenis
-    if ($jenis === 'peminjaman') {
-        // Misal tinggi lebih pendek untuk peminjaman
-        $paperSize = [0,0, 390, 700]; 
-    } else{
-        // Lebih panjang untuk pengembalian
-        $paperSize = [0, 0, 340, 500]; 
-    } 
+    // Mapping ukuran kertas
+    $paperSizes = [
+        'peminjaman'   => [0, 0, 700, 350],  
+        'pengembalian' => [0, 0, 700, 360],  
+    ];
+
+    // Ambil ukuran berdasarkan jenis, default A4
+    $paperSize = $paperSizes[$jenis] ?? [0, 0, 340, 500];
 
     return Pdf::loadView('cetak.nota.cetak-transaksi', [
         'transaction' => $transaction,
@@ -106,9 +140,12 @@ class CetakController extends Controller
     }
 
     // ✅ EXCEL TRANSAKSI (maatwebsite/excel v3)
-    public function transaksiExportExcel()
+    public function transaksiExportExcel(Request $request)
     {
-        return Excel::download(new TransaksiExport, 'laporan-transaksi.xlsx');
+        // forward filter parameters to export class
+        $start = $request->get('start_date');
+        $end   = $request->get('end_date');
+        return Excel::download(new TransaksiExport($start, $end), 'laporan-transaksi.xlsx');
     }
 
     private function getTransactions(Request $request)
@@ -130,7 +167,7 @@ class CetakController extends Controller
     $report = Report::with(['user', 'transaction.book'])->findOrFail($id);
 
     return Pdf::loadView('cetak.nota.cetak-buku-hilang', compact('report'))
-              ->setPaper([0, 0, 340, 500])
+              ->setPaper([0, 0, 330, 515])
               ->stream("pengembalian-buku-hilang-{$id}.pdf");
 }
 
@@ -143,9 +180,11 @@ class CetakController extends Controller
     }
 
     // ✅ EXCEL KEHILANGAN (maatwebsite/excel v3)
-    public function kehilanganExportExcel()
+    public function kehilanganExportExcel(Request $request)
     {
-        return Excel::download(new KehilanganExport, 'laporan-kehilangan.xlsx');
+        $start = $request->get('start_date');
+        $end   = $request->get('end_date');
+        return Excel::download(new KehilanganExport($start, $end), 'laporan-kehilangan.xlsx');
     }
 
     private function getReports(Request $request)
@@ -171,9 +210,11 @@ class CetakController extends Controller
     }
 
     // ✅ EXCEL KUNJUNGAN (maatwebsite/excel v3)
-    public function kunjunganExportExcel()
+    public function kunjunganExportExcel(Request $request)
     {
-        return Excel::download(new KunjunganExport, 'laporan-kunjungan.xlsx');
+        $start = $request->get('start_date');
+        $end   = $request->get('end_date');
+        return Excel::download(new KunjunganExport($start, $end), 'laporan-kunjungan.xlsx');
     }
 
     private function getVisits(Request $request)
@@ -214,6 +255,32 @@ class CetakController extends Controller
     }
 
     // =====================================================
+    // 🔹 FILTER PAGE HELPERS
+    // =====================================================
+
+    private function getBooks(Request $request)
+    {
+        $start = $request->get('start_date');
+        $end   = $request->get('end_date');
+        return \App\Models\Book::with('row.bookshelf')
+            ->when($start && $end, fn($q) => $q->whereBetween('created_at', [$start, $end]))
+            ->orderBy('created_at', 'desc')
+            ->get();
+    }
+
+    private function getAnggotas(Request $request)
+    {
+        $start = $request->get('start_date');
+        $end   = $request->get('end_date');
+        $status = $request->get('status');
+        return \App\Models\User::where('role', 'anggota')
+            ->when($status && in_array($status, ['aktif','nonaktif']), fn($q) => $q->where('status', $status))
+            ->when($start && $end, fn($q) => $q->whereBetween('created_at', [$start, $end]))
+            ->orderBy('created_at', 'desc')
+            ->get();
+    }
+
+    // =====================================================
     // 🔹 CETAK KARTU ANGGOTA (ADMIN)
     // =====================================================
 
@@ -232,21 +299,26 @@ class CetakController extends Controller
     // 🔹 EXPORT EXCEL DATA ANGGOTA DITERIMA
     // =====================================================
 
-    public function anggotaDiterimaExcel()
+    public function anggotaDiterimaExcel(Request $request)
     {
         if (\Illuminate\Support\Facades\Auth::user()?->role !== 'admin') abort(403);
 
-        return Excel::download(new AnggotaDiterimaExport, 'data-anggota-diterima.xlsx');
+        $start = $request->get('start_date');
+        $end   = $request->get('end_date');
+        return Excel::download(new AnggotaDiterimaExport($start, $end), 'data-anggota-diterima.xlsx');
     }
 
     // =====================================================
     // 🔹 EXPORT EXCEL DATA BUKU
     // =====================================================
 
-    public function bukuExcel()
+    public function bukuExcel(Request $request)
     {
         if (\Illuminate\Support\Facades\Auth::user()?->role !== 'admin') abort(403);
 
-        return Excel::download(new BukuExport, 'data-buku.xlsx');
+        $start = $request->get('start_date');
+        $end   = $request->get('end_date');
+
+        return Excel::download(new BukuExport($start, $end), 'data-buku.xlsx');
     }
 }

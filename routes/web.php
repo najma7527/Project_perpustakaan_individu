@@ -127,11 +127,15 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/cetak-transaksi', [CetakController::class, 'filterTransaksi'])->name('cetak.cetak-transaksi');
             Route::get('/cetak-kehilangan', [CetakController::class, 'filterKehilangan'])->name('cetak.cetak-kehilangan');
             Route::get('/cetak-daftar-pengunjung', [CetakController::class, 'filterKunjungan'])->name('cetak.cetak-daftar-pengunjung');
+            Route::get('/cetak-buku', [CetakController::class, 'filterBuku'])->name('cetak.cetak-buku');
+            Route::get('/cetak-anggota', [CetakController::class, 'filterAnggota'])->name('cetak.cetak-anggota');
 
             // Filter (untuk submit tanggal)
             Route::get('/filter-transaksi', [CetakController::class, 'filterTransaksi'])->name('cetak.filter-transaksi');
             Route::get('/filter-kehilangan', [CetakController::class, 'filterKehilangan'])->name('cetak.filter-kehilangan');
             Route::get('/filter-daftar-kunjungan', [CetakController::class, 'filterKunjungan'])->name('cetak.filter-daftar-kunjungan');
+            Route::get('/filter-buku', [CetakController::class, 'filterBuku'])->name('cetak.filter-buku');
+            Route::get('/filter-anggota', [CetakController::class, 'filterAnggota'])->name('cetak.filter-anggota');
 
             // Export (dengan route name yang benar)
             Route::get('/transaksi/print', [CetakController::class, 'transaksiPrint']);
@@ -143,6 +147,15 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/kehilangan/excel', [CetakController::class, 'kehilanganExcel'])->name('cetak.kehilangan.excel');
 
             Route::get('/kunjungan/print', [CetakController::class, 'kunjunganPrint']);
+
+            // buku & anggota exports
+            Route::get('/buku/print', [CetakController::class, 'filterBuku']);
+            Route::get('/buku/pdf', [CetakController::class, 'bukuExportPdf'])->name('cetak.buku.pdf');
+            Route::get('/buku/excel', [CetakController::class, 'bukuExcel'])->name('cetak.buku.excel');
+
+            Route::get('/anggota/print', [CetakController::class, 'filterAnggota']);
+            Route::get('/anggota/pdf', [CetakController::class, 'anggotaExportPdf'])->name('cetak.anggota.pdf');
+            Route::get('/anggota/excel', [CetakController::class, 'anggotaDiterimaExcel'])->name('cetak.anggota.excel');
 
         Route::prefix('profile/notif')->group(function () {
         Route::post('read-all', [NotificationController::class, 'readAll'])->name('notif.readAll');

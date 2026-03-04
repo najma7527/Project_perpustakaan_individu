@@ -56,9 +56,8 @@
     </form>
 
     @auth
-    <a href="{{ route('cetak.filter-kehilangan') }}" class="btn-print">
+    <a href="{{ route('cetak.filter-kehilangan') }}" class="btn-filter">
         <i class="fa-solid fa-print"></i>
-        Cetak Laporan
     </a>
     @endauth
 </div>
@@ -159,7 +158,7 @@
                     </form>
                 @elseif($report->status === 'sudah_dikembalikan' || $report->status === 'approved')
 <span class="btn-filter btn-nota"
-      onclick="window.open('{{ route('cetak.nota', [$report->id, 'hilang']) }}', '_blank')">
+      onclick="window.open('{{ route('cetak.pengembalian.hilang', $report->id) }}', '_blank')">
     <i class="fa-solid fa-print"></i>
 </span>                @else
                     <span class="no-action">-</span>

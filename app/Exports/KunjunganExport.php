@@ -21,10 +21,21 @@ class KunjunganExport implements FromCollection,
     WithEvents
 {
     private int $rowNumber = 0;
+    private $start;
+    private $end;
+
+    public function __construct($start = null, $end = null)
+    {
+        $this->start = $start;
+        $this->end = $end;
+    }
 
     public function collection()
     {
-        return Visit::with('user')->get();
+        return Visit::with('user')
+            ->when($this->start && $this->end, fn($q) => $q->whereBetween('tanggal_datang', [$this->start, $this->end]))
+            ->orderBy('tanggal_datang', 'desc')
+            ->get();
     }
 
     public function headings(): array

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('rak_id')->constrained('bookshelf')->onDelete('cascade');
             $table->integer('baris_ke');
-            $table->string('keterangan');
+            $table->string('keterangan')->nullable();
             $table->timestamps();
         });
     }

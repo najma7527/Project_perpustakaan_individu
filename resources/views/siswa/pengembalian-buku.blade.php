@@ -78,14 +78,16 @@
                                 @elseif($trx->status == 'menunggu_konfirmasi')
                                     <span class="status warning">Menunggu Persetujuan</span>
                                 @elseif($trx->status == 'terlambat')
-                                    <span class="status danger">Terlambat</span>
+                                    <span class="status warning">Terlambat</span>
                                 @elseif($trx->status == 'buku_hilang')
                                     <span class="status danger">Buku Hilang</span>
+                                @elseif($trx->status == 'ditolak')
+                                    <span class="status danger">Pengembalian Ditolak</span>
                                 @endif
                             </td>
                             <td class="aksi">
                                 {{-- Kembalikan Buku (hanya jika belum dikembalikan) --}}
-                                @if($trx->status == 'belum_dikembalikan')
+                                @if(in_array($trx->status, ['belum_dikembalikan', 'ditolak']))
                                     <button class="aksi-btn blue"
                                         data-bs-toggle="modal"
                                         data-bs-target="#modalKembalikan{{ $trx->id }}"
@@ -100,7 +102,7 @@
                                 @endif
 
                                 {{-- Perpanjang (hanya jika belum dikembalikan/terlambat) --}}
-                                @if(in_array($trx->status, ['belum_dikembalikan', 'terlambat']))
+                                @if(in_array($trx->status, ['belum_dikembalikan', 'terlambat', 'ditolak']))
                                     <button class="aksi-btn orange"
                                         data-bs-toggle="modal"
                                         data-bs-target="#modalPerpanjang{{ $trx->id }}"
@@ -110,7 +112,7 @@
                                 @endif
 
                                 {{-- Laporan Kehilangan (hanya jika belum dikembalikan) --}}
-                                @if($trx->status == 'belum_dikembalikan')
+                                @if(in_array($trx->status, ['belum_dikembalikan', 'ditolak']))
                                     <button class="aksi-btn red"
                                         data-bs-toggle="modal"
                                         data-bs-target="#modalKehilangan{{ $trx->id }}"

@@ -22,11 +22,23 @@ class AnggotaDiterimaExport implements
     WithEvents
 {
     private int $rowNumber = 0;
+    private $start;
+    private $end;
+    private $status;
+
+    public function __construct($start = null, $end = null, $status = null)
+    {
+        $this->start = $start;
+        $this->end = $end;
+        $this->status = $status;
+    }
 
     public function collection()
     {
         return User::where('role', 'anggota')
-            ->where('status', 'aktif')
+            ->when($this->status && in_array($this->status, ['aktif','nonaktif']), fn($q) => $q->where('status', $this->status))
+            ->when($this->start && $this->end, fn($q) => $q->whereBetween('created_at', [$this->start, $this->end]))
+            ->orderBy('created_at', 'desc')
             ->get();
     }
 

@@ -21,10 +21,21 @@ class BukuExport implements FromCollection,
     WithEvents
 {
     private int $rowNumber = 0;
+    private $start;
+    private $end;
+
+    public function __construct($start = null, $end = null)
+    {
+        $this->start = $start;
+        $this->end = $end;
+    }
 
     public function collection()
     {
-        return Book::with('row.bookshelf')->get();
+        return Book::with('row.bookshelf')
+            ->when($this->start && $this->end, fn($q) => $q->whereBetween('created_at', [$this->start, $this->end]))
+            ->orderBy('created_at', 'desc')
+            ->get();
     }
 
     public function headings(): array

@@ -55,7 +55,7 @@ class TransactionController extends Controller
             if ($request->filled('filter')) {
                 $query->whereIn('status', (array)$request->filter);
             } else {
-                $query->whereIn('status', ['menunggu_konfirmasi', 'sudah_dikembalikan']);
+                $query->whereIn('status', ['menunggu_konfirmasi', 'sudah_dikembalikan', 'ditolak']);
             }
         }
 
@@ -145,7 +145,7 @@ if ($visitToday) {
     {
         $transaction = Transaction::where('id', $id)
             ->where('user_id', Auth::id())
-            ->whereIn('status', ['belum_dikembalikan', 'terlambat'])
+            ->whereIn('status', ['belum_dikembalikan', 'terlambat', 'ditolak'])
             ->firstOrFail();
 
         $transaction->update([
@@ -216,7 +216,7 @@ if ($visitToday) {
         }
 
         $transaksi->update([
-            'status' => 'belum_dikembalikan'
+            'status' => 'ditolak',
         ]);
 
         return back()->with('success', 'Pengembalian buku ditolak, status kembali ke belum dikembalikan');
@@ -229,7 +229,7 @@ if ($visitToday) {
     {
         $transaksi = Transaction::where('id', $id)
             ->where('user_id', Auth::id())
-            ->where('status', 'belum_dikembalikan')
+            ->where('status', 'ditolak')
             ->firstOrFail();
 
         $transaksi->update([

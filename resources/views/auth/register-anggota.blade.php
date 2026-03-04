@@ -32,35 +32,43 @@
       <img id="previewImage" alt="Preview">
   </label>
 </div>
+@error('photo_profile') <span style="color:red; font-size:0.9rem;">{{ $message }}</span> @enderror
 
 
     <label>Nama Lengkap</label>
     <input type="text" name="name" placeholder="Nama Lengkap" value="{{ old('name') }}">
+    @error('name') <span style="color:red; font-size:0.9rem;">{{ $message }}</span> @enderror
 
     <label>Username</label>
     <input type="text" name="username" placeholder="Username" value="{{ old('username') }}">
+    @error('username') <span style="color:red; font-size:0.9rem;">{{ $message }}</span> @enderror
 
     <label>No. Telp</label>
     <input type="text" name="telephone" placeholder="08xxxxxxxxxx" value="{{ old('telephone') }}">
+    @error('telephone') <span style="color:red; font-size:0.9rem;">{{ $message }}</span> @enderror
 
     <label>Password</label>
     <div class="password">
       <input type="password" name="password" placeholder="Password" class="pwd-input">
       <i class="fa-solid fa-eye-slash pwd-toggle"></i>
     </div>
+    @error('password') <span style="color:red; font-size:0.9rem;">{{ $message }}</span> @enderror
 
     <label>Alamat</label>
     <input type="text" name="alamat" placeholder="Alamat">
+    @error('alamat') <span style="color:red; font-size:0.9rem;">{{ $message }}</span> @enderror
 
     <!-- NIS & Kelas -->
     <div class="row-input">
       <div>
         <label>NIS</label>
         <input type="text" name="nis_nisn" placeholder="NIS" value="{{ old('nis_nisn') }}">
+        @error('nis_nisn') <span style="color:red; font-size:0.9rem;">{{ $message }}</span> @enderror
       </div>
       <div>
         <label>Kelas</label>
         <input type="text" name="kelas" placeholder="Kelas" value="{{ old('kelas') }}">
+        @error('kelas') <span style="color:red; font-size:0.9rem;">{{ $message }}</span> @enderror
       </div>
     </div>
 

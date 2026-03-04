@@ -59,7 +59,6 @@
     @auth
         <a href="{{ route('cetak.filter-daftar-kunjungan') }}" class="btn-print">
             <i class="fa-solid fa-print"></i>
-            Cetak Laporan
         </a>
     @endauth
         </div>

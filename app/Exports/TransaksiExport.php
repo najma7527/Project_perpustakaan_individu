@@ -21,10 +21,24 @@ class TransaksiExport implements FromCollection,
     WithEvents
 {
     private int $rowNumber = 0;
+    private $start;
+    private $end;
+    private $type;
+
+    public function __construct($start = null, $end = null, $type = null)
+    {
+        $this->start = $start;
+        $this->end = $end;
+        $this->type = $type;
+    }
 
     public function collection()
     {
-        return Transaction::with('user', 'book')->get();
+        return Transaction::with('user', 'book')
+            ->when($this->start && $this->end, fn($q) => $q->whereBetween('tanggal_peminjaman', [$this->start, $this->end]))
+            ->when($this->type, fn($q) => $q->where('type', $this->type))
+            ->orderBy('tanggal_peminjaman', 'desc')
+            ->get();
     }
 
     public function headings(): array

@@ -60,8 +60,8 @@
                         @endif
                     </div>
                     @if($tab == 'diterima')
-                    <a href="{{ route('admin.anggota.exportExcel') }}" class="btn-export-excel">
-                        <i class="fa fa-file-excel"></i> Export Excel
+                    <a href="{{ route('cetak.cetak-anggota') }}" class="btn-filter">
+                        <i class="fa-solid fa-print"></i>
                     </a>
                     @endif
                 </div>
@@ -112,7 +112,13 @@
                                 @if($tab == 'verifikasi')
                                     <td>{{ $user->created_at->format('d/m/Y') }}</td>
                                 @elseif($tab == 'diterima')
-                                    <td ><span class="status aktif">{{ $user->status }}</span></td>
+                                    <td >
+                                        @if($user->status == 'aktif')
+                                            <span class="status aktif">aktif</span>
+                                        @elseif($user->status == 'nonaktif')
+                                            <span class="status nonaktif">Nonaktif</span>
+                                        @endif
+                                </td>
                                 @endif
 
                                 <td class="aksi">

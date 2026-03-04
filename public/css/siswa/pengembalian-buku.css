@@ -240,13 +240,13 @@ tbody tr {
 }
 
 .btn-simpan {
-    background: #38bdf8;
+    background: #004D40;
     color: white;
     border: none;
 }
 
 .btn-yakin {
-    background: #38bdf8;
+    background: #004D40;
     color: white;
     border: none;
 }
@@ -292,7 +292,7 @@ tbody tr {
     justify-content: center;
     border-radius: 8px;
     background: transparent;
-    color: #1e7cff;
+    color: #004D40;
     font-size: 14px;
     font-weight: 500;
     text-decoration: none;

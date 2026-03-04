@@ -1,151 +1,163 @@
+/* ================= RESET ================= */
 * {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
-    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
+/* ================= BODY ================= */
 body {
-    background: #f2f4f8;
-    padding: 20px;
-}
-
-.card {
-    max-width: 520px;
-    margin: auto;
     background: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 6px 20px rgba(0,0,0,.08);
-}
-
-/* HEADER */
-.header {
-    background: #214f8b;
-    height: 90px;
-    position: relative;
-}
-
-.header::before,
-.header::after {
-    content: '';
-    position: absolute;
-    width: 120px;
-    height: 120px;
-    background: rgba(255,255,255,.08);
-    border-radius: 50%;
-    top: -40px;
-}
-
-.header::before {
-    left: -40px;
-}
-
-.header::after {
-    right: -40px;
-}
-
-.logo {
-    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.logo img {
-    height: 100px;
-}
-
-/* SUCCESS */
-.success {
-    text-align: center;
-    padding: 30px 20px 10px;
-}
-
-.check {
-    width: 90px;
-    height: 90px;
-    background: #2f5b95;
-    border-radius: 50%;
-    margin: 10 auto;
-
-    text-align: center;
-    line-height: 70px; 
-}
-
-.success h2 {
-    margin: 15px 0 5px;
-    font-size: 18px;
-    font-weight: 700;
-}
-
-.success p {
+    min-height: 100vh;
     margin: 0;
-    font-size: 15px;
-    font-weight: 600;
+    padding: 10px;
 }
 
-hr.dashed {
+/* ================= NOTA (A5 LANDSCAPE) ================= */
+.nota {
+    width: 210mm;          /* lebar A5 landscape */
+    min-height: 148mm;     /* tinggi A5 landscape */
+    background: #fff;
+    padding: 10mm 15mm;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin: auto;
+}
+
+/* Header */
+.header-nota {
+    text-align: center;
+    margin-bottom: 8mm;
+}
+
+.header-nota h1 {
+    font-size: 24px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+}
+
+.header-nota .tarikh {
+    font-size: 14px;
+    text-align: right;
+    margin-top: 5px;
+}
+
+/* Data Anggota */
+.data-anggota {
+    margin-bottom: 5mm;
+}
+
+.table-anggota {
+    width: 100%;
+    font-size: 14px;
+    border-collapse: collapse;
+}
+
+.table-anggota td {
+    padding: 4px 0;
     border: none;
-    border-top: 1px dashed #999;
-    margin: 25px 0;
 }
 
-/* CONTENT */
-.content {
-    padding: 0 30px;
+.table-anggota .label {
+    width: 120px;
+    font-weight: bold;
 }
 
-.row {
+/* Perkara dan ayat */
+.perkara {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 3px;
+    text-transform: uppercase;
+}
+
+.ayat {
+    font-size: 14px;
+    margin-bottom: 6mm;
+}
+
+/* Tabel buku */
+.table-buku {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 6mm;
+    font-size: 13px; /* sedikit lebih kecil agar muat */
+}
+
+.table-buku th,
+.table-buku td {
+    border: 1px solid #000;
+    padding: 6px 4px;
+    text-align: left;
+}
+
+.table-buku th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+    text-align: center;
+}
+
+.table-buku td {
+    text-align: center;
+}
+
+/* Penyesuaian lebar kolom (opsional) */
+.table-buku td:nth-child(1) { width: 8%; }  /* No */
+.table-buku td:nth-child(2) { width: 15%; } /* Kode Buku */
+.table-buku td:nth-child(3) { width: 30%; } /* Nama Buku */
+.table-buku td:nth-child(4) { width: 15%; } /* Tgl Pinjam */
+.table-buku td:nth-child(5) { width: 15%; } /* Jatuh Tempo */
+.table-buku td:nth-child(6) { width: 17%; } /* Tgl Kembali (khusus pengembalian) */
+
+/* Ucapan terima kasih */
+.terima-kasih {
+    font-size: 14px;
+    font-style: italic;
+    margin-bottom: 10mm;
+    text-align: center;
+}
+
+/* Signature row (3 kolom) */
+.signature-row {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 12px;
-    font-size: 14px;
+    gap: 10mm;
+    margin-top: 8mm;
 }
 
-.row span:first-child {
-    color: #888;
+.signature {
+    flex: 1;
+    font-size: 12px;
+    line-height: 1.6;
 }
 
-.row span:last-child {
-    font-weight: 600;
-    text-align: right;
+.signature .line {
+    margin: 5px 0;
+    border-bottom: 1px dashed #000;
+    height: 1.2em;
 }
 
-/* NOTE */
-.note {
-    background: #f4f1ff;
-    margin: 25px;
-    padding: 15px 18px;
-    border-radius: 8px;
-    display: flex;
-    gap: 12px;
-    font-size: 13px;
-    color: #2453a6;
-    line-height: 1.5;
+.signature div {
+    margin-bottom: 5px;
 }
 
-.note img {
-    width: 100px;
-    height: 100px;
-}
-
-/* PRINT */
+/* ================= PRINT ================= */
 @media print {
-    /* Hilangkan background dan padding default */
     body {
         background: none;
         padding: 0;
-        margin: 0; /* penting! */
     }
 
-    /* Hilangkan jarak box shadow */
-    .card {
+    .nota {
         box-shadow: none;
-        margin: 0; /* pastikan card menempel tepi */
-        border-radius: 0; /* opsional, kalau mau bener-bener full ke tepi */
+        padding: 10mm 15mm;
+        width: 100%;
+        height: auto;
     }
 
-    /* Agar halaman print tidak menambahkan margin sendiri */
-    @page {
-        margin: 0; /* menghapus margin default printer */
-    }
 }

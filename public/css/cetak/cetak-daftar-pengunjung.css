@@ -61,14 +61,14 @@ body {
 .date-box {
     display: flex;
     align-items: center;
-    border: 1px solid #1fa2ff;
+    border: 1px solid #004D40;
     border-radius: 7px;  
     overflow: hidden;
     height: 34px;         
 }
 
 .date-box i {
-    background: #1fa2ff;
+    background: #004D40;
     color: #fff;
     padding: 0 10px;      
     font-size: 13px;      
@@ -89,7 +89,7 @@ body {
 /* PANAH */
 .filter-right .fa-arrows-left-right {
     font-size: 15px;
-    color: #1fa2ff;
+    color: #004D40;
     margin: 0 2px;
 }
 
@@ -98,7 +98,7 @@ body {
     height: 34px;
     padding: 0 14px;
     font-size: 12px;
-    background: #1fa2ff;
+    background: #004D40;
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -154,7 +154,7 @@ table {
 }
 
 thead {
-    background: #1fa2ff;
+    background: #004D40;
     color: #fff;
 }
 
@@ -202,14 +202,14 @@ td:nth-child(3) {
     font-size: 13px;
     border-radius: 20px;
     border: none;
-    background: #1fa2ff;
+    background: #004D40;
     color: #fff;
     cursor: pointer;
     box-shadow: 0 3px 8px rgba(0,0,0,.15);
 }
 
 .actions .btn:hover {
-    background: #148ae6;
+    background: #004D40;
 }
 
 /* ================= PRINT ================= */
