@@ -32,7 +32,7 @@ class KunjunganExport implements FromCollection,
 
     public function collection()
     {
-        return Visit::with('user')
+        return Visit::with('user', 'transaction.book')
             ->when($this->start && $this->end, fn($q) => $q->whereBetween('tanggal_datang', [$this->start, $this->end]))
             ->orderBy('tanggal_datang', 'desc')
             ->get();
@@ -42,8 +42,11 @@ class KunjunganExport implements FromCollection,
     {
         return [
             'No',
-            'Nama User',
-            'Tanggal',
+            'Nama Anggota',
+            'Kelas',
+            'Judul Buku',
+            'Jenis Transaksi',
+            'Tanggal Datang',
         ];
     }
 
@@ -54,7 +57,10 @@ class KunjunganExport implements FromCollection,
         return [
             $this->rowNumber,
             $visit->user->name ?? '-',
-            $visit->created_at,
+            $visit->user->kelas ?? '-',
+            $visit->transaction->book->judul ?? '-',
+            $visit->transaction->jenis_transaksi ?? '-',
+            $visit->tanggal_datang ? $visit->tanggal_datang->format('d/m/Y') : '-',
         ];
     }
     

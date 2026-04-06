@@ -17,7 +17,7 @@ class RowController extends Controller
     public function index()
     {
         if (Auth::user()?->role !== 'admin') abort(403);
-        $rows = Row::with('bookshelf', 'books')->get();
+        $rows = Row::with('bookshelf', 'books')->latest()->get();
         return response()->json(['data' => $rows]);
     }
 
@@ -35,7 +35,7 @@ class RowController extends Controller
         $data = $request->validate([
             'rak_id' => 'required|exists:bookshelf,id',
             'baris_ke' => 'required|integer',
-            'keterangan' => 'required|string|max:255',
+            'keterangan' => 'nullable|string|max:255',
         ]);
 
         $row = Row::create($data);

@@ -33,6 +33,7 @@ class BookController extends Controller
         $query->where(function($q) use ($search) {
             $q->where('judul', 'like', "%{$search}%")
               ->orWhere('pengarang', 'like', "%{$search}%")
+              ->orWhere('tahun_terbit', 'like', "%{$search}%")
               ->orWhere('kode_buku', 'like', "%{$search}%");
         });
     }
@@ -47,8 +48,8 @@ class BookController extends Controller
         $query->where('kategori_buku', $filter);
     }
 
-    // Paginate results
-    $books = $query->paginate(10);
+    // Paginate results (terbaru ke terlama)
+    $books = $query->latest()->paginate(10);
 
     return view('admin.kelola_data_buku', compact(
         'books',
@@ -67,9 +68,79 @@ class BookController extends Controller
          'book' => null,
          'rows' => $rows,
          'bookshelves' => $bookshelves,
-]);
+        ]);
     }
 
+    // API untuk autocomplete search
+    public function autocompleteSearch(Request $request)
+    {
+        if (Auth::user()?->role !== 'admin') abort(403);
+        
+        $query = $request->input('q', '');
+        
+        if (strlen($query) < 2) {
+            return response()->json([]);
+        }
+
+        $books = Book::where('judul', 'like', "%{$query}%")
+            ->orWhere('pengarang', 'like', "%{$query}%")
+            ->orWhere('kode_buku', 'like', "%{$query}%")
+            ->select('id', 'judul', 'pengarang', 'kode_buku', 'kategori_buku')
+            ->limit(10)
+            ->get()
+            ->map(function ($book) {
+                return [
+                    'id' => $book->id,
+                    'label' => "{$book->judul} ({$book->kode_buku}) - {$book->pengarang}",
+                    'value' => $book->judul
+                ];
+            });
+
+        return response()->json($books);
+    }
+
+    public function generateKode()
+    {
+        if (Auth::user()?->role !== 'admin') abort(403);
+
+        do {
+            $generated = str_pad(random_int(100, 999), 3, '0', STR_PAD_LEFT);
+        } while (Book::where('kode_buku', $generated)->exists());
+
+        return response()->json(['kode_buku' => $generated]);
+    }
+
+    public function createRow(Request $request)
+    {
+        if (Auth::user()?->role !== 'admin') abort(403);
+
+        $data = $request->validate([
+            'nomor_rak' => 'required|string|max:50',
+            'keterangan_rak' => 'nullable|string|max:255',
+            'baris_ke' => 'required|integer|min:1',
+            'keterangan_baris' => 'nullable|string|max:255',
+        ]);
+
+        $bookshelf = Bookshelf::firstOrCreate(
+            ['no_rak' => $data['nomor_rak']],
+            ['keterangan' => $data['keterangan_rak'] ?? null]
+        );
+
+        $row = Row::firstOrCreate(
+            ['rak_id' => $bookshelf->id, 'baris_ke' => $data['baris_ke']],
+            ['keterangan' => $data['keterangan_baris'] ?? null]
+        );
+
+        return response()->json([
+            'success' => true,
+            'row' => [
+                'id' => $row->id,
+                'rak' => $bookshelf->no_rak,
+                'baris_ke' => $row->baris_ke,
+                'label' => "Rak {$bookshelf->no_rak} - Baris {$row->baris_ke}"
+            ]
+        ]);
+    }
 
     public function store(Request $request)
 {

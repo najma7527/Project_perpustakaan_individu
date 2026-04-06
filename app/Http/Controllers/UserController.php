@@ -78,14 +78,24 @@ if ($tab == 'verifikasi') {
         $user = User::findOrFail($id);
         
         $request->validate([
-        'status' => 'required|in:aktif,nonaktif,menunggu,ditolak',
+            'status' => 'required|in:aktif,nonaktif,menunggu,ditolak',
         ]);
 
-        $user->update([
-            'status' => $request->status
-        ]);
+        $oldStatus = $user->status;
+        $newStatus = $request->status;
 
-        return redirect()->back()->with('success', 'Status anggota berhasil diperbarui.');
+        $user->update(['status' => $newStatus]);
+
+        // Pesan flash yang lebih deskriptif
+        $message = match($newStatus) {
+            'aktif' => "Anggota '{$user->name}' berhasil diverifikasi dan diaktifkan.",
+            'ditolak' => "Anggota '{$user->name}' berhasil ditolak.",
+            'nonaktif' => "Anggota '{$user->name}' berhasil dinonaktifkan.",
+            'menunggu' => "Anggota '{$user->name}' berhasil dikembalikan ke status menunggu.",
+            default => 'Status anggota berhasil diperbarui.'
+        };
+
+        return redirect()->back()->with('success', $message);
     }
 
     /**

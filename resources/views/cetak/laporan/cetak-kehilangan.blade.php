@@ -90,7 +90,24 @@
                 </tr>
             </thead>
             <!-- Tabel -->
-<tbody>
+<tbody id="content-terbatas">
+    @forelse($reports->take(20) as $index => $r)
+    <tr>
+        <td>{{ $index + 1 }}</td>
+        <td>{{ $r->user->name ?? $r->transaction->user->name ?? '-' }}</td>
+        <td>{{ $r->user->kelas ?? $r->transaction->user->kelas ?? '-' }}</td>
+        <td>{{ $r->transaction->book->judul ?? '-' }}</td>
+        <td>{{ $r->jenis_transaksi ?? '-' }}</td>
+        <td>{{ optional($r->created_at)->format('d/m/Y') }}</td>
+        <td class="status {{ $r->status == 'sudah_dikembalikan' ? 'done' : 'pending' }}">
+            {{ $r->status == 'sudah_dikembalikan' ? 'Sudah Diganti' : 'Belum Diganti' }}
+        </td>
+    </tr>
+    @empty
+    <tr><td colspan="7" style="text-align:center;">Tidak ada data kehilangan</td></tr>
+    @endforelse
+</tbody>
+<tbody id="content-semua" style="display:none;">
     @forelse($reports as $index => $r)
     <tr>
         <td>{{ $index + 1 }}</td>
@@ -108,11 +125,11 @@
     @endforelse
 </tbody>
         </table>
-
-        <div class="paper-footer">
-            <span>dicetak oleh Perpustakaan SMKN 4 Bojonegoro</span>
-            <span>halaman 1 dari 3</span>
+        @if($reports->count() > 20)
+        <div class="read-more-section" style="margin-top: 20px; text-align: center;">
+            <button id="toggleBtn" class="btn btn-info" onclick="toggleContent()">📖 Lihat Semua Data</button>
         </div>
+        @endif
  </div>
 <div class="actions">
     <!-- KIRI -->
@@ -133,6 +150,23 @@
 
 </body>
 <script>
+
+    // Toggle Content
+    function toggleContent() {
+        const contentTerbatas = document.getElementById('content-terbatas');
+        const contentSemua = document.getElementById('content-semua');
+        const toggleBtn = document.getElementById('toggleBtn');
+        
+        if (contentSemua.style.display === 'none') {
+            contentTerbatas.style.display = 'none';
+            contentSemua.style.display = 'table-row-group';
+            toggleBtn.textContent = '📖 Sembunyikan';
+        } else {
+            contentTerbatas.style.display = 'table-row-group';
+            contentSemua.style.display = 'none';
+            toggleBtn.textContent = '📖 Lihat Semua Data';
+        }
+    }
 
     // KEMBALI
     document.getElementById('btnBack').addEventListener('click', function () {

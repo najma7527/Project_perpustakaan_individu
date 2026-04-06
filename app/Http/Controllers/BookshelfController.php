@@ -16,7 +16,7 @@ class BookshelfController extends Controller
     public function index()
     {
         if (Auth::user()?->role !== 'admin') abort(403);
-        $bookshelves = Bookshelf::with('rows')->get();
+        $bookshelves = Bookshelf::with('rows')->latest()->get();
         return response()->json(['data' => $bookshelves]);
     }
 
@@ -32,7 +32,7 @@ class BookshelfController extends Controller
 
         $data = $request->validate([
             'no_rak' => 'required|integer|unique:bookshelf',
-            'keterangan' => 'required|string|max:255',
+            'keterangan' => 'nullable|string|max:255',
         ]);
 
         $bookshelf = Bookshelf::create($data);

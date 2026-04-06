@@ -5,6 +5,29 @@
     <title>Cetak Laporan Transaksi</title>
     <link rel="stylesheet" href="{{ public_path('css/cetak/cetak-transaksi.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+        }
+        .paper {
+            background: white;
+            border: 1px solid #cfcfcf;
+            position: relative;
+            padding: 30px;
+        }
+        .table-wrapper {
+            flex: 1;
+            margin-bottom: 20px;
+        }
+        .paper-footer {
+            page-break-inside: avoid;
+            page-break-before: auto;
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid #cfcfcf;
+        }
+    </style>
 </head>
 <body>
 
@@ -40,7 +63,9 @@
         </div>
 
         <!-- TABEL -->
+        <div class="table-wrapper">
         <table>
+            <p></p>
             <thead>
                 <tr>
                     <th>No</th>
@@ -75,10 +100,11 @@
     @endforelse
 </tbody>
         </table>
+        </div>
 
         <div class="paper-footer">
             <span>dicetak oleh Perpustakaan SMKN 4 Bojonegoro</span>
-            <span>{{ now()->format('d/m/Y H:i') }}</span>
+            <span>{{ now()->format('d/m/Y') }}</span>
         </div>
 
     </div>

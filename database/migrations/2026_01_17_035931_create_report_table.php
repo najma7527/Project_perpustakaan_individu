@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('transactions_id')->constrained('transactions')->onDelete('cascade');
             $table->date('tanggal_ganti')->nullable();
-            $table->enum('jenis_transaksi', ['dipinjam', 'dikembalikan']);
             $table->enum('status', [
                 'buku_hilang',
                 'sudah_dikembalikan',

@@ -55,7 +55,10 @@
                         @if($tab == 'verifikasi')
                         <div class="date">
                             <i class="fa fa-calendar"></i>
-                            <input type="date" name="date" value="{{ $date }}">
+                            <input type="date"
+                            name="date"
+                            value="{{ request('date') }}"
+                            onchange="this.form.submit()">
                         </div>
                         @endif
                     </div>
@@ -123,16 +126,14 @@
 
                                 <td class="aksi">
                                     @if($tab == 'verifikasi')
-                                        <form action="{{ route('admin.anggota.status', $user->id) }}" method="POST" style="display:inline;">
-                                            @csrf
-                                            <input type="hidden" name="status" value="aktif">
-                                            <button type="submit" class="yes"><i class="fa fa-check"></i></button>
-                                        </form>
-                                        <form action="{{ route('admin.anggota.status', $user->id) }}" method="POST" style="display:inline;">
-                                            @csrf
-                                            <input type="hidden" name="status" value="ditolak">
-                                            <button type="submit" class="no"><i class="fa fa-times"></i></button>
-                                        </form>
+                                        <button type="button" class="yes" title="Verifikasi"
+                                            onclick="confirmVerification('{{ $user->id }}', '{{ addslashes($user->name) }}', 'aktif')">
+                                            <i class="fa fa-check"></i>
+                                        </button>
+                                        <button type="button" class="no" title="Tolak"
+                                            onclick="confirmVerification('{{ $user->id }}', '{{ addslashes($user->name) }}', 'ditolak')">
+                                            <i class="fa fa-times"></i>
+                                        </button>
 
                                     @elseif($tab == 'diterima')
                                         <button type="button" class="view" title="Lihat Detail"
@@ -160,11 +161,10 @@
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     @elseif($tab == 'ditolak')
-                                        <form action="{{ route('admin.anggota.status', $user->id) }}" method="POST" style="display:inline;">
-                                            @csrf
-                                            <input type="hidden" name="status" value="aktif">
-                                            <button type="submit" class="btn-accept"><i class="fa fa-check"></i></button>
-                                        </form>
+                                        <button type="button" class="btn-accept" title="Verifikasi Ulang"
+                                            onclick="confirmVerification('{{ $user->id }}', '{{ addslashes($user->name) }}', 'aktif')">
+                                            <i class="fa fa-check"></i>
+                                        </button>
                                     @endif
                                 </td>
                             </tr>
@@ -351,6 +351,67 @@
     @csrf
     @method('DELETE')
 </form>
+<form id="verificationForm" method="POST" style="display:none;">
+    @csrf
+    <input type="hidden" name="status" id="verificationStatus">
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script src="{{ asset('js/kelola_anggota.js') }}"></script>
+
+<script>
+// Konfigurasi Toastr
+toastr.options = {
+    "closeButton": true,
+    "positionClass": "toast-top-right",
+    "timeOut": "4000"
+};
+
+function confirmVerification(userId, userName, status) {
+    let title = status === 'aktif' ? 'Verifikasi Anggota' : 'Tolak Anggota';
+    let message = status === 'aktif' 
+        ? `Yakin ingin memverifikasi anggota "${userName}"?`
+        : `Yakin ingin menolak anggota "${userName}"?`;
+    let confirmButtonColor = status === 'aktif' ? '#28a745' : '#dc3545';
+
+    Swal.fire({
+        title: title,
+        text: message,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: confirmButtonColor,
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Lanjutkan',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = document.getElementById('verificationForm');
+            form.action = '{{ route("admin.anggota.status", ":id") }}'.replace(':id', userId);
+            document.getElementById('verificationStatus').value = status;
+            form.submit();
+        }
+    });
+}
+
+function confirmDelete(userId, userName) {
+    Swal.fire({
+        title: 'Hapus Anggota',
+        text: `Yakin ingin menghapus anggota "${userName}"? Tindakan ini tidak dapat dibatalkan.`,
+        icon: 'error',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Hapus',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = document.getElementById('deleteForm');
+            form.action = '{{ route("admin.anggota.destroy", ":id") }}'.replace(':id', userId);
+            form.submit();
+        }
+    });
+}
+</script>
 
 @endsection

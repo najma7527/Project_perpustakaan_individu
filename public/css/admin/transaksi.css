@@ -163,8 +163,8 @@ body {
     height: 42px;
     border-radius: 10px;
     cursor: pointer;
-    font-size: 13px;
-    margin-left: auto; /* ⬅️ dorong ke kanan */
+    font-size: 18px;
+    margin-left: auto; 
 }
 
 
@@ -240,6 +240,7 @@ td {
         display: block;
     }
 
+    /* .sidebar responsive diatur oleh app.css (canonical)
     .sidebar {
         left: -230px;
         transition: .3s ease;
@@ -248,6 +249,7 @@ td {
     .sidebar.active {
         left: 0;
     }
+    */
 
     .topbar {
         left: 0;

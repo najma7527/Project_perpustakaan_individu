@@ -42,10 +42,12 @@ class KehilanganExport implements FromCollection,
     {
         return [
             'No',
-            'Nama User',
+            'Nama Anggota',
+            'Kelas',
             'Judul Buku',
-            'Keterangan',
-            'Tanggal',
+            'Jenis Transaksi',
+            'Tanggal Laporan',
+            'Status',
         ];
     }
 
@@ -55,10 +57,12 @@ class KehilanganExport implements FromCollection,
 
         return [
             $this->rowNumber,
-            $report->user->name ?? '-',
-            $report->transaction->book->title ?? '-',
-            $report->description,
-            $report->created_at,
+            $report->user->name ?? $report->transaction->user->name ?? '-',
+            $report->user->kelas ?? $report->transaction->user->kelas ?? '-',
+            $report->transaction->book->judul ?? '-',
+            $report->jenis_transaksi ?? ($report->transaction->jenis_transaksi ?? '-'),
+            $report->created_at ? $report->created_at->format('d/m/Y') : '-',
+            $report->status == 'sudah_dikembalikan' ? 'Sudah Diganti' : 'Belum Diganti',
         ];
     }
     

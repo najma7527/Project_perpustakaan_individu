@@ -11,7 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Check due transactions on every request
+        $middleware->web(append: [
+            \App\Http\Middleware\CheckDueTransactions::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

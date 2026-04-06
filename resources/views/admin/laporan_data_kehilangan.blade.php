@@ -37,11 +37,11 @@
 
         <div class="date">
             <i class="fa fa-calendar"></i>
-        <input type="date"
+            <input type="date"
             name="date"
             value="{{ request('date') }}"
             onchange="this.form.submit()">
-            </div>
+        </div>
 
         <div class="search" style="min-width:200px;">
             <i class="fa fa-filter"></i>

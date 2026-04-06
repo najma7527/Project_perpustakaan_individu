@@ -17,6 +17,8 @@ use App\Exports\KunjunganExport;
 use App\Exports\AnggotaDiterimaExport;
 use App\Exports\BukuExport;
 
+use Carbon\Carbon;
+
 
 class CetakController extends Controller
 {
@@ -29,44 +31,59 @@ class CetakController extends Controller
     // 🔹 FILTER - halaman preview dengan data
     // =====================================================
     public function filterTransaksi(Request $request)
-    {
-        $start = $request->get('start_date');
-        $end   = $request->get('end_dateenis');
-        
-        $transactions = Transaction::with('user', 'book')
-            ->when($start && $end, fn($q) => $q->whereBetween('tanggal_peminjaman', [$start, $end]))
-            ->when($request->type, fn($q) => $q->where('jenis_transaksi', $request->type))
-            ->orderBy('tanggal_peminjaman', 'desc')
-            ->get();
+{
+    $start = $request->get('start_date');
+    $end   = $request->get('end_date');
+    
+    $transactions = Transaction::with('user', 'book')
+        ->when($start && $end, function ($q) use ($start, $end) {
+            $q->whereBetween('tanggal_peminjaman', [
+                Carbon::parse($start)->startOfDay(),
+                Carbon::parse($end)->endOfDay()
+            ]);
+        })
+        ->when($request->type, fn($q) => $q->where('type', $request->type))
+        ->orderBy('tanggal_peminjaman', 'desc')
+        ->get();
 
-        return view('cetak.laporan.cetak-transaksi', compact('transactions'));
-    }
+    return view('cetak.laporan.cetak-transaksi', compact('transactions'));
+}
 
-    public function filterKehilangan(Request $request)
-    {
-        $start = $request->get('start_date');
-        $end   = $request->get('end_date');
-        
-        $reports = Report::with(['user', 'transaction.book'])
-            ->when($start && $end, fn($q) => $q->whereBetween('created_at', [$start, $end]))
-            ->orderBy('created_at', 'desc')
-            ->get();
+public function filterKehilangan(Request $request)
+{
+    $start = $request->get('start_date');
+    $end   = $request->get('end_date');
+    
+    $reports = Report::with(['user', 'transaction.book'])
+        ->when($start && $end, function ($q) use ($start, $end) {
+            $q->whereBetween('created_at', [
+                Carbon::parse($start)->startOfDay(),
+                Carbon::parse($end)->endOfDay()
+            ]);
+        })
+        ->orderBy('created_at', 'desc')
+        ->get();
 
-        return view('cetak.laporan.cetak-kehilangan', compact('reports'));
-    }
+    return view('cetak.laporan.cetak-kehilangan', compact('reports'));
+}
 
-    public function filterKunjungan(Request $request)
-    {
-        $start = $request->get('start_date');
-        $end   = $request->get('end_date');
-        
-        $visits = Visit::with('user', 'transaction')
-            ->when($start && $end, fn($q) => $q->whereBetween('tanggal_datang', [$start, $end]))
-            ->orderBy('tanggal_datang', 'desc')
-            ->get();
+public function filterKunjungan(Request $request)
+{
+    $start = $request->get('start_date');
+    $end   = $request->get('end_date');
+    
+    $visits = Visit::with('user', 'transaction')
+        ->when($start && $end, function ($q) use ($start, $end) {
+            $q->whereBetween('tanggal_datang', [
+                Carbon::parse($start)->startOfDay(),
+                Carbon::parse($end)->endOfDay()
+            ]);
+        })
+        ->orderBy('tanggal_datang', 'desc')
+        ->get();
 
-        return view('cetak.laporan.cetak-daftar-pengunjung', compact('visits'));
-    }
+    return view('cetak.laporan.cetak-daftar-pengunjung', compact('visits'));
+}
 
     // =====================================================
     // 🔹 BUKU (PREVIEW + EXPORT)
@@ -80,9 +97,16 @@ class CetakController extends Controller
     public function bukuExportPdf(Request $request)
     {
         $books = $this->getBooks($request);
-        $pdf = Pdf::loadView('cetak.pdf.book-report', compact('books'))
+        $kategori = $request->get('kategori');
+        $pdf = Pdf::loadView('cetak.pdf.book-report', compact('books', 'kategori'))
                   ->setPaper('A4', 'landscape');
         return $pdf->download('laporan_buku.pdf');
+    }
+
+    public function bukuExportExcel(Request $request)
+    {
+        $kategori = $request->get('kategori');
+        return Excel::download(new BukuExport($kategori), 'laporan-buku.xlsx');
     }
 
     // =====================================================
@@ -145,7 +169,8 @@ class CetakController extends Controller
         // forward filter parameters to export class
         $start = $request->get('start_date');
         $end   = $request->get('end_date');
-        return Excel::download(new TransaksiExport($start, $end), 'laporan-transaksi.xlsx');
+        $type  = $request->get('type');
+        return Excel::download(new TransaksiExport($start, $end, $type), 'laporan-transaksi.xlsx');
     }
 
     private function getTransactions(Request $request)
@@ -249,7 +274,7 @@ class CetakController extends Controller
     {
         $user = \Illuminate\Support\Facades\Auth::user();
         $pdf = Pdf::loadView('cetak.cetak-kartu', compact('user'))
-            ->setPaper('A4', 'portrait');
+            ->setPaper([0, 0, 520, 330]);
 
         return $pdf->download("kartu-anggota-{$user->nis_nisn}.pdf");
     }
@@ -260,10 +285,9 @@ class CetakController extends Controller
 
     private function getBooks(Request $request)
     {
-        $start = $request->get('start_date');
-        $end   = $request->get('end_date');
+        $kategori = $request->get('kategori');
         return \App\Models\Book::with('row.bookshelf')
-            ->when($start && $end, fn($q) => $q->whereBetween('created_at', [$start, $end]))
+            ->when($kategori && in_array($kategori, ['fiksi', 'nonfiksi']), fn($q) => $q->where('kategori_buku', $kategori))
             ->orderBy('created_at', 'desc')
             ->get();
     }

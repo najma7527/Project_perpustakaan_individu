@@ -63,7 +63,10 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/photo', [ProfileController::class, 'updatePhoto'])->name('profile.updatePhoto');
         Route::delete('/photo', [ProfileController::class, 'deletePhoto'])->name('profile.photo.delete');
         Route::put('/password', [ProfileController::class, 'updatePassword'])->name('profile.updatePassword');
-    });
+        Route::prefix('notif')->group(function () {
+            Route::post('read-all', [NotificationController::class, 'readAll'])->name('notif.readAll');
+            Route::get('read/{id}', [NotificationController::class, 'read'])->name('notif.read');
+        });    });
 
     /*
     |----------------------------------------------------------------------
@@ -101,8 +104,11 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('bookshelves', BookshelfController::class);
         Route::resource('rows', RowController::class);
         Route::get('/books/export-excel', [CetakController::class, 'bukuExcel'])->name('books.exportExcel');
+        Route::post('/books/generate-kode', [BookController::class, 'generateKode'])->name('books.generateKode');
+        Route::post('/books/create-row', [BookController::class, 'createRow'])->name('books.createRow');
         Route::resource('books', BookController::class);
         Route::get('/books/search/results', [BookController::class, 'search'])->name('books.search');
+        Route::get('/books/autocomplete/search', [BookController::class, 'autocompleteSearch'])->name('books.autocomplete');
         Route::get('/crud_kelola_buku', function () { return view('admin.CRUD_kelola_buku'); });
 
         // Transactions & Reports
@@ -156,11 +162,6 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/anggota/print', [CetakController::class, 'filterAnggota']);
             Route::get('/anggota/pdf', [CetakController::class, 'anggotaExportPdf'])->name('cetak.anggota.pdf');
             Route::get('/anggota/excel', [CetakController::class, 'anggotaDiterimaExcel'])->name('cetak.anggota.excel');
-
-        Route::prefix('profile/notif')->group(function () {
-        Route::post('read-all', [NotificationController::class, 'readAll'])->name('notif.readAll');
-        Route::get('read/{id}', [NotificationController::class, 'read'])->name('notif.read');
-        });
 
             Route::get('/kunjungan/pdf', [CetakController::class, 'kunjunganPdf'])->name('cetak.kunjungan.pdf');
             Route::get('/kunjungan/excel', [CetakController::class, 'kunjunganExcel'])->name('cetak.kunjungan.excel');
@@ -263,17 +264,11 @@ Route::middleware(['auth'])->group(function () {
             return view('siswa.edit-foto-profil');
         });
 
-        Route::get('/notif/{id}', function($id){
-            $notif = Notification::findOrFail($id);
-            $notif->update(['is_read' => true]);
-            return back();
-        })->name('notif.read');
-    });
-
-    Route::get('/cetak/nota/{id}/{jenis?}', [CetakController::class, 'cetakNotaPdf'])
+        Route::get('/cetak/nota/{id}/{jenis?}', [CetakController::class, 'cetakNotaPdf'])
      ->name('cetak.nota');
 
     Route::get('/cetak/pengembalian-hilang/{id}', [CetakController::class, 'pengembalianHilangPdf'])
      ->name('cetak.pengembalian.hilang');
 
+});
 });

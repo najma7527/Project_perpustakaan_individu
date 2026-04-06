@@ -21,19 +21,17 @@ class BukuExport implements FromCollection,
     WithEvents
 {
     private int $rowNumber = 0;
-    private $start;
-    private $end;
+    private $kategori;
 
-    public function __construct($start = null, $end = null)
+    public function __construct($kategori = null)
     {
-        $this->start = $start;
-        $this->end = $end;
+        $this->kategori = $kategori;
     }
 
     public function collection()
     {
         return Book::with('row.bookshelf')
-            ->when($this->start && $this->end, fn($q) => $q->whereBetween('created_at', [$this->start, $this->end]))
+            ->when($this->kategori && in_array($this->kategori, ['fiksi', 'nonfiksi']), fn($q) => $q->where('kategori_buku', $this->kategori))
             ->orderBy('created_at', 'desc')
             ->get();
     }

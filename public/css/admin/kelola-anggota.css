@@ -16,6 +16,7 @@ body {
 }
 
 /* ===== SIDEBAR (FIXED & TIDAK GESER) ===== */
+/* sidebar diatur oleh app.css (canonical)
 .sidebar {
     position: fixed;
     top: 0;
@@ -30,6 +31,7 @@ body {
 
     overflow-y: auto;
 }
+*/
 
 /* LOGO */
 .logo {
@@ -69,7 +71,7 @@ body {
 
 /* ===== MAIN CONTENT ===== */
 .main-content {
-    margin-left: 240px; /* PENTING */
+    /* margin-left: 240px;  atur oleh app.css */
     display: flex;
     flex-direction: column;
     min-height: 100vh;

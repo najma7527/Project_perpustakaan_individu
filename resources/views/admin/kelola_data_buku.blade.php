@@ -6,6 +6,41 @@
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/admin/kelola_data_buku.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <style>
+        .autocomplete-container {
+            position: relative;
+        }
+        .autocomplete-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .autocomplete-list.active {
+            display: block;
+        }
+        .autocomplete-item {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .autocomplete-item:hover {
+            background-color: #f5f5f5;
+        }
+        .autocomplete-item.selected {
+            background-color: #e3f2fd;
+        }
+    </style>
 @endpush
 
 @section('content')
@@ -26,30 +61,19 @@
 <div class="filter">
 
     <!-- SEARCH -->
-    <div class="search">
+    <div class="search autocomplete-container">
         <i class="fa fa-search"></i>
-        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari sesuatu..." onkeyup="document.getElementById('filterBooks').submit();">
-    </div>
-
-    <!-- FILTER TAHUN -->
-    <div class="date">
-        <i class="fa fa-calendar"></i>
-        <select name="date" class="date" onchange="document.getElementById('filterBooks').submit();">
-        <option value="">Semua Tahun</option>
-        @for($year = date('Y'); $year >= 1900; $year--)
-            <option value="{{ $year }}" {{ request('date') == $year ? 'selected' : '' }}>
-                {{ $year }}
-            </option>
-        @endfor
-    </select>
+        <input type="text" id="searchBooks" name="search" value="{{ request('search') }}" placeholder="Cari sesuatu...">
+        <ul class="autocomplete-list" id="autocompleteSuggestions"></ul>
     </div>
 
     <!-- DROPDOWN KATEGORI -->
-    <div id="filterKategori" style="display:none;" class="search">
-        <select name="filter" onchange="document.getElementById('filterBooks').submit();">
-            <option value="">Semua Kategori</option>
-            <option value="fiksi">Fiksi</option>
-            <option value="nonfiksi">Non Fiksi</option>
+    <div id="filterKategori" class="search">
+        <i class="fa fa-filter"></i>
+        <select name="filter" onchange="document.getElementById('filterBooks').submit();" style="padding:8px; border:none; background:transparent; width:100%;" >
+            <option value="" {{ request('filter') == '' ? 'selected' : '' }}>Semua Kategori</option>
+            <option value="fiksi" {{ request('filter') == 'fiksi' ? 'selected' : '' }}>Fiksi</option>
+            <option value="nonfiksi" {{ request('filter') == 'nonfiksi' ? 'selected' : '' }}>Non Fiksi</option>
         </select>
     </div>
 
@@ -183,73 +207,143 @@
 
     
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
 <script>
+// Konfigurasi Toastr
+toastr.options = {
+    "closeButton": true,
+    "positionClass": "toast-top-right",
+    "timeOut": "4000"
+};
+
+// Autocomplete Search
+let selectedRow = null;
+let selectedId = null;
+let autocompleteTimeout = null;
+
+const searchInput = document.getElementById('searchBooks');
+const suggestionsList = document.getElementById('autocompleteSuggestions');
+const filterForm = document.getElementById('filterBooks');
+
+searchInput.addEventListener('input', function() {
+    clearTimeout(autocompleteTimeout);
+    const query = this.value.trim();
+    
+    if (query.length < 2) {
+        suggestionsList.classList.remove('active');
+        return;
+    }
+    
+    autocompleteTimeout = setTimeout(() => {
+        fetch(`{{ route('books.autocomplete') }}?q=${encodeURIComponent(query)}`)
+            .then(res => res.json())
+            .then(data => {
+                suggestionsList.innerHTML = '';
+                if (data.length > 0) {
+                    data.forEach((item, index) => {
+                        const li = document.createElement('li');
+                        li.className = 'autocomplete-item';
+                        li.textContent = item.label;
+                        li.addEventListener('click', () => {
+                            searchInput.value = item.value;
+                            suggestionsList.classList.remove('active');
+                            filterForm.submit();
+                        });
+                        suggestionsList.appendChild(li);
+                    });
+                    suggestionsList.classList.add('active');
+                } else {
+                    suggestionsList.classList.remove('active');
+                }
+            })
+            .catch(err => console.error('Error:', err));
+    }, 300);
+});
+
+// Tutup dropdown autocomplete saat klik di luar
+document.addEventListener('click', function(e) {
+    if (e.target !== searchInput && e.target !== suggestionsList) {
+        suggestionsList.classList.remove('active');
+    }
+});
+
+// Submit form saat tekan Enter
+searchInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        filterForm.submit();
+    }
+});
 
 function toggleFilterKategori(){
     let el = document.getElementById("filterKategori");
     el.style.display = el.style.display === "none" ? "block" : "none";
 }
 
-    let selectedRow = null;
-    let selectedId = null;
-
-    function openModal(button) {
-        selectedRow = button.closest('tr');
-        selectedId = button.getAttribute('data-id');
-        document.getElementById('modalHapus').style.display = 'flex';
-    }
-
-    function closeModal() {
-        document.getElementById('modalHapus').style.display = 'none';
-    }
-
-    function hapusData() {
-        fetch(`{{ url('admin/books') }}/${selectedId}`, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                selectedRow.remove();
-                closeModal();
-                alert('Buku berhasil dihapus');
-            } else {
-                alert('Error: ' + (data.message || 'Gagal menghapus data'));
-            }
-        })
-        .catch(err => {
-            console.error('Error:', err);
-            alert('Gagal menghapus data: ' + err.message);
-        });
-    }
-
-    document.getElementById('modalHapus').addEventListener('click', function(e) {
-        if (e.target === this) closeModal();
+function openModal(button) {
+    selectedRow = button.closest('tr');
+    selectedId = button.getAttribute('data-id');
+    
+    const bookTitle = selectedRow.querySelector('td:nth-child(2)').innerText;
+    
+    Swal.fire({
+        title: 'Hapus Buku',
+        text: `Yakin ingin menghapus buku "${bookTitle}"? Tindakan ini tidak dapat dibatalkan.`,
+        icon: 'error',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Hapus',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            hapusData();
+        }
     });
+}
 
-    function openDetail(btn) {
-        document.getElementById('detailJudul').innerText = btn.dataset.judul;
-        document.getElementById('detailPenulis').innerText = btn.dataset.penulis;
-        document.getElementById('detailKategori').innerText = btn.dataset.kategori;
-        document.getElementById('detailDeskripsi').innerText = btn.dataset.deskripsi;
-        document.getElementById('detailGambar').src = btn.dataset.gambar;
-
-        document.getElementById('modalDetail').style.display = 'flex';
-    }
-
-    function closeDetail() {
-        document.getElementById('modalDetail').style.display = 'none';
-    }
-
-    document.getElementById('modalDetail').addEventListener('click', function(e) {
-        if (e.target === this) closeDetail();
+function hapusData() {
+    fetch(`{{ url('admin/books') }}/${selectedId}`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            selectedRow.remove();
+            toastr.success(data.message || 'Buku berhasil dihapus');
+        } else {
+            toastr.error(data.message || 'Gagal menghapus data');
+        }
+    })
+    .catch(err => {
+        console.error('Error:', err);
+        toastr.error('Gagal menghapus data: ' + err.message);
     });
+}
+
+function openDetail(btn) {
+    document.getElementById('detailJudul').innerText = btn.dataset.judul;
+    document.getElementById('detailPenulis').innerText = btn.dataset.penulis;
+    document.getElementById('detailKategori').innerText = btn.dataset.kategori;
+    document.getElementById('detailDeskripsi').innerText = btn.dataset.deskripsi;
+    document.getElementById('detailGambar').src = btn.dataset.gambar;
+
+    document.getElementById('modalDetail').style.display = 'flex';
+}
+
+function closeDetail() {
+    document.getElementById('modalDetail').style.display = 'none';
+}
+
+document.getElementById('modalDetail').addEventListener('click', function(e) {
+    if (e.target === this) closeDetail();
+});
 </script>
-
 
 @endsection

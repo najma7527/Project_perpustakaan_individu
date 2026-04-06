@@ -36,7 +36,7 @@ class TransaksiExport implements FromCollection,
     {
         return Transaction::with('user', 'book')
             ->when($this->start && $this->end, fn($q) => $q->whereBetween('tanggal_peminjaman', [$this->start, $this->end]))
-            ->when($this->type, fn($q) => $q->where('type', $this->type))
+            ->when($this->type, fn($q) => $q->where('jenis_transaksi', $this->type))
             ->orderBy('tanggal_peminjaman', 'desc')
             ->get();
     }
@@ -45,10 +45,14 @@ class TransaksiExport implements FromCollection,
     {
         return [
             'No',
-            'Nama User',
+            'Nama Anggota',
             'Judul Buku',
-            'Tipe',
-            'Tanggal',
+            'Kelas',
+            'Jenis Transaksi',
+            'Tanggal Pinjam',
+            'Tanggal Jatuh Tempo',
+            'Tanggal Dikembalikan',
+            'Status',
         ];
     }
 
@@ -59,9 +63,13 @@ class TransaksiExport implements FromCollection,
         return [
             $this->rowNumber,
             $transaction->user->name ?? '-',
-            $transaction->book->title ?? '-',
-            $transaction->type,
-            $transaction->created_at,
+            $transaction->book->judul ?? '-',
+            $transaction->user->kelas ?? '-',
+            $transaction->jenis_transaksi ?? '-',
+            $transaction->tanggal_peminjaman ? $transaction->tanggal_peminjaman->format('d/m/Y') : '-',
+            $transaction->tanggal_jatuh_tempo ? $transaction->tanggal_jatuh_tempo->format('d/m/Y') : '-',
+            $transaction->tanggal_pengembalian ? $transaction->tanggal_pengembalian->format('d/m/Y') : '-',
+            $transaction->status == 'sudah_dikembalikan' ? 'Sudah dikembalikan' : ($transaction->status == 'buku_hilang' ? 'Buku Hilang' : 'Belum dikembalikan'),
         ];
     }
     

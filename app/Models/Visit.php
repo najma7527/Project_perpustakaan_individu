@@ -17,6 +17,10 @@ class Visit extends Model
         'tanggal_datang',
     ];
 
+    protected $casts = [
+        'tanggal_datang' => 'date',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

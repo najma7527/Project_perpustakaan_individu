@@ -90,7 +90,28 @@
                     <th>Status</th>
                 </tr>
             </thead>
-<tbody>
+<tbody id="content-terbatas">
+    @forelse($transactions->take(20) as $index => $t)
+    <tr>
+        <td>{{ $index + 1 }}</td>
+        <td>{{ $t->user->name ?? '-' }}</td>
+        <td>{{ $t->book->judul ?? '-' }}</td>
+        <td>{{ $t->user->kelas ?? '-' }}</td>
+        <td>{{ optional($t->tanggal_peminjaman)->format('d/m/Y') }}</td>
+        <td>{{ optional($t->tanggal_jatuh_tempo)->format('d/m/Y') }}</td>
+        <td>{{ optional($t->tanggal_pengembalian)->format('d/m/Y') ?: '-' }}</td>
+        <td class="{{ $t->status == 'sudah_dikembalikan' ? 'done' : ($t->status == 'buku_hilang' ? 'lost' : 'pending') }}">
+            @if($t->status == 'sudah_dikembalikan') Sudah dikembalikan
+            @elseif($t->status == 'buku_hilang') Buku Hilang
+            @else Belum dikembalikan
+            @endif
+        </td>
+    </tr>
+    @empty
+    <tr><td colspan="8" style="text-align:center;">Tidak ada data transaksi</td></tr>
+    @endforelse
+</tbody>
+<tbody id="content-semua" style="display:none;">
     @forelse($transactions as $index => $t)
     <tr>
         <td>{{ $index + 1 }}</td>
@@ -112,11 +133,11 @@
     @endforelse
 </tbody>
         </table>
-
-        <div class="paper-footer">
-            <span>dicetak oleh Perpustakaan SMKN 4 Bojonegoro</span>
-            <span>halaman 1 dari 3</span>
+        @if($transactions->count() > 20)
+        <div class="read-more-section" style="margin-top: 20px; text-align: center;">
+            <button id="toggleBtn" class="btn btn-info" onclick="toggleContent()">📖 Lihat Semua Data</button>
         </div>
+        @endif
 
     </div>
 
@@ -140,6 +161,23 @@
 
 </body>
 <script>
+
+    // Toggle Content
+    function toggleContent() {
+        const contentTerbatas = document.getElementById('content-terbatas');
+        const contentSemua = document.getElementById('content-semua');
+        const toggleBtn = document.getElementById('toggleBtn');
+        
+        if (contentSemua.style.display === 'none') {
+            contentTerbatas.style.display = 'none';
+            contentSemua.style.display = 'table-row-group';
+            toggleBtn.textContent = '📖 Sembunyikan';
+        } else {
+            contentTerbatas.style.display = 'table-row-group';
+            contentSemua.style.display = 'none';
+            toggleBtn.textContent = '📖 Lihat Semua Data';
+        }
+    }
 
     // KEMBALI
     document.getElementById('btnBack').addEventListener('click', function () {

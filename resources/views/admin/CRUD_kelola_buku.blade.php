@@ -20,6 +20,7 @@
 <div class="card">
 
 <form 
+    id="bookForm"
     action="{{ $book ? route('books.update',$book->id) : route('books.store') }}"
     method="POST"
     enctype="multipart/form-data"
@@ -31,8 +32,25 @@
 
 <div class="form-grid">
 
-<!-- Judul Buku -->
+<!-- Kode Buku -->
 <div class="form-group col-1">
+    <label>Kode Buku</label>
+    <div style="display:flex; gap:8px; align-items:center;">
+        <input id="kodeBukuInput" type="text" name="kode_buku"
+            value="{{ old('kode_buku', $book->kode_buku ?? '') }}"
+            placeholder="Masukkan Kode Buku" style="flex:1;">
+        <button type="button" id="generateKodeBtn" class="btn-baris" style="padding:2px 10px; font-size:12px;">
+            <i class="fas fa-sync-alt"></i>
+        </button>
+    </div>
+
+    @error('kode_buku')
+    <small class="error">Kode buku wajib diisi</small>
+    @enderror
+</div>
+
+<!-- Judul Buku -->
+<div class="form-group col-3">
     <label>Judul Buku</label>
     <input type="text" name="judul"
     value="{{ old('judul', $book->judul ?? '') }}"
@@ -109,18 +127,6 @@
 
     @error('tahun_terbit')
     <small class="error">Tahun terbit wajib diisi</small>
-    @enderror
-</div>
-
-<!-- Kode Buku -->
-<div class="form-group col-1">
-    <label>Kode Buku</label>
-    <input type="text" name="kode_buku"
-    value="{{ old('kode_buku', $book->kode_buku ?? '') }}"
-    placeholder="Masukkan Kode Buku">
-
-    @error('kode_buku')
-    <small class="error">Kode buku wajib diisi</small>
     @enderror
 </div>
 
@@ -220,7 +226,7 @@
         document.getElementById('modalCreateRack').style.display = 'none';
     }
 
-    function saveRackData() {
+    async function saveRackData() {
         const rackNo = document.getElementById('modalRackNo').value.trim();
         const rackDesc = document.getElementById('modalRackDesc').value.trim();
         const rowNum = document.getElementById('modalRowNum').value.trim();
@@ -231,16 +237,89 @@
             return;
         }
 
-        document.getElementById('newBookshelfNo').value = rackNo;
-        document.getElementById('newBookshelfKeterangan').value = rackDesc;
-        document.getElementById('newRowBaris').value = rowNum;
-        document.getElementById('newRowKeterangan').value = rowDesc;
+        const token = document.querySelector('input[name="_token"]').value;
+        const endpoint = "{{ route('books.createRow') }}";
 
-        closeCreateRackModal();
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    nomor_rak: rackNo,
+                    keterangan_rak: rackDesc,
+                    baris_ke: rowNum,
+                    keterangan_baris: rowDesc
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || 'Gagal membuat rak/baris');
+            }
+
+            const rowSelect = document.querySelector('select[name="id_baris"]');
+            const existingOption = Array.from(rowSelect.options)
+                .find(option => option.value == data.row.id);
+
+            if (!existingOption) {
+                const option = document.createElement('option');
+                option.value = data.row.id;
+                option.text = data.row.label;
+                rowSelect.appendChild(option);
+                rowSelect.value = data.row.id;
+            } else {
+                existingOption.selected = true;
+            }
+
+            // reset hidden new rak/row fields so create action not repeated
+            document.getElementById('newBookshelfNo').value = '';
+            document.getElementById('newBookshelfKeterangan').value = '';
+            document.getElementById('newRowBaris').value = '';
+            document.getElementById('newRowKeterangan').value = '';
+
+            closeCreateRackModal();
+            toastr.success('Rak dan baris baru berhasil ditambahkan dan dipilih');
+        } catch (error) {
+            console.error(error);
+            toastr.error(error.message || 'Gagal membuat rak/baris');
+        }
     }
 
     document.getElementById('modalCreateRack').addEventListener('click', function(e) {
         if (e.target === this) closeCreateRackModal();
+    });
+
+    document.getElementById('generateKodeBtn').addEventListener('click', async function() {
+        const token = document.querySelector('input[name="_token"]').value;
+        const endpoint = "{{ route('books.generateKode') }}";
+
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({})
+            });
+            const data = await response.json();
+
+            if (!response.ok || !data.kode_buku) {
+                throw new Error('Gagal membuat kode otomatis');
+            }
+
+            document.getElementById('kodeBukuInput').value = data.kode_buku;
+            toastr.success('Kode buku otomatis dibuat');
+        } catch (error) {
+            console.error(error);
+            toastr.error(error.message || 'Gagal mengambil kode buku');
+        }
     });
 </script>
 

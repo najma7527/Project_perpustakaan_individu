@@ -212,7 +212,8 @@ tbody tr {
 
 /* ================= RESPONSIVE ================= */
 @media (max-width: 1024px) {
-    .sidebar {
+    /* .sidebar diatur oleh app.css (canonical) */
+    /* .sidebar {
         width: 200px;
     }
 
@@ -224,14 +225,16 @@ tbody tr {
     .topbar {
         left: 200px;
     }
+    */
 }
 
 @media (max-width: 768px) {
-    .sidebar {
+    /* .sidebar {
         position: relative;
         width: 100%;
         height: auto;
     }
+    */
 
     .content {
         margin-left: 0;

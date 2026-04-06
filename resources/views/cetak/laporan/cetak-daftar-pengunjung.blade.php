@@ -89,7 +89,21 @@
             
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="content-terbatas">
+    @forelse($visits->take(20) as $index => $v)
+    <tr>
+        <td>{{ $index + 1 }}</td>
+        <td>{{ $v->user->name ?? '-' }}</td>
+        <td>{{ $v->user->kelas ?? '-' }}</td>
+        <td>{{ $v->transaction->book->judul ?? '-' }}</td>
+        <td>{{ $v->transaction->jenis_transaksi ?? '-' }}</td>
+        <td>{{ $v->tanggal_datang}}</td>
+    </tr>
+    @empty
+    <tr><td colspan="6" style="text-align:center;">Tidak ada data kunjungan</td></tr>
+    @endforelse
+</tbody>
+            <tbody id="content-semua" style="display:none;">
     @forelse($visits as $index => $v)
     <tr>
         <td>{{ $index + 1 }}</td>
@@ -104,11 +118,11 @@
     @endforelse
 </tbody>
         </table>
-
-        <div class="paper-footer">
-            <span>dicetak oleh Perpustakaan SMKN 4 Bojonegoro</span>
-            <span>halaman 1 dari 3</span>
+        @if($visits->count() > 20)
+        <div class="read-more-section" style="margin-top: 20px; text-align: center;">
+            <button id="toggleBtn" class="btn btn-info" onclick="toggleContent()">📖 Lihat Semua Data</button>
         </div>
+        @endif
 
     </div>
 <div class="actions">
@@ -127,6 +141,23 @@
 
 </div>
 <script>
+
+    // Toggle Content
+    function toggleContent() {
+        const contentTerbatas = document.getElementById('content-terbatas');
+        const contentSemua = document.getElementById('content-semua');
+        const toggleBtn = document.getElementById('toggleBtn');
+        
+        if (contentSemua.style.display === 'none') {
+            contentTerbatas.style.display = 'none';
+            contentSemua.style.display = 'table-row-group';
+            toggleBtn.textContent = '📖 Sembunyikan';
+        } else {
+            contentTerbatas.style.display = 'table-row-group';
+            contentSemua.style.display = 'none';
+            toggleBtn.textContent = '📖 Lihat Semua Data';
+        }
+    }
 
     // KEMBALI
     document.getElementById('btnBack').addEventListener('click', function () {

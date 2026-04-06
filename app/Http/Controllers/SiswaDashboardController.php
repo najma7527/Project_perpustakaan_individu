@@ -41,7 +41,8 @@ class SiswaDashboardController extends Controller
         // Total buku terlambat
                 $totalTerlambat = Transaction::where('user_id', $userId)
                     ->where('jenis_transaksi', 'dipinjam')
-                    ->whereDate('tanggal_pengembalian', '<', Carbon::today())
+                    ->where('status', 'terlambat')
+                    ->whereDate('tanggal_jatuh_tempo', '<', Carbon::today())
                     ->count();
 
         /* =======================
@@ -60,15 +61,14 @@ class SiswaDashboardController extends Controller
                     ->whereDate('tanggal_datang', Carbon::today())
                     ->exists();
 
-        // Ambil notifikasi terbaru
+        // Ambil notifikasi terbaru yang belum dibaca
         $notifications = Notification::where('user_id', auth()->id())
+            ->where('is_read', false)
             ->latest()
             ->take(5)
             ->get();
 
-        $unreadCount = Notification::where('user_id', auth()->id())
-           ->where('is_read', false)
-           ->count();
+        $unreadCount = $notifications->count();
 
 
 

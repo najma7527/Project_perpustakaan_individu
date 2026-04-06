@@ -214,16 +214,27 @@ td:nth-child(3) {
 }
 
 /* ================= PRINT ================= */
+@page {
+    size: A4, landscape;
+    margin: 25mm 20mm;
+}
+
 @media print {
-    .topbar,
-    .filter,
-    .actions {
-        display: none;
+    thead {
+        display: table-header-group;
     }
 
-    .wrap {
-        width: 100%;
-        margin: 0;
-        padding: 0;
+    thead::before {
+        content: "";
+        display: block;
+        height: 15mm;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    tr {
+        page-break-inside: avoid;
     }
 }

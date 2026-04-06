@@ -40,7 +40,7 @@
     <div class="grid" id="booksGrid">
         @forelse($books as $book)
             <div class="card" data-title="{{ strtolower($book->judul) }}">
-                <img src="{{ asset('images/buku.jpg') }}" alt="{{ $book->judul }}">
+                <img src="{{ $book->cover ? asset('storage/' . $book->cover) : asset('images/buku.jpg') }}" alt="{{ $book->judul }}">
 
                 <div class="card-content">
                     <h4>{{ $book->judul }}</h4>
@@ -64,7 +64,7 @@
                             Tidak Bisa Meminjam
                         </button>
                     @elseif($book->status === 'tersedia')
-                        <button type="button" class="btn-pinjam" onclick="openModal({{ $book->id }}, '{{ $book->judul }}')">
+                        <button type="button" class="btn-pinjam" data-id="{{ $book->id }}" data-judul="{{ $book->judul }}" onclick="openModal(this)">
                             Pinjam Buku
                         </button>
                     @else
@@ -141,7 +141,10 @@ function tambahHari(tanggal, hari) {
 let currentBookId = null;
 
 // buka modal
-function openModal(bookId, bookTitle) {
+function openModal(button) {
+    const bookId = button.dataset.id;
+    const bookTitle = button.dataset.judul;
+
     currentBookId = bookId;
     document.getElementById('bookTitle').textContent = bookTitle;
     

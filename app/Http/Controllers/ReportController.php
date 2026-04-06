@@ -255,6 +255,11 @@ class ReportController extends Controller
             $report->transaction->update(['status' => 'sudah_dikembalikan', 'tanggal_pengembalian' => now()]);
         }
 
+        // Update buku
+    optional($report->transaction?->book)->update([
+    'status' => 'tersedia'
+]);
+
         return back()->with('success', 'Laporan berhasil disetujui. Buku ditandai sudah dikembalikan.');
     }
 

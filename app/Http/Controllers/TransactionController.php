@@ -422,19 +422,44 @@ if ($visitToday) {
 
     public function cekJatuhTempo()
     {
-        // reuse command which also sends notifications
-        \Artisan::call('app:cek-keterlambatan');
-        $output = trim(\Artisan::output());
+        $today = Carbon::today();
+
+        $transactions = Transaction::where('status', 'belum_dikembalikan')->get();
+
+        $updated = 0;
+        foreach ($transactions as $trx) {
+            // Sudah lewat jatuh tempo
+            if ($today->greaterThan($trx->tanggal_jatuh_tempo)) {
+                $trx->update([
+                    'status' => 'terlambat'
+                ]);
+                $updated++;
+            }
+        }
 
         return response()->json([
             'message' => 'Pengecekan jatuh tempo selesai',
-            'detail' => $output
+            'jumlah_terlambat' => $updated
         ]);
     }
 
     public function cekKeterlambatan()
     {
-        // simply reuse same command so behaviour stays consistent
-        return $this->cekJatuhTempo();
+        $today = Carbon::today();
+
+        $terlambat = Transaction::where('status', 'belum_dikembalikan')
+            ->whereDate('tanggal_jatuh_tempo', '<', $today)
+            ->get();
+
+        foreach ($terlambat as $trx) {
+            $trx->update([
+                'status' => 'terlambat'
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Status keterlambatan berhasil diperbarui',
+            'jumlah' => $terlambat->count()
+        ]);
     }
 }

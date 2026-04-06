@@ -115,7 +115,7 @@
     height: 42px;
     border-radius: 10px;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 18px;
     margin-left: auto; /* ⬅️ dorong ke kanan */
 }
 
@@ -156,11 +156,13 @@ tbody tr {
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
+    /* .sidebar responsive diatur oleh app.css (canonical)
     .sidebar {
         width: 100%;
         height: auto;
         position: relative;
     }
+    */
 
     .topbar {
         left: 0;

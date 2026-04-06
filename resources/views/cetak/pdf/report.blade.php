@@ -4,6 +4,29 @@
     <meta charset="UTF-8">
     <title>Cetak Laporan Kehilangan</title>
     <link rel="stylesheet" href="{{ public_path('css/cetak/cetak-kehilangan.css') }}">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+        }
+        .paper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            position: relative;
+        }
+        .table-wrapper {
+            flex: 1;
+            margin-bottom: 20px;
+        }
+        .paper-footer {
+            page-break-inside: avoid;
+            page-break-before: auto;
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid #cfcfcf;
+        }
+    </style>
 </head>
 <body>
     <div class="paper">
@@ -26,6 +49,7 @@
             </p>
         </div>
 
+        <div class="table-wrapper">
         <table>
             <thead>
                 <tr>
@@ -56,10 +80,11 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
 
         <div class="paper-footer">
             <span>Dicetak oleh Perpustakaan SMKN 4 Bojonegoro</span>
-            <span>{{ now()->format('d/m/Y H:i') }}</span>
+            <span>{{ now()->format('d/m/Y') }}</span>
         </div>
     </div>
 </body>
