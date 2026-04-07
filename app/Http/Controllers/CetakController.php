@@ -286,8 +286,8 @@ public function filterKunjungan(Request $request)
     private function getBooks(Request $request)
     {
         $kategori = $request->get('kategori');
-        return \App\Models\Book::with('row.bookshelf')
-            ->when($kategori && in_array($kategori, ['fiksi', 'nonfiksi']), fn($q) => $q->where('kategori_buku', $kategori))
+        return \App\Models\KodeBuku::with('book.row.bookshelf')
+            ->when($kategori && in_array($kategori, ['fiksi', 'nonfiksi']), fn($q) => $q->whereHas('book', fn($qb) => $qb->where('kategori_buku', $kategori)))
             ->orderBy('created_at', 'desc')
             ->get();
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\KodeBuku;
 use App\Models\Row;
 use App\Models\Bookshelf;
 use App\Models\Transaction;
@@ -34,7 +35,7 @@ class BookController extends Controller
             $q->where('judul', 'like', "%{$search}%")
               ->orWhere('pengarang', 'like', "%{$search}%")
               ->orWhere('tahun_terbit', 'like', "%{$search}%")
-              ->orWhere('kode_buku', 'like', "%{$search}%");
+              ->orWhereHas('kodeBuku', fn($qq) => $qq->where('kode_buku', 'like', "%{$search}%"));
         });
     }
 
@@ -82,16 +83,17 @@ class BookController extends Controller
             return response()->json([]);
         }
 
-        $books = Book::where('judul', 'like', "%{$query}%")
+        $books = Book::with(['kodeBuku' => fn($q) => $q->limit(1)])
+            ->where('judul', 'like', "%{$query}%")
             ->orWhere('pengarang', 'like', "%{$query}%")
-            ->orWhere('kode_buku', 'like', "%{$query}%")
-            ->select('id', 'judul', 'pengarang', 'kode_buku', 'kategori_buku')
+            ->orWhereHas('kodeBuku', fn($qq) => $qq->where('kode_buku', 'like', "%{$query}%"))
             ->limit(10)
             ->get()
             ->map(function ($book) {
+                $firstCode = $book->kodeBuku->first()?->kode_buku ?? '-';
                 return [
                     'id' => $book->id,
-                    'label' => "{$book->judul} ({$book->kode_buku}) - {$book->pengarang}",
+                    'label' => "{$book->judul} ({$firstCode}) - {$book->pengarang}",
                     'value' => $book->judul
                 ];
             });
@@ -105,9 +107,18 @@ class BookController extends Controller
 
         do {
             $generated = str_pad(random_int(100, 999), 3, '0', STR_PAD_LEFT);
-        } while (Book::where('kode_buku', $generated)->exists());
+        } while (KodeBuku::where('kode_buku', $generated)->exists());
 
         return response()->json(['kode_buku' => $generated]);
+    }
+
+    private function generateUniqueKodeBuku(): string
+    {
+        do {
+            $generated = 'KB-' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
+        } while (KodeBuku::where('kode_buku', $generated)->exists());
+
+        return $generated;
     }
 
     public function createRow(Request $request)
@@ -143,85 +154,90 @@ class BookController extends Controller
     }
 
     public function store(Request $request)
-{
-    if (Auth::user()?->role !== 'admin') abort(403);
+    {
+        if (Auth::user()?->role !== 'admin') abort(403);
 
-    $data = $request->validate([
-        'kode_buku' => 'nullable|string|unique:books,kode_buku',
-        'judul' => 'required|string|max:255',
-        'pengarang' => 'required|string|max:255',
-        'tahun_terbit' => 'required|integer|min:1900|max:' . date('Y'),
-        'kategori_buku' => 'required|in:fiksi,nonfiksi',
-        'id_baris' => 'nullable|exists:row,id',
-        'cover' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-        'deskripsi' => 'required|string',
-        // optional creation of bookshelf/row
-        'new_bookshelf_no' => 'nullable|string|max:50',
-        'new_bookshelf_keterangan' => 'nullable|string|max:255',
-        'new_row_baris' => 'nullable|integer',
-        'new_row_keterangan' => 'nullable|string|max:255',
-        'nomor_rak' => 'nullable|string|max:50',
-    ]);
-    if (empty($data['kode_buku'])) {
-        do {
-            $generated = str_pad(random_int(100, 999), 3, '0', STR_PAD_LEFT);
-        } while (Book::where('kode_buku', $generated)->exists());
-
-        $data['kode_buku'] = $generated;
-    }
-
-    if ($request->hasFile('cover')) {
-        $data['cover'] = $request->file('cover')->store('covers', 'public');
-    }
-    $data['status'] = 'tersedia';
-
-    // If user requested a new bookshelf, create it (and optional row)
-    if (!empty($data['new_bookshelf_no'])) {
-        $bookshelf = Bookshelf::create([
-            'no_rak' => $data['new_bookshelf_no'],
-            'keterangan' => $data['new_bookshelf_keterangan'] ?? null,
+        $data = $request->validate([
+            'judul' => 'required|string|max:255',
+            'pengarang' => 'required|string|max:255',
+            'tahun_terbit' => 'required|integer|min:1900|max:' . date('Y'),
+            'kategori_buku' => 'required|in:fiksi,nonfiksi',
+            'jumlah_kode' => 'required|integer|min:1|max:50',
+            'id_baris' => 'nullable|exists:row,id',
+            'cover' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'deskripsi' => 'required|string',
+            // optional creation of bookshelf/row
+            'new_bookshelf_no' => 'nullable|string|max:50',
+            'new_bookshelf_keterangan' => 'nullable|string|max:255',
+            'new_row_baris' => 'nullable|integer',
+            'new_row_keterangan' => 'nullable|string|max:255',
+            'nomor_rak' => 'nullable|string|max:50',
         ]);
 
-        if (!empty($data['new_row_baris'])) {
-            $row = Row::create([
-                'rak_id' => $bookshelf->id,
-                'baris_ke' => $data['new_row_baris'],
-                'keterangan' => $data['new_row_keterangan'] ?? null,
+        if ($request->hasFile('cover')) {
+            $data['cover'] = $request->file('cover')->store('covers', 'public');
+        }
+
+        if (!empty($data['new_bookshelf_no'])) {
+            $bookshelf = Bookshelf::create([
+                'no_rak' => $data['new_bookshelf_no'],
+                'keterangan' => $data['new_bookshelf_keterangan'] ?? null,
             ]);
 
-            $data['id_baris'] = $row->id;
-        }
-    } elseif (!empty($data['new_row_baris'])) {
-        // If nomor_rak provided, try to attach the new row to existing bookshelf
-        if (!empty($data['nomor_rak'])) {
-            $bookshelf = Bookshelf::where('no_rak', $data['nomor_rak'])->first();
-            if ($bookshelf) {
+            if (!empty($data['new_row_baris'])) {
                 $row = Row::create([
                     'rak_id' => $bookshelf->id,
                     'baris_ke' => $data['new_row_baris'],
                     'keterangan' => $data['new_row_keterangan'] ?? null,
                 ]);
+
                 $data['id_baris'] = $row->id;
             }
+        } elseif (!empty($data['new_row_baris'])) {
+            if (!empty($data['nomor_rak'])) {
+                $bookshelf = Bookshelf::where('no_rak', $data['nomor_rak'])->first();
+                if ($bookshelf) {
+                    $row = Row::create([
+                        'rak_id' => $bookshelf->id,
+                        'baris_ke' => $data['new_row_baris'],
+                        'keterangan' => $data['new_row_keterangan'] ?? null,
+                    ]);
+                    $data['id_baris'] = $row->id;
+                }
+            }
         }
+
+        if (empty($data['id_baris'])) {
+            return back()->withInput()->withErrors(['id_baris' => 'Baris rak harus dipilih atau dibuat terlebih dahulu.']);
+        }
+
+        $quantities = $data['jumlah_kode'];
+        unset($data['jumlah_kode']);
+
+        $book = Book::create($data);
+
+        for ($index = 0; $index < $quantities; $index++) {
+            $book->kodeBuku()->create([
+                'kode_buku' => $this->generateUniqueKodeBuku(),
+                'status' => 'tersedia',
+            ]);
+        }
+
+        return redirect()->route('books.index')
+                         ->with('success', 'Buku berhasil ditambahkan dengan ' . $quantities . ' eksemplar kode buku.');
     }
-
-    // Ensure id_baris exists before creating book
-    if (empty($data['id_baris'])) {
-        return back()->withInput()->withErrors(['id_baris' => 'Baris rak harus dipilih atau dibuat terlebih dahulu.']);
-    }
-
-    Book::create($data);
-
-    return redirect()->route('books.index')
-                     ->with('success', 'Buku berhasil ditambahkan');
-}
 
 
     public function show(Book $book)
     {
         if (Auth::user()?->role !== 'admin') abort(403);
-        $book->load('row'); 
+        $book->load('row', 'kodeBuku'); 
+        return view('books.show', compact('book'));
+    }
+
+    public function detail(Book $book)
+    {
+        $book->load('row', 'kodeBuku');
         return view('books.show', compact('book'));
     }
 
@@ -242,42 +258,82 @@ class BookController extends Controller
         if (Auth::user()?->role !== 'admin') abort(403);
 
         $data = $request->validate([
-            'kode_buku' => 'nullable|string|unique:books,kode_buku,' . $book->id,
-            'judul' => 'nullable|string|max:255',
-            'pengarang' => 'nullable|string|max:255',
-            'tahun_terbit' => 'nullable|integer|min:1900|max:' . date('Y'),
-            'kategori_buku' => 'nullable|in:fiksi,nonfiksi',
+            'judul' => 'required|string|max:255',
+            'pengarang' => 'required|string|max:255',
+            'tahun_terbit' => 'required|integer|min:1900|max:' . date('Y'),
+            'kategori_buku' => 'required|in:fiksi,nonfiksi',
+            'jumlah_kode' => 'required|integer|min:1|max:50',
             'id_baris' => 'nullable|exists:row,id',
             'cover' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'deskripsi' => 'nullable|string',
+            'deskripsi' => 'required|string',
+            // optional creation of bookshelf/row
+            'new_bookshelf_no' => 'nullable|string|max:50',
+            'new_bookshelf_keterangan' => 'nullable|string|max:255',
+            'new_row_baris' => 'nullable|integer',
+            'new_row_keterangan' => 'nullable|string|max:255',
+            'nomor_rak' => 'nullable|string|max:50',
         ]);
 
         if ($request->hasFile('cover')) {
-            $path = $request->file('cover')->store('covers', 'public');
-            $data['cover'] = $path; 
+            $data['cover'] = $request->file('cover')->store('covers', 'public');
         }
 
-        // If kode_buku was not provided in the update, keep existing
-        if (empty($data['kode_buku'])) {
-            unset($data['kode_buku']);
+        if (!empty($data['new_bookshelf_no'])) {
+            $bookshelf = Bookshelf::create([
+                'no_rak' => $data['new_bookshelf_no'],
+                'keterangan' => $data['new_bookshelf_keterangan'] ?? null,
+            ]);
+
+            if (!empty($data['new_row_baris'])) {
+                $row = Row::create([
+                    'rak_id' => $bookshelf->id,
+                    'baris_ke' => $data['new_row_baris'],
+                    'keterangan' => $data['new_row_keterangan'] ?? null,
+                ]);
+
+                $data['id_baris'] = $row->id;
+            }
+        } elseif (!empty($data['new_row_baris'])) {
+            if (!empty($data['nomor_rak'])) {
+                $bookshelf = Bookshelf::where('no_rak', $data['nomor_rak'])->first();
+                if ($bookshelf) {
+                    $row = Row::create([
+                        'rak_id' => $bookshelf->id,
+                        'baris_ke' => $data['new_row_baris'],
+                        'keterangan' => $data['new_row_keterangan'] ?? null,
+                    ]);
+                    $data['id_baris'] = $row->id;
+                }
+            }
         }
 
-        // Remove empty fields so existing values are preserved
-        $data = array_filter($data, fn($value) => !is_null($value));
+        if (empty($data['id_baris'])) {
+            return back()->withInput()->withErrors(['id_baris' => 'Baris rak harus dipilih atau dibuat terlebih dahulu.']);
+        }
 
+        $newQuantity = $data['jumlah_kode'];
+        unset($data['jumlah_kode']);
+
+        $currentQuantity = $book->kodeBuku()->count();
+
+        // Update book data
         $book->update($data);
 
-        // Return JSON for AJAX requests
-        if ($request->wantsJson() || $request->isXmlHttpRequest()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Buku berhasil diupdate',
-                'book' => $book
-            ]);
+        // Adjust kode buku records
+        if ($newQuantity > $currentQuantity) {
+            // Add more kode buku
+            $toAdd = $newQuantity - $currentQuantity;
+            for ($i = 0; $i < $toAdd; $i++) {
+                $book->kodeBuku()->create([
+                    'kode_buku' => $this->generateUniqueKodeBuku(),
+                    'status' => 'tersedia',
+                ]);
+            }
         }
+        // Note: We don't remove existing kode buku, only add new ones
 
-        return redirect()->route('books.index') 
-                         ->with('success', 'Buku berhasil diupdate');
+        return redirect()->route('books.index')
+                         ->with('success', 'Buku berhasil diupdate. Jumlah eksemplar: ' . $newQuantity);
     }
 
     public function destroy(Book $book)
@@ -315,7 +371,7 @@ class BookController extends Controller
         if (Auth::user()?->role !== 'anggota') abort(403);
 
         // build query with optional filters
-        $query = Book::where('status', 'tersedia')->with('row');
+        $query = Book::with('row')->whereHas('kodeBuku', fn($qq) => $qq->where('status', 'tersedia'));
 
         $search = $request->input('search', '');
         $category = $request->input('category', '');
@@ -324,7 +380,7 @@ class BookController extends Controller
             $query->where(function($q) use ($search) {
                 $q->where('judul', 'like', "%{$search}%")
                   ->orWhere('pengarang', 'like', "%{$search}%")
-                  ->orWhere('kode_buku', 'like', "%{$search}%");
+                  ->orWhereHas('kodeBuku', fn($qq) => $qq->where('kode_buku', 'like', "%{$search}%"));
             });
         }
 
@@ -340,5 +396,15 @@ class BookController extends Controller
             ->exists();
 
         return view('siswa.pinjam-buku', compact('books', 'hasActiveLoan', 'search', 'category'));
+    }
+
+    public function getAvailableKodeBuku($bookId)
+    {
+        $book = Book::findOrFail($bookId);
+        $availableKodeBuku = $book->kodeBuku()->available()->get(['id', 'kode_buku']);
+
+        return response()->json([
+            'kode_buku' => $availableKodeBuku
+        ]);
     }
 }

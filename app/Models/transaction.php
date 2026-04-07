@@ -15,6 +15,7 @@ class Transaction extends Model
     protected $fillable = [
         'user_id',
         'buku_id',
+        'kode_buku_id',
         'tanggal_peminjaman',
         'tanggal_jatuh_tempo',
         'tanggal_pengembalian',
@@ -36,6 +37,11 @@ class Transaction extends Model
     public function book()
     {
         return $this->belongsTo(Book::class, 'buku_id');
+    }
+
+    public function kodeBuku()
+    {
+        return $this->belongsTo(KodeBuku::class, 'kode_buku_id');
     }
 
    public function reports()

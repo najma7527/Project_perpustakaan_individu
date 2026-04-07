@@ -15,6 +15,7 @@ use App\Http\Controllers\SiswaDashboardController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\CetakController;
 use App\Http\Controllers\NotificationController;
+use App\Models\Book;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -107,6 +108,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/books/generate-kode', [BookController::class, 'generateKode'])->name('books.generateKode');
         Route::post('/books/create-row', [BookController::class, 'createRow'])->name('books.createRow');
         Route::resource('books', BookController::class);
+        Route::get('/books/{book}/detail', [BookController::class, 'detail'])->name('admin.books.detail');
         Route::get('/books/search/results', [BookController::class, 'search'])->name('books.search');
         Route::get('/books/autocomplete/search', [BookController::class, 'autocompleteSearch'])->name('books.autocomplete');
         Route::get('/crud_kelola_buku', function () { return view('admin.CRUD_kelola_buku'); });
@@ -182,7 +184,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/edit-password', function () {
             return view('admin.edit-password');
         });
-
         // // Cetak View Pages
         // Route::get('/cetak-transaksi', function () {
         //     return view('cetak.cetak-transaksi');
@@ -213,6 +214,8 @@ Route::middleware(['auth'])->group(function () {
 
         // Peminjaman & Pengembalian
         Route::get('/pinjam-buku', [BookController::class, 'browse'])->name('books.browse');
+        Route::get('/books/{book}/detail', [BookController::class, 'detail'])->name('books.detail');
+        Route::get('/api/books/{book}/available-kode-buku', [BookController::class, 'getAvailableKodeBuku'])->name('api.books.available-kode-buku');
         Route::post('/pinjam-buku/{bookId}', [TransactionController::class, 'pinjam'])->name('transactions.pinjam');
         Route::get('/pengembalian-buku', [TransactionController::class, 'myTransactions'])->name('anggota.pengembalian');
         
@@ -272,3 +275,8 @@ Route::middleware(['auth'])->group(function () {
 
 });
 });
+
+Route::get('/detail_buku/{id}', function ($id) {
+            $book = Book::findOrFail($id);
+            return view('siswa.detail-buku', ['book' => $book]);
+        })->name('books.detailDetail');

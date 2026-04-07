@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Book;
+use App\Models\KodeBuku;
 use App\Models\Transaction;
 use App\Models\Visit;
 use App\Models\User;
@@ -21,7 +22,9 @@ class AdminDashboardController extends Controller
         // =====================
 
         // Total buku
-        $totalBook = Book::count();
+        $totalBook = KodeBuku::whereHas('book', function ($query) {
+            $query->where('status', 'tersedia');
+        })->count();
 
         // Total peminjaman
         $totalBorrow = Transaction::where('jenis_transaksi', 'dipinjam')->count();

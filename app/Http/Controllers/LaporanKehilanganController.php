@@ -45,7 +45,7 @@ class LaporanKehilanganController extends Controller
     public function index(Request $request)
     {
         $query = Report::where('user_id', Auth::id())
-            ->with('transaction.book');
+            ->with(['transaction.book', 'kodeBuku']);
 
         // Search by book title or keterangan
         if ($request->filled('search')) {

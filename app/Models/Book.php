@@ -12,7 +12,6 @@ class Book extends Model
     protected $table = 'books';
 
     protected $fillable = [
-        'kode_buku',
         'judul',
         'pengarang',
         'tahun_terbit',
@@ -20,13 +19,26 @@ class Book extends Model
         'id_baris',
         'cover',
         'deskripsi',
-        'status',
-        'stok',
     ];
 
     public function row()
     {
         return $this->belongsTo(Row::class, 'id_baris');
+    }
+
+    public function kodeBuku()
+    {
+        return $this->hasMany(KodeBuku::class, 'buku_id');
+    }
+
+    public function availableStock()
+    {
+        return $this->kodeBuku()->where('status', 'tersedia')->count();
+    }
+
+    public function getStokAttribute()
+    {
+        return $this->kodeBuku()->count();
     }
 
     public function transactions()

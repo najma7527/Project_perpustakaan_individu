@@ -83,9 +83,10 @@
                     <th>Nama Anggota</th>
                     <th>Kelas</th>
                     <th>Judul Buku</th>
+                    <th>Kode Buku</th>
                     <th>Transaksi</th>
                     <th>Tanggal Datang</th>
-                    <th>Setatus</th>
+                    <th>Status</th>
             
                 </tr>
             </thead>
@@ -97,6 +98,7 @@
         <td>{{ $r->user->name ?? $r->transaction->user->name ?? '-' }}</td>
         <td>{{ $r->user->kelas ?? $r->transaction->user->kelas ?? '-' }}</td>
         <td>{{ $r->transaction->book->judul ?? '-' }}</td>
+        <td>{{ $r->kodeBuku->kode_buku ?? '-' }}</td>
         <td>{{ $r->jenis_transaksi ?? '-' }}</td>
         <td>{{ optional($r->created_at)->format('d/m/Y') }}</td>
         <td class="status {{ $r->status == 'sudah_dikembalikan' ? 'done' : 'pending' }}">
@@ -104,7 +106,7 @@
         </td>
     </tr>
     @empty
-    <tr><td colspan="7" style="text-align:center;">Tidak ada data kehilangan</td></tr>
+    <tr><td colspan="8" style="text-align:center;">Tidak ada data kehilangan</td></tr>
     @endforelse
 </tbody>
 <tbody id="content-semua" style="display:none;">
@@ -114,6 +116,7 @@
         <td>{{ $r->user->name ?? $r->transaction->user->name ?? '-' }}</td>
         <td>{{ $r->user->kelas ?? $r->transaction->user->kelas ?? '-' }}</td>
         <td>{{ $r->transaction->book->judul ?? '-' }}</td>
+        <td>{{ $r->kodeBuku->kode_buku ?? '-' }}</td>
         <td>{{ $r->jenis_transaksi ?? '-' }}</td>
         <td>{{ optional($r->created_at)->format('d/m/Y') }}</td>
         <td class="status {{ $r->status == 'sudah_dikembalikan' ? 'done' : 'pending' }}">
@@ -121,7 +124,7 @@
         </td>
     </tr>
     @empty
-    <tr><td colspan="7" style="text-align:center;">Tidak ada data kehilangan</td></tr>
+    <tr><td colspan="8" style="text-align:center;">Tidak ada data kehilangan</td></tr>
     @endforelse
 </tbody>
         </table>

@@ -42,6 +42,9 @@ class ReportController extends Controller
             })
             ->orWhereHas('transaction.book', function ($qq) use ($search) {
                 $qq->where('judul', 'like', "%$search%");
+            })
+            ->orWhereHas('transaction.kodeBuku', function ($qq) use ($search) {
+                $qq->where('kode_buku', 'like', "%$search%");
             });
         });
     }
@@ -253,12 +256,10 @@ class ReportController extends Controller
         // Update status transaksi
         if ($report->transaction) {
             $report->transaction->update(['status' => 'sudah_dikembalikan', 'tanggal_pengembalian' => now()]);
-        }
 
-        // Update buku
-    optional($report->transaction?->book)->update([
-    'status' => 'tersedia'
-]);
+            // Update kode buku status menjadi tersedia
+            optional($report->transaction->kodeBuku)->update(['status' => 'tersedia']);
+        }
 
         return back()->with('success', 'Laporan berhasil disetujui. Buku ditandai sudah dikembalikan.');
     }

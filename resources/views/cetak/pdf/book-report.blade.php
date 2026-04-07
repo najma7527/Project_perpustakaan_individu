@@ -83,15 +83,15 @@
     @forelse($books as $index => $book)
     <tr>
         <td>{{ $index + 1 }}</td>
-        <td>{{ $book->kode_buku ?? '-' }}</td>
-        <td>{{ $book->judul }}</td>
-        <td>{{ $book->pengarang }}</td>
-        <td>{{ $book->tahun_terbit }}</td>
-        <td>{{ $book->kategori_buku == 'fiksi' ? 'Fiksi' : 'Non Fiksi' }}</td>
-        <td>{{ ucfirst($book->status ?? '-') }}</td>
+        <td>{{ $book->kode_buku }}</td>
+        <td>{{ $book->book->judul }}</td>
+        <td>{{ $book->book->pengarang }}</td>
+        <td>{{ $book->book->tahun_terbit }}</td>
+        <td>{{ $book->book->kategori_buku == 'fiksi' ? 'Fiksi' : 'Non Fiksi' }}</td>
+        <td>{{ ucfirst($book->status) }}</td>
         <td>
-            @if($book->row && $book->row->bookshelf)
-                {{ $book->row->bookshelf->no_rak }} - {{ $book->row->baris_ke }}
+            @if($book->book->row && $book->book->row->bookshelf)
+                {{ $book->book->row->bookshelf->no_rak }} - {{ $book->book->row->baris_ke }}
             @else
                 -
             @endif

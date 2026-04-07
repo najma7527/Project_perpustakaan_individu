@@ -83,6 +83,7 @@
                     <th>No</th>
                     <th>Nama Anggota</th>
                     <th>Judul Buku</th>
+                    <th>Kode Buku</th>
                     <th>Kelas</th>
                     <th>Tanggal Pinjam</th>
                     <th>Tanggal Jatuh Tempo</th>
@@ -96,6 +97,7 @@
         <td>{{ $index + 1 }}</td>
         <td>{{ $t->user->name ?? '-' }}</td>
         <td>{{ $t->book->judul ?? '-' }}</td>
+        <td>{{ $t->kodeBuku->kode_buku ?? '-' }}</td>
         <td>{{ $t->user->kelas ?? '-' }}</td>
         <td>{{ optional($t->tanggal_peminjaman)->format('d/m/Y') }}</td>
         <td>{{ optional($t->tanggal_jatuh_tempo)->format('d/m/Y') }}</td>
@@ -108,7 +110,7 @@
         </td>
     </tr>
     @empty
-    <tr><td colspan="8" style="text-align:center;">Tidak ada data transaksi</td></tr>
+    <tr><td colspan="9" style="text-align:center;">Tidak ada data transaksi</td></tr>
     @endforelse
 </tbody>
 <tbody id="content-semua" style="display:none;">
@@ -117,6 +119,7 @@
         <td>{{ $index + 1 }}</td>
         <td>{{ $t->user->name ?? '-' }}</td>
         <td>{{ $t->book->judul ?? '-' }}</td>
+        <td>{{ $t->kodeBuku->kode_buku ?? '-' }}</td>
         <td>{{ $t->user->kelas ?? '-' }}</td>
         <td>{{ optional($t->tanggal_peminjaman)->format('d/m/Y') }}</td>
         <td>{{ optional($t->tanggal_jatuh_tempo)->format('d/m/Y') }}</td>
@@ -129,7 +132,7 @@
         </td>
     </tr>
     @empty
-    <tr><td colspan="8" style="text-align:center;">Tidak ada data transaksi</td></tr>
+    <tr><td colspan="9" style="text-align:center;">Tidak ada data transaksi</td></tr>
     @endforelse
 </tbody>
         </table>

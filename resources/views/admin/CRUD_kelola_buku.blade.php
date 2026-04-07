@@ -5,6 +5,53 @@
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/admin/CRUD_kelola_buku.css') }}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+.kode-buku-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    background: #f8f9fa;
+    min-height: 50px;
+    align-items: center;
+}
+
+.kode-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid;
+}
+
+.kode-tag.tersedia {
+    background: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+.kode-tag.dipinjam {
+    background: #fff3cd;
+    color: #856404;
+    border-color: #ffeaa7;
+}
+
+.kode-tag.hilang {
+    background: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+.kode-tag small {
+    font-weight: normal;
+    opacity: 0.8;
+}
+</style>
 @endpush    
 
 @section('content')
@@ -34,19 +81,15 @@
 
 <!-- Kode Buku -->
 <div class="form-group col-1">
-    <label>Kode Buku</label>
-    <div style="display:flex; gap:8px; align-items:center;">
-        <input id="kodeBukuInput" type="text" name="kode_buku"
-            value="{{ old('kode_buku', $book->kode_buku ?? '') }}"
-            placeholder="Masukkan Kode Buku" style="flex:1;">
-        <button type="button" id="generateKodeBtn" class="btn-baris" style="padding:2px 10px; font-size:12px;">
-            <i class="fas fa-sync-alt"></i>
-        </button>
-    </div>
+    <label>Jumlah Eksemplar</label>
+    <input type="number" name="jumlah_kode" min="1" max="50"
+        value="{{ old('jumlah_kode', $book ? $book->stok : 1) }}"
+        placeholder="Jumlah eksemplar buku" required>
 
-    @error('kode_buku')
-    <small class="error">Kode buku wajib diisi</small>
+    @error('jumlah_kode')
+    <small class="error">Jumlah eksemplar wajib diisi (1-50)</small>
     @enderror
+    <small style="color: #666; font-size: 12px;">Sistem akan generate kode buku otomatis untuk setiap eksemplar</small>
 </div>
 
 <!-- Judul Buku -->
@@ -71,7 +114,7 @@
     </select>
 
     @error('kategori_buku')
-    <small class="error">Kategori wajib diisi</small>
+    <small class="error">Kategori wajib dipilih</small>
     @enderror
 </div>
 
@@ -161,6 +204,30 @@
 <span class="error">Sinopsis wajib diisi</span>
 @enderror
 </div>
+
+<!-- KODE BUKU YANG AKAN DIGENERATE -->
+@if($book)
+<div class="form-group" style="margin-top:20px">
+    <label>Kode Buku Saat Ini</label>
+    <div class="kode-buku-display">
+        @forelse($book->kodeBuku as $kode)
+        <span class="kode-tag {{ $kode->status }}">
+            {{ $kode->kode_buku }}
+            <small>({{ ucfirst($kode->status) }})</small>
+        </span>
+        @empty
+        <p style="color: #666; font-style: italic;">Belum ada kode buku</p>
+        @endforelse
+    </div>
+</div>
+@else
+<div class="form-group" style="margin-top:20px">
+    <label>Pratinjau Kode Buku</label>
+    <div id="kodePreview" class="kode-buku-display">
+        <p style="color: #666; font-style: italic;">Masukkan jumlah eksemplar untuk melihat pratinjau kode buku</p>
+    </div>
+</div>
+@endif
 
 <button class="btn">
 {{ $book ? 'Update Buku' : 'Simpan Buku' }}
@@ -294,33 +361,134 @@
         if (e.target === this) closeCreateRackModal();
     });
 
-    document.getElementById('generateKodeBtn').addEventListener('click', async function() {
-        const token = document.querySelector('input[name="_token"]').value;
-        const endpoint = "{{ route('books.generateKode') }}";
+    // Kode Buku Preview
+    @if(!$book)
+    document.addEventListener('DOMContentLoaded', function() {
+        const jumlahKodeInput = document.querySelector('input[name="jumlah_kode"]');
+        const kodePreview = document.getElementById('kodePreview');
 
-        try {
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': token,
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({})
-            });
-            const data = await response.json();
+        if (jumlahKodeInput && kodePreview) {
+            function generateKodePreview() {
+                const jumlah = parseInt(jumlahKodeInput.value) || 0;
+                kodePreview.innerHTML = '';
 
-            if (!response.ok || !data.kode_buku) {
-                throw new Error('Gagal membuat kode otomatis');
+                if (jumlah > 0 && jumlah <= 50) {
+                    // Generate actual kode buku like the backend does
+                    const generatedCodes = [];
+                    for (let i = 0; i < jumlah; i++) {
+                        let kode;
+                        do {
+                            // Generate KB- followed by 4 random digits
+                            const randomNum = Math.floor(Math.random() * 9000) + 1000;
+                            kode = 'KB-' + randomNum.toString().padStart(4, '0');
+                        } while (generatedCodes.includes(kode)); // Ensure uniqueness in preview
+
+                        generatedCodes.push(kode);
+
+                        const kodeTag = document.createElement('span');
+                        kodeTag.className = 'kode-tag tersedia';
+                        kodeTag.innerHTML = `${kode} <small>(Akan Ditambahkan)</small>`;
+                        kodePreview.appendChild(kodeTag);
+                    }
+
+                    const note = document.createElement('p');
+                    note.style.cssText = 'color: #666; font-style: italic; font-size: 12px; margin: 5px 0 0 0; width: 100%;';
+                    note.textContent = 'Kode buku akan di-generate ulang secara unik saat menyimpan';
+                    kodePreview.appendChild(note);
+                } else if (jumlah > 50) {
+                    kodePreview.innerHTML = '<p style="color: #dc3545; font-style: italic;">Maksimal 50 eksemplar per buku</p>';
+                } else {
+                    kodePreview.innerHTML = '<p style="color: #666; font-style: italic;">Masukkan jumlah eksemplar untuk melihat pratinjau kode buku</p>';
+                }
             }
 
-            document.getElementById('kodeBukuInput').value = data.kode_buku;
-            toastr.success('Kode buku otomatis dibuat');
-        } catch (error) {
-            console.error(error);
-            toastr.error(error.message || 'Gagal mengambil kode buku');
+            jumlahKodeInput.addEventListener('input', generateKodePreview);
+            jumlahKodeInput.addEventListener('change', generateKodePreview);
+
+            // Generate initial preview
+            generateKodePreview();
         }
     });
+    @else
+    // For edit mode - show current codes and preview changes
+    document.addEventListener('DOMContentLoaded', function() {
+        const jumlahKodeInput = document.querySelector('input[name="jumlah_kode"]');
+        const currentKodeDisplay = document.querySelector('.kode-buku-display');
+
+        if (jumlahKodeInput && currentKodeDisplay) {
+            const originalCount = parseInt(jumlahKodeInput.value); // Current value is the original count
+
+            function updateKodePreview() {
+                const newCount = parseInt(jumlahKodeInput.value) || 0;
+
+                // Get current HTML content
+                const currentHtml = currentKodeDisplay.innerHTML;
+
+                if (newCount > originalCount) {
+                    // Will add more codes
+                    const toAdd = newCount - originalCount;
+
+                    for (let i = 0; i < toAdd; i++) {
+                        const randomNum = Math.floor(Math.random() * 9000) + 1000;
+                        const kode = 'KB-' + randomNum.toString().padStart(4, '0');
+                        const kodeTag = document.createElement('span');
+                        kodeTag.className = 'kode-tag tersedia';
+                        kodeTag.innerHTML = `${kode} <small>(Akan Ditambahkan)</small>`;
+                        currentKodeDisplay.appendChild(kodeTag);
+                    }
+
+                    // Add note
+                    const existingNote = currentKodeDisplay.querySelector('.change-note');
+                    if (existingNote) existingNote.remove();
+
+                    const note = document.createElement('p');
+                    note.className = 'change-note';
+                    note.style.cssText = 'color: #28a745; font-weight: bold; font-size: 12px; margin: 5px 0 0 0; width: 100%;';
+                    note.textContent = `+${toAdd} kode buku baru akan ditambahkan`;
+                    currentKodeDisplay.appendChild(note);
+
+                } else if (newCount < originalCount) {
+                    // Will NOT remove existing codes - just remove any preview additions
+                    const previewCodes = currentKodeDisplay.querySelectorAll('.kode-tag');
+                    previewCodes.forEach(tag => {
+                        if (tag.innerHTML.includes('Akan Ditambahkan')) {
+                            tag.remove();
+                        }
+                    });
+
+                    // Add note that existing codes are preserved
+                    const existingNote = currentKodeDisplay.querySelector('.change-note');
+                    if (existingNote) {
+                        existingNote.textContent = 'Kode buku yang sudah ada akan dipertahankan';
+                        existingNote.style.color = '#17a2b8';
+                    } else {
+                        const note = document.createElement('p');
+                        note.className = 'change-note';
+                        note.style.cssText = 'color: #17a2b8; font-weight: bold; font-size: 12px; margin: 5px 0 0 0; width: 100%;';
+                        note.textContent = 'Kode buku yang sudah ada akan dipertahankan';
+                        currentKodeDisplay.appendChild(note);
+                    }
+
+                } else {
+                    // No change - remove any preview changes
+                    const previewCodes = currentKodeDisplay.querySelectorAll('.kode-tag');
+                    previewCodes.forEach(tag => {
+                        if (tag.innerHTML.includes('Akan Ditambahkan') || tag.innerHTML.includes('Akan Dihapus')) {
+                            tag.remove();
+                        }
+                        tag.classList.remove('will-remove');
+                    });
+
+                    const existingNote = currentKodeDisplay.querySelector('.change-note');
+                    if (existingNote) existingNote.remove();
+                }
+            }
+
+            jumlahKodeInput.addEventListener('input', updateKodePreview);
+            jumlahKodeInput.addEventListener('change', updateKodePreview);
+        }
+    });
+    @endif
 </script>
 
 @endsection

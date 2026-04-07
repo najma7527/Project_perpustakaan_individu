@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Book;
+use App\Models\KodeBuku;
 use App\Models\Visit;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -73,7 +74,9 @@ class TransactionController extends Controller
             abort(403);
         }
         
-        $books = Book::where('stok', '>', 0)->with('row')->get();
+        $books = Book::with('row')->get()->filter(function($book) {
+            return $book->availableStock() > 0;
+        });
 
         $hasActiveLoan = Transaction::where('user_id', Auth::id())
             ->whereIn('status', ['belum_dikembalikan', 'menunggu_konfirmasi', 'terlambat'])
@@ -85,21 +88,21 @@ class TransactionController extends Controller
     /**
      * Store a new book borrowing transaction
      */
-    public function pinjam(Request $request, $bukuId)
+    public function pinjam(Request $request, $kodeBukuId)
     {
-        $buku = Book::findOrFail($bukuId);
+        $kodeBuku = KodeBuku::findOrFail($kodeBukuId);
         $visit = Visit::where('user_id', Auth::id())
-        ->whereDate('tanggal_datang', now()->toDateString())
-        ->first();
+            ->whereDate('tanggal_datang', now()->toDateString())
+            ->first();
 
         $request->validate([
             'tanggal_peminjaman' => 'required|date',
             'tanggal_jatuh_tempo' => 'required|date|after_or_equal:tanggal_peminjaman',
         ]);
 
-        // Cek apakah buku tersedia
-        if ($buku->status !== 'tersedia') {
-            return back()->with('error', 'Buku tidak tersedia untuk dipinjam');
+        // Cek apakah kode buku tersedia
+        if ($kodeBuku->status !== 'tersedia') {
+            return back()->with('error', 'Kode buku tidak tersedia untuk dipinjam');
         }
 
         // Cek apakah siswa sudah memiliki pinjaman aktif
@@ -111,31 +114,33 @@ class TransactionController extends Controller
             return back()->with('error', 'Anda masih memiliki buku yang belum dikembalikan. Kembalikan terlebih dahulu sebelum meminjam buku lain.');
         }
 
-         $transaction = Transaction::create([
-        'user_id' => Auth::id(),
-        'buku_id' => $bukuId,
-        'tanggal_peminjaman' => $request->tanggal_peminjaman,
-        'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
-        'jenis_transaksi' => 'dipinjam',
-        'status' => 'belum_dikembalikan',
+        $transaction = Transaction::create([
+            'user_id' => Auth::id(),
+            'buku_id' => $kodeBuku->buku_id,
+            'kode_buku_id' => $kodeBuku->id,
+            'tanggal_peminjaman' => $request->tanggal_peminjaman,
+            'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
+            'jenis_transaksi' => 'dipinjam',
+            'status' => 'belum_dikembalikan',
         ]);
 
-        // Ubah status buku menjadi dipinjam
-        $buku->update(['status' => 'dipinjam']);
-        // Update visit jika ada
-    $visitToday = Visit::where('user_id', Auth::id())
-    ->whereDate('tanggal_datang', today())
-    ->first();
+        // Ubah status kode buku menjadi dipinjam
+        $kodeBuku->update(['status' => 'dipinjam']);
 
-if ($visitToday) {
-    $visitToday->update([
-        'transactions_id' => $transaction->id
-    ]);
-}
+        // Update visit jika ada
+        $visitToday = Visit::where('user_id', Auth::id())
+            ->whereDate('tanggal_datang', today())
+            ->first();
+
+        if ($visitToday) {
+            $visitToday->update([
+                'transactions_id' => $transaction->id
+            ]);
+        }
 
         return back()
-        ->with('success', 'Buku "' . $buku->judul . '" berhasil dipinjam!')
-        ->with('cetak.nota', $transaction->id);
+            ->with('success', 'Buku "' . $kodeBuku->book->judul . '" dengan kode "' . $kodeBuku->kode_buku . '" berhasil dipinjam!')
+            ->with('cetak.nota', $transaction->id);
     }
 
     /**
@@ -195,7 +200,7 @@ if ($visitToday) {
         ]);
 
         // Ubah status buku kembali menjadi tersedia
-        $transaction->book->update(['status' => 'tersedia']);
+        $transaction->kodeBuku->update(['status' => 'tersedia']);
 
         return back()->with('success', 'Pengembalian buku berhasil diterima');
     }

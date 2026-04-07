@@ -99,6 +99,7 @@
     <th>No</th>
     <th>Nama Anggota</th>
     <th>Judul Buku</th>
+    <th>Kode Buku</th>
     <th>Kelas</th>
     <th>Tgl Pinjam</th>
     <th>Jatuh Tempo</th>
@@ -113,6 +114,7 @@
     <td>{{ $transactions->firstItem() + $loop->index }}</td>
     <td>{{ $trx->user->name ?? '-' }}</td>
     <td>{{ $trx->book->judul ?? '-' }}</td>
+    <td>{{ $trx->kodeBuku->kode_buku ?? '-' }}</td>
     <td>{{ $trx->user->kelas ?? '-' }}</td>
     <td>{{ optional($trx->tanggal_peminjaman)->format('d/m/Y') }}</td>
     <td>{{ optional($trx->tanggal_jatuh_tempo)->format('d/m/Y') }}</td>
@@ -137,7 +139,7 @@
 </tr>
 @empty
 <tr>
-    <td colspan="8" style="text-align:center">Tidak ada data</td>
+    <td colspan="9" style="text-align:center">Tidak ada data</td>
 </tr>
 @endforelse
 </tbody>
@@ -162,6 +164,7 @@
     <th>No</th>
     <th>Nama Anggota</th>
     <th>Judul Buku</th>
+    <th>Kode Buku</th>
     <th>Kelas</th>
     <th>Jatuh Tempo</th>
     <th>Status</th>
@@ -176,6 +179,7 @@
     <td>{{ $transactions->firstItem() + $loop->index }}</td>
     <td>{{ $trx->user->name ?? '-' }}</td>
     <td>{{ $trx->book->judul ?? '-' }}</td>
+    <td>{{ $trx->kodeBuku->kode_buku ?? '-' }}</td>
     <td>{{ $trx->user->kelas ?? '-' }}</td>
     <td>{{ optional($trx->tanggal_jatuh_tempo)->format('d/m/Y') }}</td>
     <td>
@@ -209,14 +213,14 @@
 </tr>
 @empty
 <tr>
-    <td colspan="8" style="text-align:center">Tidak ada data</td>
+    <td colspan="9" style="text-align:center">Tidak ada data</td>
 </tr>
 @endforelse
 </tbody>
 
 <tfoot>
 <tr>
-    <td colspan="8">
+    <td colspan="9">
         @include('components.pagination', ['paginator' => $transactions])
     </td>
 </tr>

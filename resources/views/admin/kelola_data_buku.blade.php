@@ -99,7 +99,7 @@
                     <tr>
                         <th>No</th>
                         <th>Judul Buku</th>
-                        <th>Kode Buku</th>
+                        <th>Eksemplar</th>
                         <th>Pengarang</th>
                         <th>Tahun Terbit</th>
                         <th>Kategori</th>
@@ -114,7 +114,16 @@
                     <tr>
                         <td>{{ $books->firstItem() + $loop->index }}</td>
                         <td>{{ $book->judul }}</td>
-                        <td>{{ $book->kode_buku }}</td>
+                        <td>
+                            <div style="display: flex; flex-direction: column; gap: 2px;">
+                                <span><strong>{{ $book->stok }}</strong> total</span>
+                                <small style="color: #666;">
+                                    {{ $book->availableStock() }} tersedia,
+                                    {{ $book->kodeBuku->where('status', 'dipinjam')->count() }} dipinjam,
+                                    {{ $book->kodeBuku->where('status', 'hilang')->count() }} hilang
+                                </small>
+                            </div>
+                        </td>
                         <td>{{ $book->pengarang }}</td>
                         <td>{{ $book->tahun_terbit }}</td>
                         <td>{{ $book->kategori_buku == 'fiksi' ? 'Fiksi' : 'Non Fiksi' }}</td>
@@ -131,16 +140,22 @@
 </button>
                             @endauth
 
-<button class="btn view"
+<a href="{{ route('books.show', $book->id) }}" class="btn view">
+    <i class="fa-solid fa-eye"></i>
+</a>
+
+<!-- <button class="btn view"
     onclick="openDetail(this)"
     data-judul="{{ $book->judul }}"
     data-penulis="{{ $book->pengarang }}"
+    data-kodebuku="{{ $book->kodeBuku->pluck('kode_buku')->join(', ') }}"
     data-kategori="{{ $book->kategori_buku == 'fiksi' ? 'Fiksi' : 'Non Fiksi' }}"
     data-deskripsi="{{ $book->deskripsi }}"
     data-gambar="{{ $book->cover ? asset('storage/' . $book->cover) : asset('img/buku.png') }}"
+    title="Quick View"
 >
-    <i class="fa-solid fa-eye"></i>
-</button>
+    <i class="fa-solid fa-search-plus"></i>
+</button> -->
 
                         </td>
                     </tr>
@@ -194,6 +209,7 @@
                 <div class="detail-text">
                     <h2 id="detailJudul"></h2>
                     <p class="penulis">By: <span id="detailPenulis"></span></p>
+                    <p class="kode-buku"><strong>Kode Buku:</strong> <span id="detailKodeBuku"></span></p>
                     <span class="badge" id="detailKategori"></span>
                     <p class="deskripsi" id="detailDeskripsi"></p>
                 </div>
@@ -330,6 +346,7 @@ function hapusData() {
 function openDetail(btn) {
     document.getElementById('detailJudul').innerText = btn.dataset.judul;
     document.getElementById('detailPenulis').innerText = btn.dataset.penulis;
+    document.getElementById('detailKodeBuku').innerText = btn.dataset.kodebuku;
     document.getElementById('detailKategori').innerText = btn.dataset.kategori;
     document.getElementById('detailDeskripsi').innerText = btn.dataset.deskripsi;
     document.getElementById('detailGambar').src = btn.dataset.gambar;

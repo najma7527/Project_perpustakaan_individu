@@ -70,6 +70,7 @@
                 <th>No</th>
                 <th>Nama Anggota</th>
                 <th>Judul Buku</th>
+                <th>Kode Buku</th>
                 <th>Kelas</th>
                 <th>Tanggal Pinjam</th>
                 <th>Tanggal Mengganti</th>
@@ -123,6 +124,8 @@
 
             <td>{{ $report->transaction->book->judul ?? '-' }}</td>
 
+            <td>{{ $report->transaction->kodeBuku->kode_buku ?? '-' }}</td>
+
             <td>{{ $report->transaction->user->kelas ?? '-' }}</td>
 
             <td>
@@ -168,7 +171,7 @@
 
         @empty
         <tr>
-            <td colspan="8" style="text-align:center">Data tidak ada</td>
+            <td colspan="9" style="text-align:center">Data tidak ada</td>
         </tr>
         @endforelse
         </tbody>

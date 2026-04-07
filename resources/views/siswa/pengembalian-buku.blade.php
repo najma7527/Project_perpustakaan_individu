@@ -67,7 +67,7 @@
                         <tr>
                             <td>{{ $transactions->firstItem() + $loop->index }}</td>
                             <td>{{ $trx->book->judul ?? '-' }}</td>
-                            <td>{{ $trx->book->kode_buku ?? '-' }}</td>
+                            <td>{{ $trx->kodeBuku->kode_buku ?? '-' }}</td>
                             <td>{{ optional($trx->tanggal_peminjaman)->format('d/m/Y') ?? '-' }}</td>
                             <td>{{ optional($trx->tanggal_jatuh_tempo)->format('d/m/Y') ?? '-' }}</td>
                             <td>
@@ -87,7 +87,7 @@
                             </td>
                             <td class="aksi">
                                 {{-- Kembalikan Buku (hanya jika belum dikembalikan) --}}
-                                @if(in_array($trx->status, ['belum_dikembalikan', 'ditolak']))
+                                @if(in_array($trx->status, ['belum_dikembalikan', 'ditolak', 'terlambat']))
                                     <button class="aksi-btn blue"
                                         data-bs-toggle="modal"
                                         data-bs-target="#modalKembalikan{{ $trx->id }}"
@@ -112,7 +112,7 @@
                                 @endif
 
                                 {{-- Laporan Kehilangan (hanya jika belum dikembalikan) --}}
-                                @if(in_array($trx->status, ['belum_dikembalikan', 'ditolak']))
+                                @if(in_array($trx->status, ['belum_dikembalikan', 'ditolak', 'terlambat']))
                                     <button class="aksi-btn red"
                                         data-bs-toggle="modal"
                                         data-bs-target="#modalKehilangan{{ $trx->id }}"

@@ -49,29 +49,31 @@
                     <div class="badge">
                         <span>{{ $book->kategori_buku }}</span>
                         <span>
-                            @if($book->status === 'tersedia')
-                                <i class="fa fa-check"></i> Tersedia
-                            @else
-                                <i class="fa fa-times"></i> Dipinjam
-                            @endif
+                            <i class="fa fa-book"></i> {{ $book->availableStock() }}/{{ $book->stok }} tersedia
                         </span>
                     </div>
 
-                    <p>{{ $book->deskripsi }}</p>
+                    <p>{{ Str::limit($book->deskripsi, 100) }}</p>
 
-                    @if($hasActiveLoan)
-                        <button type="button" class="btn-pinjam" disabled style="opacity: 0.5; cursor: not-allowed;">
-                            Tidak Bisa Meminjam
-                        </button>
-                    @elseif($book->status === 'tersedia')
-                        <button type="button" class="btn-pinjam" data-id="{{ $book->id }}" data-judul="{{ $book->judul }}" onclick="openModal(this)">
-                            Pinjam Buku
-                        </button>
-                    @else
-                        <button type="button" class="btn-pinjam" disabled style="opacity: 0.5; cursor: not-allowed;">
-                            Sedang Dipinjam
-                        </button>
-                    @endif
+                    <div style="display: flex; gap: 3px; margin-top: 5px;">
+                        <a href="{{ route('books.detailDetail', $book->id) }}" class="btn-detail" style="flex: 0.1; text-align: center; padding: 10px; background: #105ec4; color: white; text-decoration: none; border-radius: 4px; font-size: 18px;">
+                            <i class="fa fa-eye"></i> 
+                        </a>
+
+                        @if($hasActiveLoan)
+                            <button type="button" class="btn-pinjam" disabled style="flex: 1; opacity: 0.5; cursor: not-allowed;">
+                                Tidak Bisa Meminjam
+                            </button>
+                        @elseif($book->availableStock() > 0)
+                            <button type="button" class="btn-pinjam" data-id="{{ $book->id }}" data-judul="{{ $book->judul }}" onclick="openModal(this)" style="flex: 1;">
+                                Pinjam Buku
+                            </button>
+                        @else
+                            <button type="button" class="btn-pinjam" disabled style="flex: 1; opacity: 0.5; cursor: not-allowed;">
+                                Stok Habis
+                            </button>
+                        @endif
+                    </div>
                 </div>
             </div>
         @empty
@@ -90,6 +92,12 @@
         <form id="formPinjam" method="POST" action="">
             @csrf
             <div class="modal-body">
+                <label>Pilih Kode Buku</label>
+                <select id="kodeBukuSelect" name="kode_buku_id" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 15px;">
+                    <option value="">Pilih kode buku yang tersedia...</option>
+                    <!-- Options will be populated by JavaScript -->
+                </select>
+
                 <label>Tanggal Pinjam</label>
                 <input type="date" id="tglPinjam" name="tanggal_peminjaman" required>
 
@@ -141,24 +149,46 @@ function tambahHari(tanggal, hari) {
 let currentBookId = null;
 
 // buka modal
-function openModal(button) {
+async function openModal(button) {
     const bookId = button.dataset.id;
     const bookTitle = button.dataset.judul;
 
     currentBookId = bookId;
     document.getElementById('bookTitle').textContent = bookTitle;
-    
-    const today = new Date();
 
+    // Fetch available kode_buku for this book
+    try {
+        const response = await fetch(`/api/books/${bookId}/available-kode-buku`);
+        const data = await response.json();
+
+        const select = document.getElementById('kodeBukuSelect');
+        select.innerHTML = '<option value="">Pilih kode buku yang tersedia...</option>';
+
+        if (data.kode_buku && data.kode_buku.length > 0) {
+            data.kode_buku.forEach(kode => {
+                const option = document.createElement('option');
+                option.value = kode.id;
+                option.textContent = `${kode.kode_buku} (Tersedia)`;
+                select.appendChild(option);
+            });
+        } else {
+            select.innerHTML = '<option value="">Tidak ada kode buku tersedia</option>';
+        }
+    } catch (error) {
+        console.error('Error fetching kode buku:', error);
+        document.getElementById('kodeBukuSelect').innerHTML = '<option value="">Error memuat kode buku</option>';
+    }
+
+    const today = new Date();
     const tglPinjam = document.getElementById('tglPinjam');
     const tglKembali = document.getElementById('tglKembali');
 
     tglPinjam.value = formatDate(today);
     tglKembali.value = formatDate(tambahHari(today, 3));
 
-    // Update form action
+    // Update form action - will be updated when kode_buku is selected
     const form = document.getElementById('formPinjam');
-    form.action = '/pinjam-buku/' + bookId;
+    form.action = ''; // Will be set when kode_buku is selected
 
     document.getElementById('modalPinjam').classList.add('show');
 }
@@ -171,6 +201,18 @@ document.getElementById('tglPinjam')?.addEventListener('change', function () {
     const kembali = tambahHari(pinjam, 3);
 
     document.getElementById('tglKembali').value = formatDate(kembali);
+});
+
+// Update form action when kode_buku is selected
+document.getElementById('kodeBukuSelect')?.addEventListener('change', function () {
+    const selectedKodeBukuId = this.value;
+    const form = document.getElementById('formPinjam');
+
+    if (selectedKodeBukuId) {
+        form.action = '/pinjam-buku/' + selectedKodeBukuId;
+    } else {
+        form.action = '';
+    }
 });
 
 // tutup modal
