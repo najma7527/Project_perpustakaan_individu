@@ -105,6 +105,13 @@
         </div>
 
         <div class="paper-footer">
+            <!-- Signature -->
+        <div class="signature-section">
+            <p class="name">Pembina Perpustakaan</p>
+            <img src="{{ public_path('img/ttd.png') }}" class="signature-image" alt="TTD">
+            <p class="title">Ika Susilowati, S. Pd</p>
+        </div>
+        
             <span>dicetak oleh Perpustakaan SMKN 4 Bojonegoro</span>
             <span>{{ now()->format('d/m/Y') }}</span>
         </div>

@@ -70,7 +70,7 @@
                     <td>{{ $r->user->name ?? $r->transaction->user->name ?? '-' }}</td>
                     <td>{{ $r->user->kelas ?? $r->transaction->user->kelas ?? '-' }}</td>
                     <td>{{ $r->transaction->book->judul ?? '-' }}</td>
-                    <td>{{ $r->kodeBuku->kode_buku ?? '-' }}</td>
+                    <td>{{ $r->transaction->kodeBuku->kode_buku ?? '-' }}</td>
                     <td>{{ $r->jenis_transaksi ?? ($r->transaction->jenis_transaksi ?? '-') }}</td>
                     <td>{{ optional($r->created_at)->format('d/m/Y') }}</td>
                     <td class="status {{ $r->status == 'sudah_dikembalikan' ? 'done' : 'pending' }}">
@@ -85,6 +85,12 @@
         </div>
 
         <div class="paper-footer">
+            <!-- Signature -->
+        <div class="signature-section">
+            <p class="name">Pembina Perpustakaan</p>
+            <img src="{{ public_path('img/ttd.png') }}" class="signature-image" alt="TTD">
+            <p class="title">Ika Susilowati, S. Pd</p>
+        </div>
             <span>Dicetak oleh Perpustakaan SMKN 4 Bojonegoro</span>
             <span>{{ now()->format('d/m/Y') }}</span>
         </div>

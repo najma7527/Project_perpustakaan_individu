@@ -26,7 +26,7 @@ class SiswaDashboardController extends Controller
 
         // Total buku yang sedang dipinjam siswa
         $totalDipinjam = Transaction::where('user_id', $userId)
-            ->where('jenis_transaksi', 'dipinjam')
+            ->where('status', 'belum_dikembalikan')
             ->count();
         //total buku hilang
         $totalBukuHilang = Report::whereHas('transaction', function($q) use ($userId) {

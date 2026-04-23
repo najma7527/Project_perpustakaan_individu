@@ -170,6 +170,48 @@ class TransaksiExport implements FromCollection,
             foreach (range('A', 'I') as $col) {
                 $sheet->getColumnDimension($col)->setAutoSize(true);
             }
+
+            // =========================
+            // TAMBAHKAN TANDA TANGAN
+            // =========================
+            $lastRow = $sheet->getHighestRow();
+            $signatureStartRow = $lastRow + 3; // Mulai tanda tangan 3 baris setelah data
+
+            // Row 1: Nama
+            $sheet->setCellValue('E' . $signatureStartRow, 'Ika Susilowati, S. Pd');
+
+            // Row 2-4: Gambar tanda tangan (menggunakan 3 baris)
+            $signatureDrawing = new Drawing();
+            $signatureDrawing->setName('Tanda Tangan');
+            $signatureDrawing->setDescription('Tanda tangan Pembina Perpustakaan');
+            $signatureDrawing->setPath(public_path('img/ttd.png'));
+            $signatureDrawing->setHeight(70); // Lebih besar untuk 3 baris
+            $signatureDrawing->setCoordinates('E' . ($signatureStartRow + 1)); // Mulai dari row kedua
+            $signatureDrawing->setWorksheet($sheet);
+
+            // Row 5: Jabatan
+            $sheet->setCellValue('E' . ($signatureStartRow + 4), 'Pembina Perpustakaan');
+
+            // Style untuk nama (bold, center)
+            $sheet->getStyle('E' . $signatureStartRow)->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                    'size' => 11,
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                ],
+            ]);
+
+            // Style untuk jabatan (center)
+            $sheet->getStyle('E' . ($signatureStartRow + 4))->applyFromArray([
+                'font' => [
+                    'size' => 10,
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                ],
+            ]);
         },
     ];
 }

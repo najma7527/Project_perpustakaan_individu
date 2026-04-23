@@ -211,7 +211,33 @@ td:nth-child(3) {
 .actions .btn:hover {
     background: #004D40;
 }
+/* Signature Section */
+.signature-section {
+    margin-left: auto;
+    text-align: center;
+    width: 150px;
+}
 
+.signature-section p.name {
+    font-size: 11px;
+    font-weight: bold;
+    margin: 0 0 5px 0;
+}
+
+.signature-image {
+    width: 60px;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    margin-bottom: -5px;
+}
+
+.signature-section p.title {
+    font-size: 10px;
+    margin: 0;
+    border-top: 1px solid #333;
+    padding-top: 5px;
+}
 /* ================= PRINT ================= */
 @media print {
     .topbar,
