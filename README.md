@@ -6,8 +6,6 @@
 
 [![Get Started](https://img.shields.io/badge/Get%20Started-Installation-brightgreen)](#%F0%9F%9A%80-cara-menambahkan-screenshot)
 
-Selamat datang! Ini adalah dokumentasi singkat dan lebih “visual” untuk proyek Perpustakaan Sekolah. README ini dibuat lebih fun dan estetik — menampilkan screenshot dan animasi singkat untuk tiap halaman utama agar lebih mudah dipahami.
-
 ## ✨ Sekilas
 - **Nama Aplikasi**: Perpustakaan Sekolah
 - **Apa yang dilakukan**: Mengelola buku, rak, anggota, transaksi, dan laporan perpustakaan dengan antarmuka yang sederhana dan terstruktur.
@@ -20,7 +18,7 @@ Selamat datang! Ini adalah dokumentasi singkat dan lebih “visual” untuk proy
 - 📊 Laporan & Ekspor: laporan kunjungan, kehilangan, dan transaksi.
 - 🔐 Autentikasi & Peran: Admin / Petugas / Anggota.
 
-## 🖼️ Tampilan Aplikasi (Screenshots)
+## 🖼️ Tampilan Awal Aplikasi
 > Letakkan file gambar di `docs/screenshots/` dengan nama yang sesuai.
 
 - **Landing Page**
