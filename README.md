@@ -38,17 +38,6 @@ Selamat datang! Ini adalah dokumentasi singkat dan lebih “visual” untuk proy
 
  	![Dashboard User](docs/screenshots/user-dashboard.png)
 
-### ✨ Animasi & GIF
-
-Tambahkan animasi singkat (GIF) untuk tampilan muka agar memberi kesan hidup. Letakkan file GIF di `docs/animations/intro.gif` lalu sisipkan seperti berikut:
-
-```markdown
-![Intro Animation](docs/animations/intro.gif)
-```
-
-Jika belum punya GIF, Anda bisa membuat mockup singkat menggunakan tools seperti ScreenToGif (Windows) atau record a short screen and export as GIF.
-
-Jika Anda belum punya screenshot, Anda bisa mengambil layar (print screen) dan menyimpannya dengan nama di atas. README akan menampilkan gambar tersebut otomatis.
 
 ## 🧰 Teknologi & Bahasa
 - **Bahasa**: PHP (backend), JavaScript (frontend), HTML/CSS (view).
@@ -58,43 +47,6 @@ Jika Anda belum punya screenshot, Anda bisa mengambil layar (print screen) dan m
 - PHP: ~80%
 - JavaScript: ~12%
 - HTML/CSS: ~8%
-
-## 🎯 Cara menambahkan screenshot
-1. Buat folder `docs/screenshots/` di root proyek.
-2. Simpan screenshot:
-	 - `landing.png` — tampilan landing page
-	 - `admin-dashboard.png` — tampilan dashboard admin
-	 - `user-dashboard.png` — tampilan dashboard user
-3. Commit dan push: gambar akan muncul otomatis pada README di GitHub.
-
-Contoh perintah (Git):
-
-```bash
-mkdir -p docs/screenshots
-# tambahkan gambar ke docs/screenshots
-git add docs/screenshots/*.png
-git commit -m "Add screenshots for README"
-git push
-```
-
-Untuk menambahkan animasi:
-
-```bash
-mkdir -p docs/animations
-# tambahkan intro.gif ke docs/animations
-git add docs/animations/intro.gif
-git commit -m "Add intro animation"
-git push
-```
-
-## 📎 Catatan tambahan
-- Ingin gaya lebih estetik (mis. tombol CTA, badge, atau GIF singkat)? Saya bisa bantu tambahkan badge dan animasi kecil.
-- Mau saya tambahkan contoh screenshot sekarang (saya bisa buat mockup sederhana)?
-
----
-
-Terima kasih! Beri tahu gambar mana yang ingin Anda tambahkan atau kalau mau saya buat mockup cepat.
----
 
 **Lisensi & Kontribusi**
 
