@@ -1,59 +1,102 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📚 Perpustakaan Sekolah — Aplikasi Manajemen Perpustakaan (Fun & Estetik)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+[![Version](https://img.shields.io/badge/version-1.0.0-blue)](https://github.com/najma7527/Project_perpustakaan_individu)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Status](https://img.shields.io/badge/status-Prototype-orange)]()
 
-## About Laravel
+[![Get Started](https://img.shields.io/badge/Get%20Started-Installation-brightgreen)](#%F0%9F%9A%80-cara-menambahkan-screenshot)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Selamat datang! Ini adalah dokumentasi singkat dan lebih “visual” untuk proyek Perpustakaan Sekolah. README ini dibuat lebih fun dan estetik — menampilkan screenshot dan animasi singkat untuk tiap halaman utama agar lebih mudah dipahami.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ✨ Sekilas
+- **Nama Aplikasi**: Perpustakaan Sekolah
+- **Apa yang dilakukan**: Mengelola buku, rak, anggota, transaksi, dan laporan perpustakaan dengan antarmuka yang sederhana dan terstruktur.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🚀 Fitur Utama
+- 📘 Manajemen Buku: tambah / edit / hapus / impor & ekspor.
+- 🗂️ Manajemen Rak & Baris: atur penempatan fisik buku.
+- 🧾 Transaksi: peminjaman & pengembalian, histori, dan denda.
+- 👥 Manajemen Anggota: pendaftaran, verifikasi, dan riwayat.
+- 📊 Laporan & Ekspor: laporan kunjungan, kehilangan, dan transaksi.
+- 🔐 Autentikasi & Peran: Admin / Petugas / Anggota.
 
-## Learning Laravel
+## 🖼️ Tampilan Aplikasi (Screenshots)
+> Letakkan file gambar di `docs/screenshots/` dengan nama yang sesuai.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- **Landing Page**
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
+ 	![Landing Page](docs/screenshots/landing.png)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- **Dashboard Admin**
 
-### Premium Partners
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+ 	![Dashboard Admin](docs/screenshots/admin-dashboard.png)
 
-## Contributing
+- **Dashboard User (Anggota)**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-## Code of Conduct
+ 	![Dashboard User](docs/screenshots/user-dashboard.png)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### ✨ Animasi & GIF
 
-## Security Vulnerabilities
+Tambahkan animasi singkat (GIF) untuk tampilan muka agar memberi kesan hidup. Letakkan file GIF di `docs/animations/intro.gif` lalu sisipkan seperti berikut:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```markdown
+![Intro Animation](docs/animations/intro.gif)
+```
 
-## License
+Jika belum punya GIF, Anda bisa membuat mockup singkat menggunakan tools seperti ScreenToGif (Windows) atau record a short screen and export as GIF.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Jika Anda belum punya screenshot, Anda bisa mengambil layar (print screen) dan menyimpannya dengan nama di atas. README akan menampilkan gambar tersebut otomatis.
+
+## 🧰 Teknologi & Bahasa
+- **Bahasa**: PHP (backend), JavaScript (frontend), HTML/CSS (view).
+- **Framework & Tools**: Laravel (MVC, routing, ORM), Vite (bundling aset).
+
+**Perkiraan pembagian bahasa**:
+- PHP: ~80%
+- JavaScript: ~12%
+- HTML/CSS: ~8%
+
+## 🎯 Cara menambahkan screenshot
+1. Buat folder `docs/screenshots/` di root proyek.
+2. Simpan screenshot:
+	 - `landing.png` — tampilan landing page
+	 - `admin-dashboard.png` — tampilan dashboard admin
+	 - `user-dashboard.png` — tampilan dashboard user
+3. Commit dan push: gambar akan muncul otomatis pada README di GitHub.
+
+Contoh perintah (Git):
+
+```bash
+mkdir -p docs/screenshots
+# tambahkan gambar ke docs/screenshots
+git add docs/screenshots/*.png
+git commit -m "Add screenshots for README"
+git push
+```
+
+Untuk menambahkan animasi:
+
+```bash
+mkdir -p docs/animations
+# tambahkan intro.gif ke docs/animations
+git add docs/animations/intro.gif
+git commit -m "Add intro animation"
+git push
+```
+
+## 📎 Catatan tambahan
+- Ingin gaya lebih estetik (mis. tombol CTA, badge, atau GIF singkat)? Saya bisa bantu tambahkan badge dan animasi kecil.
+- Mau saya tambahkan contoh screenshot sekarang (saya bisa buat mockup sederhana)?
+
+---
+
+Terima kasih! Beri tahu gambar mana yang ingin Anda tambahkan atau kalau mau saya buat mockup cepat.
+---
+
+**Lisensi & Kontribusi**
+
+- Jika Anda ingin berkontribusi, buka issue atau kirim pull request. Lisensi proyek disesuaikan dengan kebutuhan pemilik repositori.
+
