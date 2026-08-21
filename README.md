@@ -1,52 +1,90 @@
-# 📚 Perpustakaan Sekolah — Aplikasi Manajemen Perpustakaan (Fun & Estetik)
+# 📚 Perpustakaan Sekolah
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue)](https://github.com/najma7527/Project_perpustakaan_individu)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Status](https://img.shields.io/badge/status-Prototype-orange)]()
+> **Kelola perpustakaan sekolah dengan lebih mudah** — buku, anggota, transaksi, dan laporan dalam satu aplikasi.
 
-[![Get Started](https://img.shields.io/badge/Get%20Started-Installation-brightgreen)](#%F0%9F%9A%80-cara-menambahkan-screenshot)
+<p align="center">
+  <img alt="Laravel" src="https://img.shields.io/badge/Laravel-12-red?logo=laravel">
+  <img alt="PHP" src="https://img.shields.io/badge/PHP-8.2-blue?logo=php">
+  <img alt="Status" src="https://img.shields.io/badge/Status-Prototype-orange">
+  <img alt="License" src="https://img.shields.io/badge/License-MIT-green">
+</p>
 
-## ✨ Sekilas
-- **Nama Aplikasi**: Perpustakaan Sekolah
-- **Apa yang dilakukan**: Mengelola buku, rak, anggota, transaksi, dan laporan perpustakaan dengan antarmuka yang sederhana dan terstruktur.
+---
 
-## 🚀 Fitur Utama
-- 📘 Manajemen Buku: tambah / edit / hapus / impor & ekspor.
-- 🗂️ Manajemen Rak & Baris: atur penempatan fisik buku.
-- 🧾 Transaksi: peminjaman & pengembalian, histori, dan denda.
-- 👥 Manajemen Anggota: pendaftaran, verifikasi, dan riwayat.
-- 📊 Laporan & Ekspor: laporan kunjungan, kehilangan, dan transaksi.
-- 🔐 Autentikasi & Peran: Admin / Petugas / Anggota.
+## ✨ Fitur Unggulan
 
-## 🖼️ Tampilan Awal Aplikasi
-> Letakkan file gambar di `docs/screenshots/` dengan nama yang sesuai.
+| Fitur | Deskripsi |
+|---|---|
+| 📘 **Manajemen Buku** | CRUD, impor, dan ekspor data buku |
+| 🗂️ **Rak & Baris** | Atur lokasi fisik setiap buku |
+| 🧾 **Peminjaman** | Pinjam, kembali, histori, dan denda |
+| 👥 **Anggota** | Registrasi dan riwayat peminjaman |
+| 📊 **Laporan** | Kunjungan, transaksi, dan buku hilang |
+| 🔐 **Role** | Admin, Petugas, dan Anggota |
 
-- **Landing Page**
+## 🖼️ Tampilan Aplikasi
 
+> Simpan gambar di folder `docs/screenshots/`
 
- 	![Landing Page](docs/screenshots/landing.png)
+| Landing | Dashboard Admin |
+|---|---|
+| ![](docs/screenshots/landing.png) | ![](docs/screenshots/admin-dashboard.png) |
 
-- **Dashboard Admin**
+| Dashboard Anggota | Transaksi |
+|---|---|
+| ![](docs/screenshots/user-dashboard.png) | ![](docs/screenshots/transaksi.png) |
 
+## 🛠️ Teknologi
 
- 	![Dashboard Admin](docs/screenshots/admin-dashboard.png)
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=laravel,php,js,html,css,vite,mysql,git" alt="Tech Stack">
+</p>
 
-- **Dashboard User (Anggota)**
+## 🚀 Instalasi
 
+```bash
+git clone https://github.com/najma7527/Project_perpustakaan_individu.git
+cd Project_perpustakaan_individu
 
- 	![Dashboard User](docs/screenshots/user-dashboard.png)
+composer install
+cp .env.example .env
+php artisan key:generate
 
+# atur koneksi database di .env
 
-## 🧰 Teknologi & Bahasa
-- **Bahasa**: PHP (backend), JavaScript (frontend), HTML/CSS (view).
-- **Framework & Tools**: Laravel (MVC, routing, ORM), Vite (bundling aset).
+php artisan migrate --seed
+npm install
+npm run dev
+php artisan serve
+```
 
-**Perkiraan pembagian bahasa**:
-- PHP: ~80%
-- JavaScript: ~12%
-- HTML/CSS: ~8%
+Buka **http://127.0.0.1:8000**
 
-**Lisensi & Kontribusi**
+## 📂 Struktur Singkat
 
-- Jika Anda ingin berkontribusi, buka issue atau kirim pull request. Lisensi proyek disesuaikan dengan kebutuhan pemilik repositori.
+```text
+app/
+resources/views/
+routes/
+public/
+docs/screenshots/
+```
 
+## 👥 Peran Pengguna
+
+| Peran | Akses |
+|---|---|
+| **Admin** | Kelola seluruh data dan laporan |
+| **Petugas** | Kelola transaksi dan buku |
+| **Anggota** | Lihat katalog dan riwayat peminjaman |
+
+## 🤝 Kontribusi
+
+1. Fork repositori
+2. Buat branch fitur (`git checkout -b fitur-baru`)
+3. Commit perubahan
+4. Push dan buka Pull Request
+
+## 📄 Lisensi
+
+Dirilis dengan lisensi **MIT**.
