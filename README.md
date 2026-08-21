@@ -67,11 +67,3 @@ Berikut beberapa tampilan **Aplikasi Perpustakaan Sekolah**.
 </p>
 
 
-## 👥 Peran Pengguna
-
-| Peran | Akses |
-|---|---|
-| **Admin** | Kelola seluruh data dan laporan |
-| **Petugas** | Kelola transaksi dan buku |
-| **Anggota** | Lihat katalog dan riwayat peminjaman |
-
