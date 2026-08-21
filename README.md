@@ -24,15 +24,41 @@
 
 ## 🖼️ Tampilan Aplikasi
 
-> Simpan gambar di folder `docs/screenshots/`
+Berikut beberapa tampilan **Aplikasi Perpustakaan Sekolah**.
 
-| Landing | Dashboard Admin |
-|---|---|
-| ![](docs/screenshots/landing.png) | ![](docs/screenshots/admin-dashboard.png) |
+### 🏠 Landing Page
 
-| Dashboard Anggota | Transaksi |
-|---|---|
-| ![](docs/screenshots/user-dashboard.png) | ![](docs/screenshots/transaksi.png) |
+<p align="center">
+  <img src="docs/screenshots/landing.png" width="850" alt="Landing Page">
+</p>
+
+<p align="center">
+  <em>Halaman utama yang memperkenalkan sistem perpustakaan.</em>
+</p>
+
+---
+
+### 📊 Dashboard Admin
+
+<p align="center">
+  <img src="docs/screenshots/admin-dashboard.png" width="850" alt="Dashboard Admin">
+</p>
+
+<p align="center">
+  <em>Dashboard admin untuk memantau dan mengelola data perpustakaan.</em>
+</p>
+
+---
+
+### 👤 Dashboard Anggota
+
+<p align="center">
+  <img src="docs/screenshots/user-dashboard.png" width="850" alt="Dashboard Anggota">
+</p>
+
+<p align="center">
+  <em>Dashboard anggota untuk melihat informasi dan aktivitas perpustakaan.</em>
+</p>
 
 ## 🛠️ Teknologi
 
@@ -40,35 +66,6 @@
   <img src="https://skillicons.dev/icons?i=laravel,php,js,html,css,vite,mysql,git" alt="Tech Stack">
 </p>
 
-## 🚀 Instalasi
-
-```bash
-git clone https://github.com/najma7527/Project_perpustakaan_individu.git
-cd Project_perpustakaan_individu
-
-composer install
-cp .env.example .env
-php artisan key:generate
-
-# atur koneksi database di .env
-
-php artisan migrate --seed
-npm install
-npm run dev
-php artisan serve
-```
-
-Buka **http://127.0.0.1:8000**
-
-## 📂 Struktur Singkat
-
-```text
-app/
-resources/views/
-routes/
-public/
-docs/screenshots/
-```
 
 ## 👥 Peran Pengguna
 
@@ -78,13 +75,3 @@ docs/screenshots/
 | **Petugas** | Kelola transaksi dan buku |
 | **Anggota** | Lihat katalog dan riwayat peminjaman |
 
-## 🤝 Kontribusi
-
-1. Fork repositori
-2. Buat branch fitur (`git checkout -b fitur-baru`)
-3. Commit perubahan
-4. Push dan buka Pull Request
-
-## 📄 Lisensi
-
-Dirilis dengan lisensi **MIT**.
